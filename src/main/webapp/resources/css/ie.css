@@ -1,0 +1,110 @@
+div#menu {
+	width: 992px;
+}
+.wlcm{
+	background:url(../images/login-wlcm.gif) no-repeat 300px 45px ;
+	height:260px;
+	border:none;
+		}
+#login label {
+	background:url(../images/for-test-only-lblbg2.gif) repeat-x #CBE3FB;
+	border:1px solid #01497B;
+	font: bold 12px/ 21px Arial, tahoma;
+	height:21px;
+}
+
+#login input {
+	font: normal 12px/20px Arial, Helvetica, sans-serif;
+	border: 1px solid #1E1E1E;
+}
+
+#login select {
+	width: 509px;
+	height: 24px;
+	font: normal 12px/24px Arial, Helvetica, sans-serif;
+}
+input.radio, input.radioCheck, input.radioAuto {border:none;height:15px;width:15px;}
+fieldset label{
+	width:92px;	
+	}
+div#menu UL {
+	
+	height: auto;
+
+	}
+	div#menu LI {
+		margin:1px 1px 1px 1px;
+}
+textarea.auto, .Block textarea.auto{margin-right:32px;}
+object{display:inline; border:none; background:none; margin:0px; padding:0px;height:1px; width:1px;}
+.Block select {
+	width: 157px;
+	
+	}
+.Block select.auto {
+width:auto;
+	
+	}
+
+input[type="radio"].radioAuto2, input[type="checkbox"].radioAuto2 {
+	color: #333333;
+	width: auto;
+	margin: 2px 34px 0px 3px;
+	padding: 0px;
+}
+.Block select.smallest2 {
+	width: 48px;
+	
+}
+.Block select.small {
+	width: 96px;
+	}
+.Block select.small2 {
+	width: 100px;
+	}
+.Block select.smaller {
+	width: 72px;
+	}
+.Block select.smallest {
+	width: 51px;
+	
+}
+.Block input.transparent  {
+	margin:0px 0px 0px -1px;
+}
+.Block label.value {
+	width: 147px;
+	
+}
+
+table {
+	width: 992px;
+	border: 1px solid #000000;
+	text-align: left;
+	overflow: auto;
+	border-spacing: 2px;
+	white-space: nowrap;
+	
+	
+}
+.cmntable {
+	width: 992px;
+	height: auto;
+	float: left;
+	border: 1px solid #0569AF;
+	border-right: 1px solid #0569AF;
+	overflow-x: scroll;
+	text-align: center;
+	margin-left:0px;
+	}
+
+.cmntable table {
+	width: 100%;
+	height:100%;
+}
+.cmntable table td label,td input {float:left;}
+
+table img {float:left; display: inline;}
+.paddLeft483 {
+padding-left:485px;
+}

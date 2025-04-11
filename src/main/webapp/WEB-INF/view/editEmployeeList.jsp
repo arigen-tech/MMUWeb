@@ -1,0 +1,309 @@
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.Map"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+    
+     <%@include file="..//view/leftMenu.jsp" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title></title>
+
+
+<%
+	
+	String userId = "1";
+	if (session.getAttribute("user_id") != null) {
+		userId = session.getAttribute("user_id") + "";
+	}
+	
+	
+%>
+<%@include file="..//view/commonJavaScript.jsp" %>
+</head>
+<body>
+  <!-- Begin page -->
+    <div id="wrapper">
+ 
+ <div class="content-page">
+                                <!-- Start content -->
+ <div class="">
+  <div class="container-fluid">
+	 
+	  <div class="internal_Htext">Employee List</div>
+	 
+                     <input type="hidden"  name="mmuId" value=<%= session.getAttribute("mmuId") %> id="mmuId" />
+									<input type="hidden"  name="userId" value=<%= session.getAttribute("userId") %> id="userId" />
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+
+                                     <div class="row">
+		                              
+										<div class="col-md-4">
+											<div class="form-group row">
+											    	
+												<label class="col-sm-5 col-form-label">Mobile No.</label>
+												<div class="col-sm-7">
+													<input type="text" class="form-control" id="mobile_no" maxlength="10" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" placeholder="Mobile Number">
+												</div>
+											</div>
+										</div>
+										<!-- <div class="col-md-4">
+											<div class="form-group row">
+												<label class="col-sm-5 col-form-label">Employee Name</label>
+												<div class="col-sm-7">
+													<input type="text" class="form-control" id="emp_name" placeholder="Employee name">
+												</div>
+											</div>
+										</div> -->
+										<div class="col-md-2">
+											<button type="button" class="btn btn-primary" onclick="searchSavedEmployeeList()">Search</button>
+										</div>
+										<!-- <div class="col-md-2 text-right">
+											<button type="button" class="btn  btn-primary " onclick="showAll('ALL');">Show All</button>
+										</div> -->
+                                      
+
+                                    </div>
+
+                                     <div classs="row">
+                                     
+                                     <div class="col-md-4">
+                                     </div>
+                                     
+                                     </div>
+
+								<div style="float: left">
+
+									<table class="tblSearchActions" cellspacing="0" cellpadding="0"
+										border="0">
+										<tr>
+											<td class="SearchStatus" style="font-size: 15px;"
+												align="left">Search Results</td>
+											<td>
+												<!-- <div id=resultnavigation></div> -->
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div style="float: right">
+									<div id="resultnavigation"></div>
+								</div>
+
+								<div class="table-responsive">
+								<table class="table table-hover table-bordered">
+                                        <thead class="bg-primary" style="color:#fff;">
+                                            <tr>
+											<th>Employee Name</th>
+											<th>Gender</th>
+											<th>Date Of Birth</th>
+											<th>Mobile No</th>
+											<th>MMU</th>
+											<th>Type Of Employee</th>
+											<th>Status</th>
+										</tr>
+                                        </thead>
+                                         
+                                        <tbody id="tblListofEmp">
+                                       <!--  <tbody id="tblListofOpdP"> -->
+												
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                    
+						
+                                    <!-- end row -->
+
+                                </div>
+                            </div>
+                            <!-- end card -->
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                    <!-- end row -->
+
+                </div>
+                <!-- container -->
+                 </div>
+                  </div>
+
+</div>
+
+<div class="modal" id="messageForCloseBtn" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<span class="Message_htext"><spring:message
+								code="lblIndianCoastGuard" /></span>
+
+						<button type="button" onClick="closeMessage();" class="close"
+							data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+
+					</div>
+					<div class="modal-body">
+						<div class="control-group">
+
+							<div class="col-md-12">
+								<div class="form-group ">
+									<span><spring:message code="msgForCloseOpd" /></span> <br />
+									
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-primary" id="submitMOValidateFormByModelId"  data-dismiss="modal"
+							onClick="rejectOpdWaitList();" aria-hidden="true">
+							<spring:message code="btnOK" />
+						</button>
+						<button class="btn btn-primary" data-dismiss="modal"
+							onClick="closeMessage();" aria-hidden="true">
+							<spring:message code="btnClsoe" />
+						</button>
+					</div>
+					
+					
+					
+				</div>
+			</div>
+		</div>
+
+
+</body>
+<script type="text/javascript">
+	window.history.forward();
+	function preventBack() {
+		window.history.forward(1);
+	}
+</script>
+ 
+<script type="text/javascript" language="javascript">
+
+var nPageNo=1;
+var $j = jQuery.noConflict();
+
+$j(document).ready(function()
+		{
+			//getSavedEmployeeList('ALL');
+		});
+	
+	
+function searchSavedEmployeeList()
+{
+		
+	var nPageNo=1;	
+	 var mobile_no = $j('#mobile_no').val();
+	 	//var emp_name = $j('#emp_name').val();
+	if(mobile_no == undefined || mobile_no == '') { // && (emp_name == undefined || emp_name == '')){	
+		alert("Please enter mobile number");
+		return;
+	}
+	getSavedEmployeeList('FILTER');
+	//ResetForm();
+} 
+
+function getSavedEmployeeList(MODE) { 	
+ 	
+	     var mobile_no = $j('#mobile_no').val();
+	 	//var emp_name = $j('#emp_name').val();
+    var cmdId=0;
+	 if(MODE == 'ALL'){
+		 var data = {"pageNo":nPageNo,"mobileNo":"","calledFor":"apmUpdate","userId":"<%= userId %>"};
+		}
+	   else if(mobile_no!=""||emp_name!="")
+		{
+		nPageNo = 1;
+		var data = {"pageNo":nPageNo,"mobileNo":mobile_no,"recordStatus":"saved","calledFor":"apmUpdate","userId":"<%= userId %>"};
+		} 
+	   else
+		{
+		var data = {"pageNo":nPageNo,"mobileNo":mobile_no,"recordStatus":"saved","calledFor":"apmUpdate","userId":"<%= userId %>"};
+		} 
+	 
+	var url = "empListForEdit";		
+	var bClickable = true;
+	GetOpdJsonData('tblListofEmp',data,url,bClickable);
+}
+ 
+ 
+ function makeTable(jsonData)
+ {	
+ 	var htmlTable = "";	
+ 	var data = jsonData.count;
+ 	
+ 	var dataList = jsonData.data;
+ 	if(dataList!=undefined && dataList!="" && dataList.length >= 0)	
+ 	{	
+ 	for(i=0;i<dataList.length;i++)
+ 		{	 		
+ 		
+ 			htmlTable = htmlTable+"<tr  id='"+dataList[i].empId+"' >";
+ 			htmlTable = htmlTable +"<td  style='width: 200px;' >"+dataList[i].empName+"</td>";
+ 			htmlTable = htmlTable +"<td  style='width: 200px;'>"+dataList[i].gender+"</td>";
+ 			htmlTable = htmlTable +"<td style='width: 200px;'>"+dataList[i].dob+"</td>";
+ 			htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].mobileNo+"</td>"; 
+ 			htmlTable = htmlTable +"<td style='width: 100px;'>"+dataList[i].mmu+"</td>";
+ 			htmlTable = htmlTable +"<td style='width: 100px;'>"+dataList[i].empType+"</td>";
+ 			htmlTable = htmlTable +"<td style='width: 100px;'>"+dataList[i].recordStatus+"</td>";
+ 			htmlTable = htmlTable+"</tr>";
+ 			
+ 		}	
+ 		}
+ 	   if(jsonData.status == 0)
+		{
+		htmlTable = htmlTable+"<tr ><td colspan='12'><h6>No Record Found</h6></td></tr>";
+		   //alert('No Record Found');
+		}			
+ 	
+ 	$j("#tblListofEmp").html(htmlTable);	
+ 	
+ 	
+ }
+ 
+ function executeClickEvent(Id)
+ {
+	 //alert(Id)
+	 window.location="getEmployeeRecordForUpdate?empRecId="+Id+"";
+	
+ }
+ 
+ function showResultPage(pageNo) 	
+ {
+ 	
+ 	nPageNo = pageNo;	
+ 	getSavedEmployeeList('FILTER');
+ 	
+ }
+ 
+ function ResetForm()
+ {	
+ 	 $j('#mobile_no').val('');
+ 	 $j('#emp_name').val('');
+ }
+ 
+ function showAll()
+ {
+	 ResetForm();
+ 	nPageNo = 1;	
+ 	getSavedEmployeeList('ALL');
+ 	
+ }
+ 
+ 
+</script>
+
+ 
+</html>

@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Investigation_sub_To_report"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="611"
+		 pageHeight="842"
+		 columnWidth="611"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="VISIT_ID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="PSUB_CHARGECODE_ID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[$P{PSUB_CHARGECODE_ID}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Result_Flag" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[$P{Result_Flag}]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT  HD.ORDERHD_ID,
+        DT.INVESTIGATION_ID,
+        SUB_CHARGECODE_NAME,
+        DMI.INVESTIGATION_NAME,
+        (CASE WHEN INVESTIGATION_TYPE IN ('s','t')  THEN DMI.INVESTIGATION_NAME ELSE DSMI.SUB_INVESTIGATION_NAME END) SUB_INVESTIGATION_NAME,
+        (CASE WHEN INVESTIGATION_TYPE='m' THEN SDU.UOM_NAME ELSE DU.UOM_NAME END) UOM_CODE,
+        (CASE WHEN INVESTIGATION_TYPE IN ('s','t') THEN
+                    (CASE WHEN DMI.NORMAL_VALUE IS NULL THEN  
+                    DMI.MIN_NORMAL_VALUE||'-'||DMI.MAX_NORMAL_VALUE
+                    ELSE
+                    DMI.NORMAL_VALUE END)
+                    ELSE
+                    (CASE WHEN DSMI.COMPARISON_TYPE='f' THEN  
+                     AKS.AKS_FIX  
+                        WHEN DSMI.COMPARISON_TYPE='v' THEN  
+                    DNV.MIN_NORMAL_VALUE||'-'||DNV.MAX_NORMAL_VALUE
+                    ELSE
+                    DNV.MIN_NORMAL_VALUE||'-'||DNV.MAX_NORMAL_VALUE
+                    END)
+                    END) NORMALVALUE,
+                    (CASE WHEN (UPPER(INVESTIGATION_TYPE)='M' AND (SELECT COUNT(*) FROM ship.DG_SUB_MAS_INVESTIGATION AKS WHERE AKS.INVESTIGATION_ID=DMI.INVESTIGATION_ID)=1) THEN 's'
+                         WHEN UPPER(INVESTIGATION_TYPE)='S' THEN 's'
+                         WHEN UPPER(INVESTIGATION_TYPE)='t' THEN 's'  
+                        ELSE 'm' END) INVESTIGATION_TYPE,
+		    MSC.MAIN_CHARGECODE_ID	
+FROM    ship.DG_ORDER_HD HD LEFT OUTER JOIN ship.DG_ORDER_DT DT ON HD.ORDERHD_ID=DT.ORDERHD_ID
+                       LEFT OUTER JOIN ship.PATIENT PT ON HD.PATIENT_ID=PT.PATIENT_ID
+                       LEFT OUTER JOIN ship.MAS_ADMINISTRATIVE_SEX MAS ON MAS.ADMINISTRATIVE_SEX_ID=PT.ADMINISTRATIVE_SEX_ID  
+                       LEFT OUTER JOIN ship.DG_MAS_INVESTIGATION DMI ON  DMI.INVESTIGATION_ID=DT.INVESTIGATION_ID
+                       LEFT OUTER JOIN ship.DG_SUB_MAS_INVESTIGATION DSMI ON DMI.INVESTIGATION_TYPE ='m' and DSMI.INVESTIGATION_ID=DMI.INVESTIGATION_ID
+                       LEFT OUTER JOIN ship.MAS_SUB_CHARGECODE MSC ON  MSC.SUB_CHARGECODE_ID=DMI.SUB_CHARGECODE_ID
+                       LEFT OUTER JOIN ship.DG_UOM DU ON  DU.UOM_ID=DMI.UOM_ID
+                       LEFT OUTER JOIN ship.DG_UOM SDU ON SDU.UOM_ID=DSMI.UOM_ID
+                       LEFT OUTER JOIN (SELECT string_agg( DFV.FIXED_VALUE ::text, ' |') AKS_FIX, 
+											 		DFV.SUB_INVESTIGATION_ID 
+											 FROM 	ship.DG_FIXED_VALUE DFV GROUP BY SUB_INVESTIGATION_ID) AKS ON DSMI.SUB_INVESTIGATION_ID=AKS.SUB_INVESTIGATION_ID
+                       LEFT OUTER JOIN ship.DG_NORMAL_VALUE DNV ON DNV.SUB_INVESTIGATION_ID=DSMI.SUB_INVESTIGATION_ID AND UPPER(TRIM(MAS.ADMINISTRATIVE_SEX_CODE))=UPPER(TRIM(DNV.SEX))-- AND FLOOR(MONTHS_BETWEEN(TRUNC(SYSDATE),PT.DATE_OF_BIRTH)/12) BETWEEN NVL(DNV.FROM_AGE,0) AND NVL(DNV.TO_AGE,0)
+WHERE   HD.VISIT_ID=$P{VISIT_ID} AND  ((DT.ORDER_STATUS=$P{Result_Flag}) OR($P{Result_Flag}='A' )) and
+        DMI.SUB_CHARGECODE_ID=MSC.SUB_CHARGECODE_ID and MSC.SUB_CHARGECODE_ID=$P{PSUB_CHARGECODE_ID}
+order by INVESTIGATION_ID,DSMI.ORDER_NO]]></queryString>
+
+	<field name="orderhd_id" class="java.lang.Long"/>
+	<field name="investigation_id" class="java.lang.Long"/>
+	<field name="sub_chargecode_name" class="java.lang.String"/>
+	<field name="investigation_name" class="java.lang.String"/>
+	<field name="sub_investigation_name" class="java.lang.String"/>
+	<field name="uom_code" class="java.lang.String"/>
+	<field name="normalvalue" class="java.lang.String"/>
+	<field name="investigation_type" class="java.lang.String"/>
+	<field name="main_chargecode_id" class="java.lang.Long"/>
+
+	<variable name="S.No." class="java.lang.Integer" resetType="Group" resetGroup="INVESTIGATION_ID" calculation="Count">
+		<variableExpression><![CDATA[new Integer(0)]]></variableExpression>
+	</variable>
+
+		<group  name="SUB_CHARGECODE_NAME" >
+			<groupExpression><![CDATA[$F{sub_chargecode_name}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="INVESTIGATION_ID" >
+			<groupExpression><![CDATA[$F{investigation_id}]]></groupExpression>
+			<groupHeader>
+			<band height="19"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="2"
+						y="2"
+						width="551"
+						height="15"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-1"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{investigation_name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="303"
+						y="2"
+						width="101"
+						height="15"
+						key="textField-4"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($F{investigation_type}.equals("s") == true && $F{main_chargecode_id}.intValue() == 2) ? $F{uom_code} : "" )]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="428"
+						y="2"
+						width="125"
+						height="15"
+						key="textField-5"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($F{investigation_type}.equals("s") == true && $F{main_chargecode_id}.intValue() == 2) ? $F{normalvalue} :"" )]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="17"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="15"
+						y="2"
+						width="169"
+						height="15"
+						key="textField-3"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="7" isBold="false"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[( ($F{investigation_type}.equals("m") == true && $F{main_chargecode_id}.intValue() == 2) ? $F{sub_investigation_name} : "" )]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="303"
+						y="2"
+						width="101"
+						height="15"
+						key="textField"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[( ($F{investigation_type}.equals("m") == true && $F{main_chargecode_id}.intValue() == 2) ? $F{uom_code} : "" )]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="428"
+						y="2"
+						width="125"
+						height="15"
+						key="textField"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[(($F{investigation_type}.equals("m") == true && $F{main_chargecode_id}.intValue() == 2) ? $F{normalvalue} : "" )]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

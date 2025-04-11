@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Incident_Summary_Report"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="611"
+		 pageHeight="842"
+		 columnWidth="551"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoDataSection"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="path" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String(" ")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MMU_ID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Level_of_user" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="User_id" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="From_Date" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="To_Date" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CITY_ID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="VENDOR_ID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT AKS.instrument_name,count(*) iCount,(SELECT MMU_NAME FROM MAS_MMU WHERE MMU_ID = $P{MMU_ID})  As hospital_name
+FROM  (
+SELECT 	MEQ.instrument_name
+FROM 	public.capture_equipment_checklist CEC
+inner join mas_equipment_checklist MEQ ON MEQ.checklist_id=CEC.equipment_checklist_id 
+inner join capture_equipment_checklist_details CED ON CEC.capture_equipment_checklist_detail_id=CED.capture_equipment_checklist_detail_id 
+inner join mas_mmu mmu ON CED.mmu_id=mmu.mmu_id 
+inner join mas_mmu_vendor mmv ON mmu.mmu_vendor_id=mmv.mmu_vendor_id 
+WHERE CED.inspection_date between $P{From_Date} and $P{To_Date} and
+	  UPPER(CEC.create_incident)='Y' AND
+	  (CED.MMU_ID = $P{MMU_ID} OR $P{MMU_ID} = 0) AND
+	  (CED.city_id = $P{CITY_ID} OR $P{CITY_ID} = 0)and
+	  (mmu.mmu_vendor_id = $P{VENDOR_ID} OR $P{VENDOR_ID}=0) AND
+	  	 MMU.MMU_ID IN (
+	  	SELECT 	MMU.MMU_ID
+		FROM 	MAS_MMU MMU,(SELECT  	to_number(foo,'99999999') IDS
+				     FROM 	regexp_split_to_table((SELECT 	(CASE WHEN 'M' = $P{Level_of_user} THEN substring(M.MMU_ID, 1 ,length(M.MMU_ID)-1) 
+										      WHEN 'C' = $P{Level_of_user} THEN substring(M.CITY_ID, 1 ,length(M.CITY_ID)-1) 
+										      WHEN 'D' = $P{Level_of_user} THEN substring(M.DISTRICT_ID, 1 ,length(M.DISTRICT_ID)-1) 
+										      ELSE '1' END)
+									FROM 	USERS M 
+									WHERE 	M.USER_ID =$P{User_id}), E',') As foo)  ALL_ID 
+		WHERE ( (MMU.MMU_ID=ALL_ID.IDS AND 'M' =$P{Level_of_user}) OR
+	  		(MMU.CITY_ID=ALL_ID.IDS AND 'C' =$P{Level_of_user}) OR
+			(MMU.STATE_ID=ALL_ID.IDS AND 'S' =$P{Level_of_user}) OR
+			(MMU.DISTRICT_ID=ALL_ID.IDS AND 'D' =$P{Level_of_user}) ) 
+)
+UNION
+SELECT 	MEQ.checklist_name
+FROM 	public.capture_inspection_checklist CEC
+inner join mas_inspection_checklist MEQ ON MEQ.checklist_id=CEC.inspection_checklist_id 
+inner join capture_inspection_details CED ON CEC.capture_inspection_detail_id=CED.capture_inspection_detail_id 
+inner join mas_mmu mmu ON CED.mmu_id=mmu.mmu_id 
+inner join mas_mmu_vendor mmv ON mmu.mmu_vendor_id=mmv.mmu_vendor_id 
+WHERE CED.inspection_date between $P{From_Date} and $P{To_Date} and
+	  UPPER(CEC.create_incident)='Y' AND
+	  (CED.MMU_ID = $P{MMU_ID} OR $P{MMU_ID} = 0) AND
+	  (CED.city_id = $P{CITY_ID} OR $P{CITY_ID} = 0)and
+	  (mmu.mmu_vendor_id = $P{VENDOR_ID} OR $P{VENDOR_ID}=0) AND
+	  	 MMU.MMU_ID IN (
+	  	SELECT 	MMU.MMU_ID
+		FROM 	MAS_MMU MMU,(SELECT  	to_number(foo,'99999999') IDS
+				     FROM 	regexp_split_to_table((SELECT 	(CASE WHEN 'M' = $P{Level_of_user} THEN substring(M.MMU_ID, 1 ,length(M.MMU_ID)-1) 
+										      WHEN 'C' = $P{Level_of_user} THEN substring(M.CITY_ID, 1 ,length(M.CITY_ID)-1) 
+										      WHEN 'D' = $P{Level_of_user} THEN substring(M.DISTRICT_ID, 1 ,length(M.DISTRICT_ID)-1) 
+										      ELSE '1' END)
+									FROM 	USERS M 
+									WHERE 	M.USER_ID =$P{User_id}), E',') As foo)  ALL_ID 
+		WHERE ( (MMU.MMU_ID=ALL_ID.IDS AND 'M' =$P{Level_of_user}) OR
+	  		(MMU.CITY_ID=ALL_ID.IDS AND 'C' =$P{Level_of_user}) OR
+			(MMU.STATE_ID=ALL_ID.IDS AND 'S' =$P{Level_of_user}) OR
+			(MMU.DISTRICT_ID=ALL_ID.IDS AND 'D' =$P{Level_of_user}) ) 
+)		)AKS
+Group by AKS.instrument_name,hospital_name]]></queryString>
+
+	<field name="instrument_name" class="java.lang.String"/>
+	<field name="icount" class="java.lang.Long"/>
+	<field name="hospital_name" class="java.lang.String"/>
+
+	<variable name="Sr.no" class="java.lang.Integer" resetType="Report" calculation="Count">
+		<variableExpression><![CDATA[new Integer(0)]]></variableExpression>
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="80"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="3"
+						y="40"
+						width="545"
+						height="18"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Incident Summary Report]]></text>
+				</staticText>
+				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1"
+						y="1"
+						width="100"
+						height="75"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{path}]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="8"
+						y="21"
+						width="540"
+						height="18"
+						key="textField"
+						isPrintWhenDetailOverflows="true">
+							<printWhenExpression><![CDATA[($P{MMU_ID}.intValue() == 0 ?  Boolean.FALSE: Boolean.TRUE )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{hospital_name}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="2"
+						y="2"
+						width="546"
+						height="18"
+						key="staticText-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<text><![CDATA[MUKHYA MANTRI SLUM SWASTHYA YOJANA]]></text>
+				</staticText>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="26"  isSplitAllowed="true" >
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="2"
+						width="550"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						x="0"
+						y="2"
+						width="1"
+						height="22"
+						key="line-2"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						x="550"
+						y="2"
+						width="1"
+						height="22"
+						key="line-3"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="4"
+						y="4"
+						width="64"
+						height="16"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Sr.No.]]></text>
+				</staticText>
+				<line direction="BottomUp">
+					<reportElement
+						x="69"
+						y="2"
+						width="1"
+						height="22"
+						key="line-5"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="74"
+						y="4"
+						width="306"
+						height="16"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Issue]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="24"
+						width="550"
+						height="0"
+						key="line-11"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						x="386"
+						y="3"
+						width="1"
+						height="22"
+						key="line-25"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="392"
+						y="5"
+						width="156"
+						height="16"
+						key="staticText-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Repetition]]></text>
+				</staticText>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="21"  isSplitAllowed="true" >
+				<line direction="BottomUp">
+					<reportElement
+						x="0"
+						y="-2"
+						width="1"
+						height="22"
+						key="line-12"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						x="550"
+						y="-2"
+						width="1"
+						height="22"
+						key="line-13"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						x="69"
+						y="-2"
+						width="1"
+						height="22"
+						key="line-15"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="20"
+						width="550"
+						height="0"
+						key="line-18"
+						positionType="Float"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="4"
+						y="1"
+						width="64"
+						height="18"
+						key="textField"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$V{Sr.no}]]></textFieldExpression>
+				</textField>
+				<line direction="BottomUp">
+					<reportElement
+						x="386"
+						y="-1"
+						width="1"
+						height="22"
+						key="line-26"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="72"
+						y="1"
+						width="308"
+						height="18"
+						key="textField-1"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{instrument_name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="395"
+						y="0"
+						width="83"
+						height="18"
+						key="textField-5"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Long"><![CDATA[$F{icount}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="480"
+						y="0"
+						width="61"
+						height="16"
+						key="staticText-18"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica" size="8" isBold="false"/>
+					</textElement>
+				<text><![CDATA[times]]></text>
+				</staticText>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+		<noData>
+			<band height="26"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="2"
+						y="4"
+						width="533"
+						height="22"
+						key="staticText-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[NO DATA FOUND]]></text>
+				</staticText>
+			</band>
+		</noData>
+</jasperReport>

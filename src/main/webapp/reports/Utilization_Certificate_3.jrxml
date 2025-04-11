@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Utilization_Certificate_1"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="611"
+		 pageHeight="842"
+		 columnWidth="551"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoDataSection"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="District_id" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="City_id" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Asondate" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="per" isForPrompting="false" class="java.math.BigDecimal"/>
+	<parameter name="utilized" isForPrompting="false" class="java.math.BigDecimal"/>
+	<parameter name="p_phase" isForPrompting="false" class="java.lang.String"/>
+	<queryString><![CDATA[SELECT 'MMU' AS HeadType, Balance as  "Available Balance",utilized as "Amount Utilized",per as  "Utilized(%)" FROM 
+(SELECT 		
+	   (SELECT 	COALESCE(SUM(CVBD.final_amount),0):: bigint U_Amt
+		from 	    capture_vendor_bill_detail CVBD ,vendor_invoice_payment VIP
+		WHERE 		VIP.capture_vendor_bill_detail_id=CVBD.capture_vendor_bill_detail_id AND
+			VIP.payment_date ::date between      msf.START_DATE and  $P{Asondate}  and trim(payment_status) in ('C') AND 
+			CVBD.district_id=$P{District_id} and (CVBD.city_id =  $P{City_id} or $P{City_id} =0) and COALESCE(CVBD.final_amount,0) >0)+
+      (SELECT 	COALESCE(SUM(invoice_amount),0):: bigint 
+		from 	    medicine_invoice MI 
+		WHERE 		invoice_date ::date between msf.START_DATE and  $P{Asondate}   AND action = 'S' 	and
+					MI.district_id=$P{District_id}  AND Head_type_id=1 and (MI.city_id = $P{City_id} or $P{City_id}=0) ) utilized,
+					0 "medicine",
+					0 "IEC",
+		           (SELECT COALESCE(SUM(invoice_amount),0):: bigint 
+		           from medicine_invoice MI
+		           WHERE invoice_date ::date between msf.START_DATE 
+		             and $P{Asondate} AND action = 'S' 
+		             and MI.district_id=$P{District_id} 
+		             AND Head_type_id=1
+		             and (MI.city_id = $P{City_id} or $P{City_id}=0) ) "Operations",
+		(select 	COALESCE(SUM(hcb_balance),0):: bigint 
+ 		from 		fund_hcb 
+ 		where 		upss_id=$P{District_id} and 
+ 		            head_type_id = 1 and 
+ 					(city_id =$P{City_id} or $P{City_id}=0) and
+ 					(hcb_date,head_type_id) in (SELECT 	max(c.hcb_date),head_type_id
+						   		from 	fund_hcb c
+						   		where 	c.upss_id=$P{District_id} and 
+										(c.city_id =  $P{City_id} or $P{City_id}=0) and 
+										c.hcb_date<= $P{Asondate}
+										and c.head_type_id = 1
+										group by head_type_id))  balance,
+((((SELECT 	COALESCE(SUM(CVBD.final_amount),0):: bigint U_Amt
+		from 	    capture_vendor_bill_detail CVBD ,vendor_invoice_payment VIP
+		WHERE 		VIP.capture_vendor_bill_detail_id=CVBD.capture_vendor_bill_detail_id AND
+				VIP.payment_date ::date between   msf.START_DATE and $P{Asondate}  and trim(payment_status) in ('C') AND 
+					CVBD.district_id=$P{District_id} and (CVBD.city_id =  $P{City_id} or $P{City_id} =0) and COALESCE(CVBD.final_amount,0) >0)+
+		(SELECT 	COALESCE(SUM(invoice_amount),0):: bigint 
+		from 	    medicine_invoice MI 
+		WHERE 		invoice_date ::date between msf.START_DATE and $P{Asondate}   AND action = 'S' 	and
+					MI.district_id=$P{District_id} and head_type_id = 1 and  (MI.city_id = $P{City_id} or $P{City_id}=0) ))*100)/(SELECT  sum(dt.allocated_amount) allocated_amount
+		FROM 	fund_allocation_hd hd INNER JOIN fund_allocation_dt dt  ON hd.fund_allocation_hd_id=dt.fund_allocation_hd_id 
+									  INNER JOIN mas_store_financial msf  ON hd.financial_id=msf.financial_id 
+		WHERE   hd.fund_allocation_date::date between   msf.START_DATE and $P{Asondate}  AND 
+				dt.District_id=$P{District_id} and 
+				(dt.city_id =  $P{City_id} or $P{City_id}=0) and 
+				hd.status ='A') ) per
+from mas_district md INNER JOIN mas_store_financial msf  ON  $P{Asondate} BETWEEN START_DATE AND END_DATE and upper(msf.status)='Y'
+where md.district_id=$P{District_id})a
+union all 
+SELECT 'IEC' AS HeadType ,   Balance as  "Available Balance",utilized as "Amount Utilized",per as  "Utilized(%)" FROM 
+(SELECT (SELECT 	COALESCE(SUM(CVBD.final_amount),0):: bigint U_Amt
+		from 	    capture_vendor_bill_detail CVBD ,vendor_invoice_payment VIP
+		WHERE 		VIP.capture_vendor_bill_detail_id=CVBD.capture_vendor_bill_detail_id AND
+			VIP.payment_date ::date between      msf.START_DATE and  '2023-10-20'  and trim(payment_status) in ('C') AND 
+			CVBD.district_id=$P{District_id} and (CVBD.city_id =  $P{City_id} or $P{City_id} =0) and COALESCE(CVBD.final_amount,0) >0)+
+      (SELECT 	COALESCE(SUM(invoice_amount),0):: bigint 
+		from 	    medicine_invoice MI 
+		WHERE 		invoice_date ::date between msf.START_DATE and  '2023-10-20'    AND action = 'S' 	and
+					MI.district_id=$P{District_id} and MI.Head_type_id=2 and (MI.city_id = $P{City_id} or $P{City_id}=0) ) utilized,
+                     0  "medicine",
+		             0 "Operations",
+		             (SELECT COALESCE(SUM(invoice_amount),0):: bigint 
+		           from medicine_invoice MI
+		           WHERE invoice_date ::date between msf.START_DATE 
+		             and '2023-10-20' AND action = 'S' 
+		             and MI.district_id=$P{District_id} 
+		             AND Head_type_id=2
+		             and (MI.city_id = $P{City_id} or $P{City_id}=0) ) "IEC",
+		(select 	COALESCE(SUM(hcb_balance),0):: bigint 
+ 		from 		fund_hcb 
+ 		where 		upss_id=$P{District_id} and 
+ 					(city_id =$P{City_id} or $P{City_id}=0) and
+ 					Head_type_id=2 and 
+ 					(hcb_date,head_type_id) in (SELECT 	max(c.hcb_date),head_type_id
+						   		from 	fund_hcb c
+						   		where 	c.upss_id=$P{District_id} and 
+										(c.city_id =  $P{City_id} or $P{City_id}=0) and 
+										c.hcb_date<= '2023-10-20'
+										and Head_type_id=2
+										group by head_type_id))  balance,
+((((SELECT 	COALESCE(SUM(CVBD.final_amount),0):: bigint U_Amt
+		from 	    capture_vendor_bill_detail CVBD ,vendor_invoice_payment VIP
+		WHERE 		VIP.capture_vendor_bill_detail_id=CVBD.capture_vendor_bill_detail_id AND
+				VIP.payment_date ::date between   msf.START_DATE and  '2023-10-20'  and trim(payment_status) in ('C') AND 
+					CVBD.district_id=$P{District_id} and (CVBD.city_id =  $P{City_id} or $P{City_id} =0) and COALESCE(CVBD.final_amount,0) >0)+
+		(SELECT 	COALESCE(SUM(invoice_amount),0):: bigint 
+		from 	    medicine_invoice MI 
+		WHERE 		invoice_date ::date between msf.START_DATE and '2023-10-20'    AND action = 'S' 	and
+					MI.district_id=$P{District_id} and Head_type_id=2 and (MI.city_id = $P{City_id} or $P{City_id}=0) ))*100)/(SELECT  sum(dt.allocated_amount) allocated_amount
+		FROM 	fund_allocation_hd hd INNER JOIN fund_allocation_dt dt  ON hd.fund_allocation_hd_id=dt.fund_allocation_hd_id 
+									  INNER JOIN mas_store_financial msf  ON hd.financial_id=msf.financial_id 
+		WHERE   hd.fund_allocation_date::date between   msf.START_DATE and '2023-10-20'  AND 
+				dt.District_id=$P{District_id} and 
+				(dt.city_id =  $P{City_id} or $P{City_id}=0) and 
+				hd.status ='A') ) per
+from mas_district md INNER JOIN mas_store_financial msf  ON  '2023-10-20'  BETWEEN START_DATE AND END_DATE and upper(msf.status)='Y'
+where md.district_id=$P{District_id})b
+union all
+SELECT 'medicine' AS HeadType,  Balance as  "Available Balance",utilized as "Amount Utilized",per as  "Utilized(%)" FROM 
+(SELECT (SELECT 	COALESCE(SUM(CVBD.final_amount),0):: bigint U_Amt
+		from 	    capture_vendor_bill_detail CVBD ,vendor_invoice_payment VIP
+		WHERE 		VIP.capture_vendor_bill_detail_id=CVBD.capture_vendor_bill_detail_id AND
+			VIP.payment_date ::date between      msf.START_DATE and  '2023-10-20'  and trim(payment_status) in ('C') AND 
+			CVBD.district_id=$P{District_id} and (CVBD.city_id =  $P{City_id} or $P{City_id} =0) and COALESCE(CVBD.final_amount,0) >0)+
+      (SELECT 	COALESCE(SUM(invoice_amount),0):: bigint 
+		from 	    medicine_invoice MI 
+		WHERE 		invoice_date ::date between msf.START_DATE and  '2023-10-20'    AND action = 'S' 	and
+					MI.district_id=$P{District_id} and Head_type_id=3 and (MI.city_id = $P{City_id} or $P{City_id}=0) ) utilized,
+      (SELECT COALESCE(SUM(invoice_amount),0):: bigint 
+		           from medicine_invoice MI
+		           WHERE invoice_date ::date between msf.START_DATE 
+		             and '2023-10-20' AND action = 'S' 
+		             and MI.district_id=$P{District_id} 
+		             AND Head_type_id=3
+		             and (MI.city_id = $P{City_id} or $P{City_id}=0) ) medicine,
+		             0 "Operations",
+		             0 "IEC",
+		(select 	COALESCE(SUM(hcb_balance),0):: bigint 
+ 		from 		fund_hcb 
+ 		where 		upss_id=$P{District_id} and 
+ 					(city_id =$P{City_id} or $P{City_id}=0) and
+ 					Head_type_id=3 and 
+ 					(hcb_date,head_type_id) in (SELECT 	max(c.hcb_date),head_type_id
+						   		from 	fund_hcb c
+						   		where 	c.upss_id=$P{District_id} and 
+										(c.city_id =  $P{City_id} or $P{City_id}=0) and 
+										Head_type_id=3 and 
+										c.hcb_date<= '2023-10-20' 
+										group by head_type_id))  balance,
+((((SELECT 	COALESCE(SUM(CVBD.final_amount),0):: bigint U_Amt
+		from 	    capture_vendor_bill_detail CVBD ,vendor_invoice_payment VIP
+		WHERE 		VIP.capture_vendor_bill_detail_id=CVBD.capture_vendor_bill_detail_id AND
+				VIP.payment_date ::date between   msf.START_DATE and  '2023-10-20'  and trim(payment_status) in ('C') AND 
+					CVBD.district_id=$P{District_id} and (CVBD.city_id =  $P{City_id} or $P{City_id} =0) and COALESCE(CVBD.final_amount,0) >0)+
+		(SELECT 	COALESCE(SUM(invoice_amount),0):: bigint 
+		from 	    medicine_invoice MI 
+		WHERE 		invoice_date ::date between msf.START_DATE and '2023-10-20'    AND action = 'S' 	and
+					MI.district_id=$P{District_id} and Head_type_id=3 and (MI.city_id = $P{City_id} or $P{City_id}=0) ))*100)/(SELECT  sum(dt.allocated_amount) allocated_amount
+		FROM 	fund_allocation_hd hd INNER JOIN fund_allocation_dt dt  ON hd.fund_allocation_hd_id=dt.fund_allocation_hd_id 
+									  INNER JOIN mas_store_financial msf  ON hd.financial_id=msf.financial_id 
+		WHERE   hd.fund_allocation_date::date between   msf.START_DATE and '2023-10-20'  AND 
+				dt.District_id=$P{District_id} and 
+				(dt.city_id =  $P{City_id} or $P{City_id}=0) and 
+				hd.status ='A') ) per
+from mas_district md INNER JOIN mas_store_financial msf  ON  '2023-10-20'  BETWEEN START_DATE AND END_DATE and upper(msf.status)='Y'
+where md.district_id=$P{District_id})c]]></queryString>
+
+	<field name="a" class="java.lang.Integer"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="21"  isSplitAllowed="true" >
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="2"
+						width="215"
+						height="1"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						x="0"
+						y="3"
+						width="0"
+						height="18"
+						key="line-2"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="19"
+						width="215"
+						height="1"
+						key="line-3"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						x="103"
+						y="2"
+						width="0"
+						height="18"
+						key="line-4"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="113"
+						y="4"
+						width="97"
+						height="11"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Available Balance]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="18"
+						y="5"
+						width="68"
+						height="11"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Head Type]]></text>
+				</staticText>
+				<line direction="BottomUp">
+					<reportElement
+						x="214"
+						y="3"
+						width="0"
+						height="18"
+						key="line-8"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						x="214"
+						y="4"
+						width="0"
+						height="18"
+						key="line-16"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="232"
+						y="6"
+						width="68"
+						height="11"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Amount Utilized]]></text>
+				</staticText>
+				<line direction="BottomUp">
+					<reportElement
+						x="317"
+						y="3"
+						width="0"
+						height="18"
+						key="line-18"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="214"
+						y="20"
+						width="215"
+						height="1"
+						key="line-20"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						x="428"
+						y="4"
+						width="0"
+						height="18"
+						key="line-21"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="214"
+						y="3"
+						width="215"
+						height="1"
+						key="line-22"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="329"
+						y="5"
+						width="68"
+						height="11"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[ Utilized (%)]]></text>
+				</staticText>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="15"  isSplitAllowed="true" >
+				<line direction="BottomUp">
+					<reportElement
+						x="0"
+						y="-1"
+						width="1"
+						height="15"
+						key="line-9"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="13"
+						width="215"
+						height="1"
+						key="line-10"
+						positionType="Float"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						x="103"
+						y="-3"
+						width="1"
+						height="15"
+						key="line-11"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						x="214"
+						y="-1"
+						width="1"
+						height="15"
+						key="line-15"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						x="214"
+						y="0"
+						width="1"
+						height="15"
+						key="line-17"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						x="317"
+						y="-2"
+						width="1"
+						height="15"
+						key="line-19"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						x="428"
+						y="0"
+						width="1"
+						height="15"
+						key="line-23"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="214"
+						y="13"
+						width="215"
+						height="1"
+						key="line-24"
+						positionType="Float"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

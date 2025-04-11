@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="AME_Sub_Report_1"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="698"
+		 pageHeight="842"
+		 columnWidth="698"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="MEDICAL_EXAMINATION_ID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select dgmas.INVESTIGATION_NAME,rdt.RESULT ,dgmas.INVESTIGATION_ID
+from  ship.DG_ORDER_HD ohd 
+     join ship.DG_ORDER_DT odt on  ohd.orderhd_id=odt.orderhd_id 
+     join ship.DG_MAS_INVESTIGATION dgmas on dgmas.INVESTIGATION_ID=odt.INVESTIGATION_ID 
+     left join ship.DG_RESULT_ENTRY_DT rdt on odt.ORDERDT_ID=rdt.ORDERDT_ID 
+     left join ship.DG_RESULT_ENTRY_HD rht on ohd.ORDERHD_ID= rht.ORDERHD_ID  
+     left outer join ship.VISIT on VISIT.VISIT_ID=ohd.VISIT_ID
+     left outer join ship.MAS_MEDICAL_EXAM_REPORT on VISIT.VISIT_ID=MAS_MEDICAL_EXAM_REPORT.VISIT_ID
+     where MAS_MEDICAL_EXAM_REPORT.MEDICAL_EXAMINATION_ID=$P{MEDICAL_EXAMINATION_ID}]]></queryString>
+
+	<field name="investigation_name" class="java.lang.String"/>
+	<field name="result" class="java.lang.String"/>
+	<field name="investigation_id" class="java.lang.Long"/>
+
+	<variable name="S.No." class="java.lang.Integer" resetType="Report" calculation="Count">
+		<variableExpression><![CDATA[new Integer(0)]]></variableExpression>
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="52"  isSplitAllowed="true" >
+				<printWhenExpression><![CDATA[new Boolean ($F{investigation_id} != null ) ]]></printWhenExpression>
+				<line direction="TopDown">
+					<reportElement
+						mode="Transparent"
+						x="2"
+						y="28"
+						width="636"
+						height="0"
+						key="line-1"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="2"
+						y="50"
+						width="636"
+						height="0"
+						key="line-2"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						mode="Transparent"
+						x="637"
+						y="28"
+						width="1"
+						height="23"
+						key="line-5"
+						stretchType="RelativeToTallestObject"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						mode="Transparent"
+						x="1"
+						y="28"
+						width="1"
+						height="23"
+						key="line-6"
+						stretchType="RelativeToTallestObject"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						mode="Transparent"
+						x="47"
+						y="28"
+						width="1"
+						height="23"
+						key="line-8"
+						stretchType="RelativeToTallestObject"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						mode="Transparent"
+						x="174"
+						y="28"
+						width="1"
+						height="23"
+						key="line-10"
+						stretchType="RelativeToTallestObject"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="4"
+						y="31"
+						width="42"
+						height="18"
+						key="staticText-1"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[S.No.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="51"
+						y="31"
+						width="122"
+						height="18"
+						key="staticText-2"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Investigation Name]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="180"
+						y="31"
+						width="456"
+						height="18"
+						key="staticText-3"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Result]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="1"
+						width="636"
+						height="19"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Investigation]]></text>
+				</staticText>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="23"  isSplitAllowed="true" >
+				<printWhenExpression><![CDATA[new Boolean ($F{investigation_id} != null ) ]]></printWhenExpression>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="22"
+						width="636"
+						height="0"
+						key="line-3"
+						positionType="Float"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="NoStretch" pen="Thin"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						mode="Transparent"
+						x="637"
+						y="-1"
+						width="0"
+						height="23"
+						key="line-4"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						mode="Transparent"
+						x="1"
+						y="-1"
+						width="0"
+						height="23"
+						key="line-7"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						mode="Transparent"
+						x="47"
+						y="-1"
+						width="0"
+						height="23"
+						key="line-9"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="BottomUp">
+					<reportElement
+						mode="Transparent"
+						x="174"
+						y="-1"
+						width="0"
+						height="23"
+						key="line-11"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="4"
+						y="2"
+						width="42"
+						height="18"
+						key="textField-1"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$V{S.No.}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="51"
+						y="2"
+						width="122"
+						height="18"
+						key="textField-2"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{investigation_name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="180"
+						y="2"
+						width="456"
+						height="18"
+						key="textField-3"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{result}.replaceAll("\\<.*?>","")]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

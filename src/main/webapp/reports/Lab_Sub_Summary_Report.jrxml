@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Lab_Sub_Summary_Report"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="611"
+		 pageHeight="842"
+		 columnWidth="611"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoDataSection"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="FROM_DATE" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TO_DATE" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Level_of_user" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="User_id" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="genderId" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MMU_ID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="investigationId" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fromAge" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="toAge" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT sum( AKS.ROWID) tot,AKS.SUB_INVESTIGATION_NAME
+FROM (
+SELECT  DISTINCT DT.INVESTIGATION_ID ,DMI.INVESTIGATION_NAME SUB_INVESTIGATION_NAME,1 ROWID,HD.RESULT_ENTRY_HD_ID
+FROM    DG_RESULT_ENTRY_HD HD LEFT OUTER JOIN DG_RESULT_ENTRY_DT DT    ON HD.RESULT_ENTRY_HD_ID=DT.RESULT_ENTRY_HD_ID
+                              LEFT OUTER JOIN PATIENT PT    ON PT.PATIENT_ID=HD.PATIENT_ID
+			      			  LEFT OUTER JOIN MAS_ADMINISTRATIVE_SEX SEX ON SEX.ADMINISTRATIVE_SEX_ID=PT.ADMINISTRATIVE_SEX_ID
+			      			  LEFT OUTER JOIN DG_MAS_INVESTIGATION DMI ON  DMI.INVESTIGATION_ID=DT.INVESTIGATION_ID
+                              LEFT OUTER JOIN MAS_SUB_CHARGECODE MSC ON  MSC.SUB_CHARGECODE_ID=HD.SUB_CHARGECODE_ID
+                              LEFT OUTER JOIN DG_UOM DU ON  DU.UOM_ID=DMI.UOM_ID
+							LEFT OUTER JOIN MAS_MMU ON MAS_MMU.MMU_ID=HD.MMU_ID	
+WHERE   HD.MAIN_CHARGECODE_ID='2' AND DT.VALIDATED='V'
+		AND HD.VERIFIED='V' AND DT.RESULT_DETAIL_STATUS='C' 
+		AND HD.RESULT_STATUS='C' And DT.RESULT IS NOT NULL
+		AND HD.RESULT_DATE::date BETWEEN $P{FROM_DATE}   AND $P{TO_DATE}       
+		AND (DT.INVESTIGATION_ID = $P{investigationId}  OR $P{investigationId} = 0) 
+		AND (PT.ADMINISTRATIVE_SEX_ID = $P{genderId} OR $P{genderId} = 0) 	
+		AND PT.age between $P{fromAge} and (case when $P{toAge} = 0 then 125 else $P{toAge} end )
+		AND (HD.MMU_ID = $P{MMU_ID} OR $P{MMU_ID}= 0) 
+	  	AND MAS_MMU.MMU_ID IN (
+	  	SELECT 	MMU.MMU_ID
+		FROM 	MAS_MMU MMU,CITY_MMU_MAPPING MCM,(SELECT  	to_number(foo,'99999999') IDS
+				     FROM 	regexp_split_to_table((SELECT 	(CASE WHEN 'M' = $P{Level_of_user} THEN substring(M.MMU_ID, 1 ,length(M.MMU_ID)-1) 
+										      WHEN 'C' = $P{Level_of_user} THEN substring(M.CITY_ID, 1 ,length(M.CITY_ID)-1) 
+										      WHEN 'D' = $P{Level_of_user} THEN substring(M.DISTRICT_ID, 1 ,length(M.DISTRICT_ID)-1) 
+										      ELSE '1' END)
+									FROM 	USERS M 
+									WHERE 	M.USER_ID =$P{User_id}), E',') As foo)  ALL_ID 
+		WHERE MCM.MMU_ID = MMU.MMU_ID AND
+			( (MMU.MMU_ID=ALL_ID.IDS AND 'M' =$P{Level_of_user}) OR
+	  		(MCM.CITY_ID=ALL_ID.IDS AND 'C' =$P{Level_of_user}) OR
+			(MMU.STATE_ID=ALL_ID.IDS AND 'S' =$P{Level_of_user}) OR
+			(MMU.DISTRICT_ID=ALL_ID.IDS AND 'D' =$P{Level_of_user}) ) 
+		))AKS
+group by AKS.SUB_INVESTIGATION_NAME
+order by 2]]></queryString>
+
+	<field name="tot" class="java.lang.Long"/>
+	<field name="sub_investigation_name" class="java.lang.String"/>
+
+	<variable name="S.No." class="java.lang.Integer" resetType="Report" calculation="Count">
+		<variableExpression><![CDATA[new Integer(0)]]></variableExpression>
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="24"  isSplitAllowed="true" >
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="2"
+						width="550"
+						height="0"
+						key="line-1"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="23"
+						width="549"
+						height="0"
+						key="line-2"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="550"
+						y="2"
+						width="1"
+						height="22"
+						key="line-4"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="47"
+						y="2"
+						width="1"
+						height="22"
+						key="line-5"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="428"
+						y="2"
+						width="1"
+						height="22"
+						key="line-9"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="432"
+						y="4"
+						width="118"
+						height="18"
+						key="staticText-3"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Count]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="53"
+						y="4"
+						width="366"
+						height="18"
+						key="staticText-7"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Investigation Name]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="5"
+						y="4"
+						width="41"
+						height="18"
+						key="staticText-8"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[S.No.]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="2"
+						width="0"
+						height="22"
+						key="line-18"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="24"  isSplitAllowed="true" >
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="-1"
+						width="0"
+						height="25"
+						key="line-10"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="550"
+						y="-1"
+						width="0"
+						height="25"
+						key="line-11"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="47"
+						y="-1"
+						width="0"
+						height="25"
+						key="line-12"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="428"
+						y="-1"
+						width="0"
+						height="22"
+						key="line-16"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="53"
+						y="3"
+						width="366"
+						height="18"
+						key="textField"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{sub_investigation_name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="432"
+						y="3"
+						width="118"
+						height="18"
+						key="textField"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Long"><![CDATA[$F{tot}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="5"
+						y="3"
+						width="41"
+						height="18"
+						key="textField"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$V{S.No.}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="1"
+						y="22"
+						width="550"
+						height="0"
+						key="line-17"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

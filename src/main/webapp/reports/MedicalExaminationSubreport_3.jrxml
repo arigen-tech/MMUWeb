@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="MedicalExaminationSubreport_3"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="698"
+		 pageHeight="863"
+		 columnWidth="698"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="AllSectionsNoDetail"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MEDICAL_EXAMINATION_ID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select ME.TOTAL_TEETH,ME.TOTAL_DEFECTIVE_TEETH,ME.TOTAL_NO_DENTAL_POINT,ME.CONDITIONOFGUMS,ME.MISSING_TEETH,ME.UNSAVEABLE_TEETH,
+ME.HB,ME.TLC,ME.DLC,ME.ESR,ME.ALBUMIN,ME.SP_GRAVITY,ME.SUGARF,ME.SUGAR,ME.SUGARPP,ME.URICACID,ME.SR_CREATINE,ME.CHOLESTEROL,ME.TRIGLYCERIDES,
+ME.HDL,ME.VLDL,ME.DIAG_NO,ME.DIAG_NO_FOR_RADIO,ME.DATEVALIDATED ,ME.DATE_OF_REPORTING,ME.UREA,
+ME.HEIGHT,ME.WEIGHT,ME.IDEALWEIGHT,ME.WAIST,ME.CHESTFULLEXPANSION,ME.RANGEOFEXPANSION,ME.OVERWEIGHT,ME.SKIN,
+ME.PULSE_RATES,
+NVL(ME.BP_SYSTOLIC,'') || (CASE WHEN (ME.BP_SYSTOLIC is null AND ME.BP_DIASTOLIC  is null) THEN '' ELSE '/' END) || NVL(ME.BP_DIASTOLIC,'') as BP,
+ME.PERIPHERAL_PULSATIONS,ME.HEART_SIZE,ME.SOUNDS,ME.RHYTHM,ME.RESPIRATORY_SYSTEM,
+ME.LIVER,ME.SPLEEN,ME.HIGHER_MENTAL_FUNCTION,ME.SPEECH,ME.REFLEXES,ME.TREMORS,ME.SELF_BALANCING_TEST,
+ME.LOCOMOTER_SYSTEM,ME.SPINE,ME.HERNIA_MUSIC,ME.HYDROCELE,ME.HEMORRHOIDS,ME.BREASTS,
+ME.WTHOUT_GLASSES_R_DISTANT,ME.WITHOUT_GLASSES_L_DISTANT,ME.WITH_GLASSES_R_DISTANT,ME.WITH_GLASSES_L_DISTANT,
+ME.WITHOUT_GLASSES_R_NEARVISION,ME.WITHOUT_GLASSES_L_NEARVISION,ME.WITH_GLASSES_R_NEARVISION,ME.WITH_GLASSES_L_NEARVISION,ME.NEAR_VISION_WITHOUT_GLASS_CP,
+ME.EAR_HEARING_RFW,ME.HEARING_RCV,ME.EAR_HEARING_LFW,ME.HEARING_LCV,ME.EAR_HEARING_BOTH_FW,ME.HEARING_BOTH_CV,ME.AUDIOMETRY_RECORD,
+ME.TYMPANICR,ME.TYMPANICL,ME.MOBILITYR,ME.MOBILITYL,ME.NOSE_THROAT_SINUSES,ME.RESPIRATORY_SYSTEM,
+ME.MENSTRUAL_HISTORY,ME.NO_OF_PREGNANCIES,ME.NO_OF_CHILDREN,ME.VAGINAL_DISCHARGE,ME.USG_ABDOMEN,ME.LMP,ME.NO_OF_ABORTIONS,ME.LAST_CONFINEMENT_DATE,ME.PROLAPSE,
+
+REPLACE(FUN_STRING_MERGE((CASE WHEN REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.U_T_UR is null then '' else ME.U_T_UR end),', ','|'),'-') ='12345678' THEN '12345678' ELSE
+REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.U_T_UR is null then '' else ME.U_T_UR end),', ','|'),'*') END ) ,
+(CASE WHEN REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.M_T_UR is null then '' else ME.M_T_UR end),', ','|'),'X')='12345678' THEN '12345678' ELSE 
+REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.M_T_UR is null then '' else ME.M_T_UR end),', ','|'),'-') END )),'-','--')As UR,
+
+REPLACE(FUN_STRING_MERGE((CASE WHEN REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.U_T_UL is null then '' else ME.U_T_UL end),', ','|'),'-')='12345678' THEN '12345678' ELSE 
+REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.U_T_UL is null then '' else ME.U_T_UL end),', ','|'),'*') END ),
+(CASE WHEN REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.M_T_UL is null then '' else ME.M_T_UL end),', ','|'),'X')='12345678' THEN '12345678' ELSE 
+REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.M_T_UL is null then '' else ME.M_T_UL end),', ','|'),'-') END )),'-','--')UL,
+
+REPLACE(FUN_STRING_MERGE((CASE WHEN REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.U_T_LR is null then '' else ME.U_T_LR end),', ','|'),'-')='12345678' THEN '12345678' ELSE 
+REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.U_T_LR is null then '' else ME.U_T_LR end),', ','|'),'*') END ),
+(CASE WHEN REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.M_T_LR is null then '' else ME.M_T_LR end),', ','|'),'X')='12345678' THEN '12345678' ELSE 
+REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.M_T_LR is null then '' else ME.M_T_LR end),', ','|'),'-') END )),'-','--')LR,
+
+REPLACE(FUN_STRING_MERGE((CASE WHEN REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.U_T_LL is null then '' else ME.U_T_LL end),', ','|'),'-')='12345678' THEN '12345678' ELSE 
+REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.U_T_LL is null then '' else ME.U_T_LL end),', ','|'),'*') END ),
+(CASE WHEN REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.M_T_LL is null then '' else ME.M_T_LL end),', ','|'),'X')='12345678' THEN '12345678' ELSE 
+REGEXP_REPLACE(REPLACE('1, 2, 3, 4, 5, 6, 7, 8',', ',''),REPLACE((CASE WHEN ME.M_T_LL is null then '' else ME.M_T_LL end),', ','|'),'-') END )),'-','--')LL
+from MAS_MEDICAL_EXAM_REPORT ME
+where ME.MEDICAL_EXAMINATION_ID=$P{MEDICAL_EXAMINATION_ID}]]></queryString>
+
+	<field name="TOTAL_TEETH" class="java.lang.String"/>
+	<field name="TOTAL_DEFECTIVE_TEETH" class="java.lang.String"/>
+	<field name="TOTAL_NO_DENTAL_POINT" class="java.lang.String"/>
+	<field name="CONDITIONOFGUMS" class="java.lang.String"/>
+	<field name="MISSING_TEETH" class="java.lang.String"/>
+	<field name="UNSAVEABLE_TEETH" class="java.lang.String"/>
+	<field name="HB" class="java.lang.String"/>
+	<field name="TLC" class="java.lang.String"/>
+	<field name="DLC" class="java.lang.String"/>
+	<field name="ESR" class="java.lang.String"/>
+	<field name="ALBUMIN" class="java.lang.String"/>
+	<field name="SP_GRAVITY" class="java.lang.String"/>
+	<field name="SUGARF" class="java.lang.String"/>
+	<field name="SUGAR" class="java.lang.String"/>
+	<field name="SUGARPP" class="java.lang.String"/>
+	<field name="URICACID" class="java.lang.String"/>
+	<field name="SR_CREATINE" class="java.lang.String"/>
+	<field name="CHOLESTEROL" class="java.lang.String"/>
+	<field name="TRIGLYCERIDES" class="java.lang.String"/>
+	<field name="HDL" class="java.lang.String"/>
+	<field name="VLDL" class="java.lang.String"/>
+	<field name="DIAG_NO" class="java.lang.String"/>
+	<field name="DIAG_NO_FOR_RADIO" class="java.lang.String"/>
+	<field name="DATEVALIDATED" class="java.util.Date"/>
+	<field name="DATE_OF_REPORTING" class="java.util.Date"/>
+	<field name="UREA" class="java.lang.String"/>
+	<field name="HEIGHT" class="java.lang.String"/>
+	<field name="WEIGHT" class="java.lang.String"/>
+	<field name="IDEALWEIGHT" class="java.lang.String"/>
+	<field name="WAIST" class="java.lang.String"/>
+	<field name="CHESTFULLEXPANSION" class="java.lang.String"/>
+	<field name="RANGEOFEXPANSION" class="java.lang.String"/>
+	<field name="OVERWEIGHT" class="java.lang.String"/>
+	<field name="SKIN" class="java.lang.String"/>
+	<field name="PULSE_RATES" class="java.lang.String"/>
+	<field name="BP" class="java.lang.String"/>
+	<field name="PERIPHERAL_PULSATIONS" class="java.lang.String"/>
+	<field name="HEART_SIZE" class="java.lang.String"/>
+	<field name="SOUNDS" class="java.lang.String"/>
+	<field name="RHYTHM" class="java.lang.String"/>
+	<field name="RESPIRATORY_SYSTEM" class="java.lang.String"/>
+	<field name="LIVER" class="java.lang.Integer"/>
+	<field name="SPLEEN" class="java.lang.Integer"/>
+	<field name="HIGHER_MENTAL_FUNCTION" class="java.lang.String"/>
+	<field name="SPEECH" class="java.lang.String"/>
+	<field name="REFLEXES" class="java.lang.String"/>
+	<field name="TREMORS" class="java.lang.String"/>
+	<field name="SELF_BALANCING_TEST" class="java.lang.String"/>
+	<field name="LOCOMOTER_SYSTEM" class="java.lang.String"/>
+	<field name="SPINE" class="java.lang.String"/>
+	<field name="HERNIA_MUSIC" class="java.lang.String"/>
+	<field name="HYDROCELE" class="java.lang.String"/>
+	<field name="HEMORRHOIDS" class="java.lang.String"/>
+	<field name="BREASTS" class="java.lang.String"/>
+	<field name="WTHOUT_GLASSES_R_DISTANT" class="java.lang.String"/>
+	<field name="WITHOUT_GLASSES_L_DISTANT" class="java.lang.String"/>
+	<field name="WITH_GLASSES_R_DISTANT" class="java.lang.String"/>
+	<field name="WITH_GLASSES_L_DISTANT" class="java.lang.String"/>
+	<field name="WITHOUT_GLASSES_R_NEARVISION" class="java.lang.String"/>
+	<field name="WITHOUT_GLASSES_L_NEARVISION" class="java.lang.String"/>
+	<field name="WITH_GLASSES_R_NEARVISION" class="java.lang.String"/>
+	<field name="WITH_GLASSES_L_NEARVISION" class="java.lang.String"/>
+	<field name="NEAR_VISION_WITHOUT_GLASS_CP" class="java.lang.String"/>
+	<field name="EAR_HEARING_RFW" class="java.lang.Integer"/>
+	<field name="HEARING_RCV" class="java.lang.Integer"/>
+	<field name="EAR_HEARING_LFW" class="java.lang.Integer"/>
+	<field name="HEARING_LCV" class="java.lang.Integer"/>
+	<field name="EAR_HEARING_BOTH_FW" class="java.lang.Integer"/>
+	<field name="HEARING_BOTH_CV" class="java.lang.Integer"/>
+	<field name="AUDIOMETRY_RECORD" class="java.lang.String"/>
+	<field name="TYMPANICR" class="java.lang.String"/>
+	<field name="TYMPANICL" class="java.lang.String"/>
+	<field name="MOBILITYR" class="java.lang.String"/>
+	<field name="MOBILITYL" class="java.lang.String"/>
+	<field name="NOSE_THROAT_SINUSES" class="java.lang.String"/>
+	<field name="MENSTRUAL_HISTORY" class="java.lang.String"/>
+	<field name="NO_OF_PREGNANCIES" class="java.lang.Integer"/>
+	<field name="NO_OF_CHILDREN" class="java.lang.Integer"/>
+	<field name="VAGINAL_DISCHARGE" class="java.lang.String"/>
+	<field name="USG_ABDOMEN" class="java.lang.String"/>
+	<field name="LMP" class="java.util.Date"/>
+	<field name="NO_OF_ABORTIONS" class="java.lang.Integer"/>
+	<field name="LAST_CONFINEMENT_DATE" class="java.util.Date"/>
+	<field name="PROLAPSE" class="java.lang.String"/>
+	<field name="UR" class="java.lang.String"/>
+	<field name="UL" class="java.lang.String"/>
+	<field name="LR" class="java.lang.String"/>
+	<field name="LL" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="157"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="3"
+						y="3"
+						width="635"
+						height="17"
+						key="staticText-1"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Times-Bold" size="10" isBold="true" isUnderline="false"/>
+					</textElement>
+				<text><![CDATA[PART-II]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="3"
+						y="21"
+						width="635"
+						height="17"
+						key="staticText-2"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Times-Bold" size="10" isBold="true" isUnderline="false"/>
+					</textElement>
+				<text><![CDATA[MEDICAL EXAMINATION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="4"
+						y="42"
+						width="156"
+						height="17"
+						key="staticText-3"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[1.(a) Total No of Teeth
+    ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="331"
+						y="42"
+						width="141"
+						height="18"
+						forecolor="#000000"
+						key="staticText-4"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" isStyledText="true">
+						<font pdfFontName="Times-Bold" size="8" isBold="true" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[(b)Missing / Unsaveable Teeth]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="10"
+						y="65"
+						width="189"
+						height="18"
+						key="staticText-5"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[(c) Defective Teeth]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="10"
+						y="85"
+						width="189"
+						height="18"
+						key="staticText-6"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[(d) Dental Points]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="10"
+						y="105"
+						width="189"
+						height="18"
+						key="staticText-7"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[(e) Condition of  Gums]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						mode="Transparent"
+						x="192"
+						y="67"
+						width="0"
+						height="0"
+						key="rectangle-1"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch"/>
+				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						mode="Transparent"
+						x="2"
+						y="40"
+						width="636"
+						height="0"
+						key="line-1"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Transparent"
+						x="328"
+						y="40"
+						width="0"
+						height="85"
+						key="line-2"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Transparent"
+						x="2"
+						y="62"
+						width="636"
+						height="0"
+						key="line-3"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Transparent"
+						x="2"
+						y="124"
+						width="635"
+						height="0"
+						key="line-4"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="102"
+						y="42"
+						width="225"
+						height="18"
+						key="textField-1"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TOTAL_TEETH}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="102"
+						y="65"
+						width="225"
+						height="18"
+						key="textField-2"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TOTAL_DEFECTIVE_TEETH}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="102"
+						y="85"
+						width="225"
+						height="18"
+						key="textField-3"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{TOTAL_NO_DENTAL_POINT}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="102"
+						y="105"
+						width="225"
+						height="18"
+						key="textField-4"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{CONDITIONOFGUMS}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="331"
+						y="65"
+						width="40"
+						height="18"
+						key="staticText-8"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[U.R.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="331"
+						y="88"
+						width="40"
+						height="19"
+						key="staticText-9"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[L.R.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="574"
+						y="65"
+						width="40"
+						height="18"
+						key="staticText-10"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[U.L.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="574"
+						y="88"
+						width="40"
+						height="17"
+						key="staticText-11"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[L.L.]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="371"
+						y="65"
+						width="119"
+						height="18"
+						key="textField-52"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{UR}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="498"
+						y="65"
+						width="76"
+						height="18"
+						key="textField-53"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{UL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="371"
+						y="88"
+						width="119"
+						height="18"
+						key="textField-54"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{LR}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="498"
+						y="88"
+						width="76"
+						height="18"
+						key="textField-55"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{LL}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						mode="Transparent"
+						x="637"
+						y="40"
+						width="0"
+						height="85"
+						key="line-30"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Transparent"
+						x="1"
+						y="40"
+						width="0"
+						height="85"
+						key="line-31"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="1"
+						y="125"
+						width="637"
+						height="16"
+						key="subreport-1"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="MEDICAL_EXAMINATION_ID">
+						<subreportParameterExpression><![CDATA[$P{MEDICAL_EXAMINATION_ID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//MedicalExaminationSubreport_6.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="1"
+						y="141"
+						width="637"
+						height="16"
+						key="subreport-2"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="MEDICAL_EXAMINATION_ID">
+						<subreportParameterExpression><![CDATA[$P{MEDICAL_EXAMINATION_ID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//MedicalExaminationSubreport_9.jasper"]]></subreportExpression>
+				</subreport>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="527"
+						y="42"
+						width="38"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{MISSING_TEETH}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="565"
+						y="42"
+						width="9"
+						height="18"
+						key="staticText-12"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="7" isBold="true"/>
+					</textElement>
+				<text><![CDATA[/]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="574"
+						y="42"
+						width="32"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{UNSAVEABLE_TEETH}]]></textFieldExpression>
+				</textField>
+			</band>
+		</summary>
+</jasperReport>

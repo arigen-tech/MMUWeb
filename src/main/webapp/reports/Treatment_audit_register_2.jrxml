@@ -1,0 +1,744 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Treatment_audit_register_2"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="842"
+		 pageHeight="595"
+		 columnWidth="782"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoDataSection"
+		 isFloatColumnFooter="true"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="Fromdate" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Todate" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Mmu_id" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="path" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Auditor_id" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT AUDIT.VISIT_ID,OPD.OPD_DATE,string_agg(DISTINCT MS.SYMPTOMS_NAME,', ' order by MS.SYMPTOMS_NAME) Sign,'Diagnosis' A_For,
+string_agg(DISTINCT ICD.ICD_NAME,', ' order by ICD.ICD_NAME) Prescribed,
+string_agg(DISTINCT ICD1.ICD_NAME,', ' order by ICD1.ICD_NAME) Recommended,
+U2.USER_NAME DOCTOR_NAME,MMU_NAME,AUDIT.LAST_CHG_DATE::date AUDIT_DATE,U1.USER_NAME AUDITOR_NAME,
+PT.UHID_NO,ae.remarks recmmd_med_advice
+FROM VISIT VT
+INNER JOIN PATIENT PT on PT.PATIENT_ID=VT.PATIENT_ID
+INNER JOIN AUDIT_OPD AUDIT on AUDIT.VISIT_ID=VT.VISIT_ID
+LEFT OUTER JOIN MAS_SYMPTOMS MS on MS.symptoms_id=AUDIT.patient_symptoms_id
+LEFT OUTER JOIN MAS_ICD ICD on ICD.ICD_ID=AUDIT.OPD_ICD_CODE_ID
+LEFT OUTER JOIN MAS_ICD ICD1 on ICD1.ICD_ID=AUDIT.DISCHARGE_ICD_CODE_ID
+LEFT OUTER JOIN OPD_PATIENT_DETAILS OPD on VT.VISIT_ID=OPD.VISIT_ID
+LEFT OUTER JOIN MAS_MMU MMU on MMU.MMU_ID=VT.MMU_ID
+LEFT OUTER JOIN USERS U1 ON U1.USER_ID=AUDIT.LAST_CHG_BY
+LEFT OUTER JOIN USERS U2 ON U2.USER_ID=OPD.DOCTOR_ID
+LEFT OUTER JOIN audit_exception ae ON ae.VISIT_ID=VT.VISIT_ID 
+WHERE OPD_ICD_CODE_ID IS NOT NULL AND 
+AUDIT.LAST_CHG_DATE::date BETWEEN $P{Fromdate} AND  $P{Todate} AND		
+(MMU.MMU_ID = $P{Mmu_id} OR $P{Mmu_id}= 0)AND
+(AUDIT.LAST_CHG_BY = $P{Auditor_id} OR $P{Auditor_id}= 0)
+GROUP BY AUDIT.VISIT_ID,OPD.OPD_DATE,MMU_NAME,U1.USER_NAME ,U2.USER_NAME ,AUDIT.LAST_CHG_DATE,
+PT.UHID_NO,ae.remarks  
+UNION
+SELECT AUDIT.VISIT_ID,OPD.OPD_DATE,string_agg(DISTINCT MS.SYMPTOMS_NAME,', ' order by MS.SYMPTOMS_NAME) Prescribed,'Lab' A_For,
+string_agg(DISTINCT ICD.INVESTIGATION_NAME,', ' order by ICD.INVESTIGATION_NAME) Prescribed,
+string_agg(DISTINCT ICD1.INVESTIGATION_NAME,', ' order by ICD1.INVESTIGATION_NAME) Recommended,
+U2.USER_NAME DOCTOR_NAME,MMU_NAME,AUDIT.LAST_CHG_DATE::date AUDIT_DATE,U1.USER_NAME AUDITOR_NAME,PT.UHID_NO,
+ae.remarks recmmd_med_advice 
+FROM VISIT VT
+INNER JOIN PATIENT PT on PT.PATIENT_ID=VT.PATIENT_ID
+INNER JOIN AUDIT_OPD AUDIT on AUDIT.VISIT_ID=VT.VISIT_ID
+LEFT OUTER JOIN MAS_SYMPTOMS MS on MS.symptoms_id=AUDIT.patient_symptoms_id
+LEFT OUTER JOIN DG_MAS_INVESTIGATION ICD on ICD.INVESTIGATION_ID=AUDIT.OPD_INVESTIGATION_ID
+LEFT OUTER JOIN DG_MAS_INVESTIGATION ICD1 on ICD1.INVESTIGATION_ID=AUDIT.INVESTIGATION_ID
+LEFT OUTER JOIN OPD_PATIENT_DETAILS OPD on VT.VISIT_ID=OPD.VISIT_ID
+LEFT OUTER JOIN MAS_MMU MMU on MMU.MMU_ID=VT.MMU_ID
+LEFT OUTER JOIN USERS U1 ON U1.USER_ID=AUDIT.LAST_CHG_BY
+LEFT OUTER JOIN USERS U2 ON U2.USER_ID=OPD.DOCTOR_ID
+LEFT OUTER JOIN audit_exception ae ON ae.VISIT_ID=VT.VISIT_ID 
+WHERE OPD_INVESTIGATION_ID IS NOT NULL AND
+AUDIT.LAST_CHG_DATE::date BETWEEN $P{Fromdate} AND  $P{Todate} AND		
+(MMU.MMU_ID = $P{Mmu_id} OR $P{Mmu_id}= 0)AND
+(AUDIT.LAST_CHG_BY = $P{Auditor_id} OR $P{Auditor_id}= 0)
+GROUP BY AUDIT.VISIT_ID,OPD.OPD_DATE,MMU_NAME,U1.USER_NAME ,U2.USER_NAME ,AUDIT.LAST_CHG_DATE,
+PT.UHID_NO,ae.remarks
+UNION
+SELECT AUDIT.VISIT_ID,OPD.OPD_DATE,string_agg(DISTINCT MS.SYMPTOMS_NAME,', ' order by MS.SYMPTOMS_NAME) Prescribed,'Treatment' A_For,
+string_agg(DISTINCT ICD.NOMENCLATURE,', ' order by ICD.NOMENCLATURE) Prescribed,
+string_agg(DISTINCT ICD1.NOMENCLATURE,', ' order by ICD1.NOMENCLATURE) Recommended,
+U2.USER_NAME DOCTOR_NAME,MMU_NAME,AUDIT.LAST_CHG_DATE::date AUDIT_DATE,U1.USER_NAME AUDITOR_NAME,PT.UHID_NO
+,ae.remarks recmmd_med_advice 
+FROM VISIT VT
+INNER JOIN PATIENT PT on PT.PATIENT_ID=VT.PATIENT_ID
+INNER JOIN AUDIT_OPD AUDIT on AUDIT.VISIT_ID=VT.VISIT_ID
+LEFT OUTER JOIN MAS_SYMPTOMS MS on MS.symptoms_id=AUDIT.patient_symptoms_id
+LEFT OUTER JOIN MAS_STORE_ITEM ICD on ICD.ITEM_ID=AUDIT.OPD_ITEM_ID
+LEFT OUTER JOIN MAS_STORE_ITEM ICD1 on ICD1.ITEM_ID=AUDIT.ITEM_ID
+LEFT OUTER JOIN OPD_PATIENT_DETAILS OPD on VT.VISIT_ID=OPD.VISIT_ID
+LEFT OUTER JOIN MAS_MMU MMU on MMU.MMU_ID=VT.MMU_ID
+LEFT OUTER JOIN USERS U1 ON U1.USER_ID=AUDIT.LAST_CHG_BY
+LEFT OUTER JOIN USERS U2 ON U2.USER_ID=OPD.DOCTOR_ID
+LEFT OUTER JOIN audit_exception ae ON ae.VISIT_ID=VT.VISIT_ID 
+WHERE OPD_ITEM_ID IS NOT NULL AND
+AUDIT.LAST_CHG_DATE::date BETWEEN $P{Fromdate} AND  $P{Todate} AND		
+(MMU.MMU_ID = $P{Mmu_id} OR $P{Mmu_id}= 0)AND
+(AUDIT.LAST_CHG_BY = $P{Auditor_id} OR $P{Auditor_id}= 0)
+GROUP BY AUDIT.VISIT_ID,OPD.OPD_DATE,MMU_NAME,U1.USER_NAME ,U2.USER_NAME ,
+AUDIT.LAST_CHG_DATE,PT.UHID_NO,ae.remarks
+ORDER BY 8,7,9,10]]></queryString>
+
+	<field name="visit_id" class="java.lang.Long"/>
+	<field name="opd_date" class="java.sql.Timestamp"/>
+	<field name="sign" class="java.lang.String"/>
+	<field name="a_for" class="java.lang.String"/>
+	<field name="prescribed" class="java.lang.String"/>
+	<field name="recommended" class="java.lang.String"/>
+	<field name="doctor_name" class="java.lang.String"/>
+	<field name="mmu_name" class="java.lang.String"/>
+	<field name="audit_date" class="java.sql.Timestamp"/>
+	<field name="auditor_name" class="java.lang.String"/>
+	<field name="uhid_no" class="java.lang.String"/>
+	<field name="recmmd_med_advice" class="java.lang.String"/>
+
+	<variable name="Sr.no" class="java.lang.Integer" resetType="Group" resetGroup="doctor" calculation="Count">
+		<variableExpression><![CDATA[new Integer(0)]]></variableExpression>
+	</variable>
+
+		<group  name="MmuName" >
+			<groupExpression><![CDATA[$F{mmu_name}]]></groupExpression>
+			<groupHeader>
+			<band height="1"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="a" >
+			<groupExpression><![CDATA[$F{auditor_name}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="dt" >
+			<groupExpression><![CDATA[$F{audit_date}]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="doctor" >
+			<groupExpression><![CDATA[$F{doctor_name}]]></groupExpression>
+			<groupHeader>
+			<band height="52"  isSplitAllowed="true" >
+				<line direction="TopDown">
+					<reportElement
+						x="3"
+						y="29"
+						width="778"
+						height="0"
+						key="line-1"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="557"
+						y="4"
+						width="88"
+						height="15"
+						key="staticText-81"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Auditor Name]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="149"
+						y="31"
+						width="109"
+						height="15"
+						key="staticText-85"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Signs and Symptoms]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="257"
+						y="29"
+						width="0"
+						height="22"
+						key="line-3"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="780"
+						y="29"
+						width="0"
+						height="22"
+						key="line-4"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="632"
+						y="29"
+						width="0"
+						height="22"
+						key="line-8"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="83"
+						y="29"
+						width="0"
+						height="22"
+						key="line-9"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="31"
+						y="32"
+						width="55"
+						height="15"
+						key="staticText-86"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[OPD Date]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="260"
+						y="31"
+						width="79"
+						height="15"
+						key="staticText-87"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Audit against]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="4"
+						y="49"
+						width="778"
+						height="0"
+						key="line-24"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="340"
+						y="29"
+						width="0"
+						height="22"
+						key="line-27"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="490"
+						y="31"
+						width="138"
+						height="15"
+						key="staticText-89"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Recommended]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="202"
+						y="5"
+						width="82"
+						height="15"
+						key="staticText-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Doctor Name]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="488"
+						y="29"
+						width="0"
+						height="22"
+						key="line-32"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="339"
+						y="31"
+						width="147"
+						height="15"
+						key="staticText-91"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Prescribed]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="413"
+						y="5"
+						width="79"
+						height="15"
+						key="staticText-93"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Date of Audit]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="3"
+						y="29"
+						width="0"
+						height="22"
+						key="line-42"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="74"
+						y="5"
+						width="128"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{mmu_name}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="2"
+						y="6"
+						width="72"
+						height="15"
+						key="staticText-94"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[MMU Name]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="636"
+						y="4"
+						width="141"
+						height="15"
+						key="textField-4"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{auditor_name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="492"
+						y="5"
+						width="63"
+						height="15"
+						key="textField-12"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{audit_date}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="652"
+						y="31"
+						width="106"
+						height="15"
+						key="staticText-95"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Auditor's Remarks]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="147"
+						y="29"
+						width="0"
+						height="22"
+						key="line-45"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="85"
+						y="32"
+						width="61"
+						height="15"
+						key="staticText-96"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[UHID No.]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="285"
+						y="5"
+						width="128"
+						height="15"
+						key="textField-7"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font size="10"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{doctor_name}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="33"
+						y="29"
+						width="0"
+						height="22"
+						key="line-47"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="2"
+						y="32"
+						width="28"
+						height="15"
+						key="staticText-97"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[S.No.]]></text>
+				</staticText>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="23"  isSplitAllowed="true" >
+				<line direction="TopDown">
+					<reportElement
+						x="257"
+						y="-2"
+						width="0"
+						height="25"
+						key="line-15"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="632"
+						y="-2"
+						width="0"
+						height="25"
+						key="line-18"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="83"
+						y="-2"
+						width="0"
+						height="25"
+						key="line-19"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="3"
+						y="-2"
+						width="0"
+						height="25"
+						key="line-23"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="340"
+						y="-2"
+						width="0"
+						height="25"
+						key="line-26"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="488"
+						y="-2"
+						width="0"
+						height="25"
+						key="line-40"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="3"
+						y="19"
+						width="778"
+						height="0"
+						key="line-12"
+						positionType="Float"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="258"
+						y="0"
+						width="81"
+						height="15"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{a_for}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="340"
+						y="1"
+						width="146"
+						height="15"
+						key="textField-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{prescribed}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="35"
+						y="0"
+						width="46"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$F{opd_date}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="149"
+						y="0"
+						width="109"
+						height="18"
+						key="textField"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{sign}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="490"
+						y="1"
+						width="138"
+						height="15"
+						key="textField-13"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{recommended}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="780"
+						y="-2"
+						width="1"
+						height="25"
+						key="line-43"
+						stretchType="RelativeToBandHeight"
+						isPrintInFirstWholeBand="true"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="RelativeToBandHeight"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="147"
+						y="-2"
+						width="0"
+						height="25"
+						key="line-44"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="85"
+						y="1"
+						width="62"
+						height="15"
+						key="textField-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{uhid_no}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="633"
+						y="2"
+						width="146"
+						height="15"
+						key="textField-15"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{recmmd_med_advice}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="33"
+						y="-2"
+						width="0"
+						height="25"
+						key="line-46"
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isPrintWhenDetailOverflows="true"/>
+					<graphicElement stretchType="RelativeToTallestObject"/>
+				</line>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="5"
+						y="1"
+						width="26"
+						height="18"
+						key="textField-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$V{Sr.no}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

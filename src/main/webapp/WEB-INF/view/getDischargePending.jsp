@@ -1,0 +1,244 @@
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+
+<%@include file="..//view/leftMenu.jsp"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<html>
+<head>
+<title>Pending Discharge List</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<%@include file="..//view/commonJavaScript.jsp"%>
+
+</head>
+<script type="text/javascript" language="javascript">
+	<%			
+		String hospitalId = "1";
+		if (session.getAttribute("hospital_id") !=null)
+		{
+			hospitalId = session.getAttribute("hospital_id")+"";
+		}
+	%>
+
+var nPageNo=1;
+var $j = jQuery.noConflict();
+
+$j(document).ready(function()
+		{
+			getPendingDischargeList('ALL');
+			
+		});
+
+ function getPendingDischargeList(MODE) { 	
+ 	//alert("inside getReferredList");
+ 	var cmdId=0; 	
+	 var patient_name = $j('#patient_name').val();
+ 	 var service_no = $j('#service_no').val();
+ 	 
+ 	if (patient_name === undefined) {
+ 		patient_name = "";
+ 	}
+	if (service_no === undefined) {
+		service_no = "";
+ 	}
+
+ 	 if(MODE == 'ALL')
+ 		{
+ 			var data = {"hospital_id": <%= hospitalId %>, "service_no":"","patient_name":"","pageNo":nPageNo};
+ 			
+ 		}
+ 	else
+ 		{
+ 			var data = {"hospital_id": <%= hospitalId %>, "service_no":service_no,"patient_name":patient_name,"pageNo":nPageNo};
+ 		} 
+ 		
+ 	var bClickable = true;
+ 	var url = "getDischargePendingList";
+ 	GetJsonData('tblListofObesity',data,url,bClickable);
+ }
+ 
+ function search()
+ {
+
+ 	var service_no = $j('#service_no').val();
+ 	var patient_name = $j('#patient_name').val();
+ 	if((service_no == undefined || service_no == '') && (patient_name == undefined || patient_name == '')){
+ 		alert("Atleast one of the search option must be entered");
+ 		return;
+ 	}
+ 	getPendingDischargeList('Filter');
+ 	//ResetForm();
+ } 
+ 
+ function makeTable(jsonData)
+ {	
+ 	var htmlTable = "";	
+ 	var data = jsonData.count;
+ 	
+ 	var pageSize = 5;	
+ 	
+    var dischargePendingList = jsonData.dischargePendingList;
+ 	var html = "";	 	
+  	var pageSize = 5;
+ 	for(i=0;i<dischargePendingList.length;i++)
+ 		{	 		
+ 				
+ 			html = html+'<tr id="'+dischargePendingList[i].id+'">';			
+ 			html = html +"<td style='width: 150px;'>"+dischargePendingList[i].service_no+"</td>";
+ 			html = html +"<td style='width: 150px;'>"+dischargePendingList[i].patient_name+"</td>";
+ 			html = html +"<td style='width: 100px;'>"+dischargePendingList[i].age+"</td>";
+ 			html = html +"<td style='width: 100px;'>"+dischargePendingList[i].gender+"</td>";
+ 			html = html +"<td style='width: 100px;'>"+dischargePendingList[i].rank+"</td>";
+ 			html = html +"<td style='width: 100px;'>"+dischargePendingList[i].date_of_admission+"</td>";
+ 			html = html +"<td style='width: 100px;'>"+dischargePendingList[i].ward+"</td>";
+ 			
+ 			html = html+"</tr>";
+ 			
+ 		}
+ 	
+ 	if(dischargePendingList.length == 0)
+ 		{
+ 			html = html+"<tr ><td colspan='7'><h6>No Record Found !!</h6></td></tr>";
+ 		} 			
+ 	
+ 	$j("#tblListofObesity").html(html); 	
+ 	
+ }
+ 
+ function executeClickEvent(Id)
+ {
+	window.location = "discharge?id="+Id+"";	
+	 
+ }
+
+ function ResetForm()
+ {
+ 	$j('#service_no').val('');
+ 	$j('#patient_name').val('');
+ }
+ 
+ function showResultPage(pageNo) 	
+ {
+ 	
+ 	nPageNo = pageNo;	
+ 	getPendingDischargeList('FILTER');
+ 	
+ }
+ function showAll()
+ {
+	 ResetForm();
+ 	nPageNo = 1;	
+ 	getPendingDischargeList('ALL');
+ 	
+ }
+ 
+ function ResetForm()
+ {	
+	 $j('#service_no').val('');
+	 $j('#patient_name').val('');
+ }
+</script>
+<body>
+ <!-- Begin page -->
+    <div id="wrapper">
+
+	<div class="content-page">
+		<!-- Start content -->
+		<div class="">
+			<div class="container-fluid">
+				<div class="internal_Htext">Pending Discharge List</div>
+
+				<div class="row">
+					<div class="col-12">
+						<div class="card">
+							<div class="card-body">
+
+								<form>
+									<div class="row">
+										<div class="col-md-4">
+											<div class="form-group row">
+												<label class="col-sm-5 col-form-label">Service No.</label>
+												<div class="col-sm-7">
+													<input class="form-control  form-control-sm"
+														id="service_no"> </input>
+												</div>
+											</div>
+										</div>
+										
+										<div class="col-md-4">
+											<div class="form-group row">
+												<label class="col-sm-5 col-form-label">Patient Name</label>
+												<div class="col-sm-7">
+													<input class="form-control form-control-sm" type="text"
+														placeholder="" id="patient_name">
+												</div>
+											</div>
+										</div>
+
+									  
+										<div class="col-md-1">
+											<div class="form-group row">
+												<div class="col-sm-12">
+													<button type="button" class="btn btn-primary  obesityWait-search"
+														onclick="search()">Search</button>
+												</div>
+											</div>
+										</div>
+										
+										<div class="col-md-3">
+											<div class="form-group">
+												<div class="text-right">
+													<button type="button" class="btn btn-primary  obesityWait-search"
+														onclick="showAll()">Show All</button>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div style="float: left">
+
+										<table class="tblSearchActions" cellspacing="0"
+											cellpadding="0" border="0">
+											<tr>
+												<td class="SearchStatus" style="font-size: 15px;"
+													align="left">Search Results</td>
+												<td>
+													<!-- <div id=resultnavigation></div> -->
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div style="float: right">
+										<div id="resultnavigation"></div>
+									</div>
+									<table class="table table-bordered table-striped table-bordered">
+										<thead bgcolor="00FFFF">
+											<tr>
+												<th id="th1">Service No.</th>
+												<th id="th2">Patient Name</th>
+												<th id="th3">Age</th>
+												<th id="th4">Gender</th>
+												<th id="th5">Rank</th>
+												<th id="th6">Date of Admission</th>
+												<th id="th7">Ward</th>
+											</tr>
+										</thead>
+										<tbody id="tblListofObesity">
+										</tbody>
+									</table>
+									
+								</form>
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Lab_Sub_Detail_Report" pageWidth="611" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="611" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="FROM_DATE" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TO_DATE" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Level_of_user" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="User_id" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="genderId" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MMU_ID" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="investigationId" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fromAge" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="toAge" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT  DISTINCT PT.PATIENT_NAME,PT_AGE(PT.DATE_OF_BIRTH,HD.RESULT_DATE) AGE,administrative_sex_name SEX,DMI.INVESTIGATION_NAME SUB_INVESTIGATION_NAME,
+(CASE WHEN DT.RESULT_TYPE='m' THEN 'Completed' ELSE DT.RESULT END) RESULT,
+(CASE WHEN DT.RESULT_TYPE='m' THEN '' ELSE DU.UOM_NAME END) AS UOM_NAME,
+(CASE WHEN DT.RESULT_TYPE='m' THEN '' ELSE DT.RANGE_VALUE END)RANGE_VALUE,PT.PATIENT_ID,DT.INVESTIGATION_ID
+FROM    DG_RESULT_ENTRY_HD HD LEFT OUTER JOIN DG_RESULT_ENTRY_DT DT    ON HD.RESULT_ENTRY_HD_ID=DT.RESULT_ENTRY_HD_ID
+                              LEFT OUTER JOIN PATIENT PT    ON PT.PATIENT_ID=HD.PATIENT_ID
+							  LEFT OUTER JOIN MAS_ADMINISTRATIVE_SEX SEX ON SEX.ADMINISTRATIVE_SEX_ID=PT.ADMINISTRATIVE_SEX_ID
+							  LEFT OUTER JOIN DG_MAS_INVESTIGATION DMI ON  DMI.INVESTIGATION_ID=DT.INVESTIGATION_ID
+                              LEFT OUTER JOIN MAS_SUB_CHARGECODE MSC ON  MSC.SUB_CHARGECODE_ID=HD.SUB_CHARGECODE_ID
+                              LEFT OUTER JOIN DG_UOM DU ON  DU.UOM_ID=DMI.UOM_ID
+							  LEFT OUTER JOIN MAS_MMU ON MAS_MMU.MMU_ID=HD.MMU_ID
+WHERE   HD.MAIN_CHARGECODE_ID='2' AND DT.VALIDATED='V'
+		AND HD.VERIFIED='V' AND DT.RESULT_DETAIL_STATUS='C'
+		AND HD.RESULT_STATUS='C' And DT.RESULT IS NOT NULL
+		AND HD.RESULT_DATE::date BETWEEN $P{FROM_DATE}   AND $P{TO_DATE}
+		AND (DT.INVESTIGATION_ID = $P{investigationId}  OR $P{investigationId} = 0)
+		AND (PT.ADMINISTRATIVE_SEX_ID = $P{genderId} OR $P{genderId} = 0)
+		AND PT.age between $P{fromAge} and (case when $P{toAge} = 0 then 125 else $P{toAge} end )
+		AND(HD.MMU_ID = $P{MMU_ID} OR $P{MMU_ID}= 0)
+		AND MAS_MMU.MMU_ID IN (
+	  	SELECT 	MMU.MMU_ID
+		FROM 	MAS_MMU MMU,CITY_MMU_MAPPING MCM,(SELECT  	to_number(foo,'99999999') IDS
+				     FROM 	regexp_split_to_table((SELECT 	(CASE WHEN 'M' = $P{Level_of_user} THEN substring(M.MMU_ID, 1 ,length(M.MMU_ID)-1)
+										      WHEN 'C' = $P{Level_of_user} THEN substring(M.CITY_ID, 1 ,length(M.CITY_ID)-1)
+										      WHEN 'D' = $P{Level_of_user} THEN substring(M.DISTRICT_ID, 1 ,length(M.DISTRICT_ID)-1)
+										      ELSE '1' END)
+									FROM 	USERS M
+									WHERE 	M.USER_ID =$P{User_id}), E',') As foo)  ALL_ID
+		WHERE MCM.MMU_ID = MMU.MMU_ID AND
+			( (MMU.MMU_ID=ALL_ID.IDS AND 'M' =$P{Level_of_user}) OR
+	  		(MCM.CITY_ID=ALL_ID.IDS AND 'C' =$P{Level_of_user}) OR
+			(MMU.STATE_ID=ALL_ID.IDS AND 'S' =$P{Level_of_user}) OR
+			(MMU.DISTRICT_ID=ALL_ID.IDS AND 'D' =$P{Level_of_user}) )
+		)
+order by 1,4]]>
+	</queryString>
+	<field name="patient_name" class="java.lang.String"/>
+	<field name="age" class="java.lang.String"/>
+	<field name="sex" class="java.lang.String"/>
+	<field name="sub_investigation_name" class="java.lang.String"/>
+	<field name="result" class="java.lang.String"/>
+	<field name="uom_name" class="java.lang.String"/>
+	<field name="range_value" class="java.lang.String"/>
+	<field name="patient_id" class="java.lang.Long"/>
+	<field name="investigation_id" class="java.lang.Long"/>
+	<variable name="S.No." class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[new Integer(0)]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="23" splitType="Stretch">
+			<line>
+				<reportElement key="line-1" x="1" y="1" width="550" height="1" isRemoveLineWhenBlank="true"/>
+			</line>
+			<line>
+				<reportElement key="line-2" x="1" y="22" width="549" height="1" isRemoveLineWhenBlank="true"/>
+			</line>
+			<line>
+				<reportElement key="line-3" x="1" y="1" width="1" height="22"/>
+			</line>
+			<line>
+				<reportElement key="line-4" x="550" y="1" width="1" height="22" isRemoveLineWhenBlank="true"/>
+			</line>
+			<line>
+				<reportElement key="line-5" x="27" y="1" width="1" height="22" isRemoveLineWhenBlank="true"/>
+			</line>
+			<line>
+				<reportElement key="line-6" x="162" y="1" width="1" height="22" isRemoveLineWhenBlank="true"/>
+			</line>
+			<line>
+				<reportElement key="line-7" x="203" y="1" width="1" height="22" isRemoveLineWhenBlank="true"/>
+			</line>
+			<line>
+				<reportElement key="line-8" x="245" y="1" width="1" height="22" isRemoveLineWhenBlank="true"/>
+			</line>
+			<line>
+				<reportElement key="line-9" x="361" y="1" width="1" height="22" isRemoveLineWhenBlank="true"/>
+			</line>
+			<staticText>
+				<reportElement key="staticText-3" x="365" y="3" width="68" height="18" isRemoveLineWhenBlank="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Result]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-4" x="248" y="3" width="107" height="18" isRemoveLineWhenBlank="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Investigation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-5" x="166" y="3" width="36" height="18" isRemoveLineWhenBlank="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Age]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-6" x="207" y="3" width="37" height="18" isRemoveLineWhenBlank="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Gender]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-7" x="29" y="3" width="131" height="18" isRemoveLineWhenBlank="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Patient]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-8" x="5" y="3" width="24" height="18" isRemoveLineWhenBlank="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[S.No.]]></text>
+			</staticText>
+			<line>
+				<reportElement key="line-19" x="427" y="1" width="1" height="22" isRemoveLineWhenBlank="true"/>
+			</line>
+			<staticText>
+				<reportElement key="staticText-9" x="429" y="3" width="54" height="18" isRemoveLineWhenBlank="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[UOM]]></text>
+			</staticText>
+			<line>
+				<reportElement key="line-21" x="486" y="1" width="1" height="22" isRemoveLineWhenBlank="true"/>
+			</line>
+			<staticText>
+				<reportElement key="staticText-10" x="490" y="3" width="61" height="18" isRemoveLineWhenBlank="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Normal Range]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<line>
+				<reportElement key="line-10" positionType="Float" stretchType="RelativeToTallestObject" x="1" y="-2" width="1" height="25"/>
+			</line>
+			<line>
+				<reportElement key="line-11" positionType="Float" stretchType="RelativeToTallestObject" x="550" y="-2" width="1" height="25" isRemoveLineWhenBlank="true"/>
+			</line>
+			<line>
+				<reportElement key="line-12" positionType="Float" stretchType="RelativeToTallestObject" x="27" y="-2" width="1" height="25" isRemoveLineWhenBlank="true"/>
+			</line>
+			<line>
+				<reportElement key="line-13" positionType="Float" stretchType="RelativeToTallestObject" x="162" y="-2" width="1" height="25" isRemoveLineWhenBlank="true"/>
+			</line>
+			<line>
+				<reportElement key="line-14" positionType="Float" stretchType="RelativeToTallestObject" x="203" y="-2" width="1" height="25" isRemoveLineWhenBlank="true"/>
+			</line>
+			<line>
+				<reportElement key="line-15" positionType="Float" stretchType="RelativeToTallestObject" x="245" y="-2" width="1" height="25" isRemoveLineWhenBlank="true"/>
+			</line>
+			<line>
+				<reportElement key="line-16" positionType="Float" stretchType="RelativeToTallestObject" x="361" y="-2" width="1" height="25" isRemoveLineWhenBlank="true"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField" mode="Transparent" x="29" y="3" width="131" height="18" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{patient_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField" mode="Transparent" x="207" y="3" width="37" height="18" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{sex}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField" mode="Transparent" x="166" y="3" width="36" height="18" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{age}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField" mode="Transparent" x="248" y="3" width="107" height="18" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{sub_investigation_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField" mode="Transparent" x="365" y="3" width="68" height="18" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{result}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField" mode="Transparent" x="5" y="3" width="24" height="18" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{S.No.}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-17" positionType="Float" x="1" y="20" width="550" height="1" isRemoveLineWhenBlank="true"/>
+			</line>
+			<line>
+				<reportElement key="line-18" positionType="Float" stretchType="RelativeToTallestObject" x="427" y="-2" width="1" height="25" isRemoveLineWhenBlank="true"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField-1" mode="Transparent" x="432" y="3" width="54" height="18" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{uom_name}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-20" positionType="Float" stretchType="RelativeToTallestObject" x="486" y="-2" width="1" height="25" isRemoveLineWhenBlank="true"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement key="textField-2" mode="Transparent" x="491" y="3" width="61" height="18" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{range_value}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

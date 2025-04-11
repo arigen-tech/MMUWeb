@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Supply_Order_Subreport_2"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="611"
+		 pageHeight="842"
+		 columnWidth="611"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="AllSectionsNoDetail"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="715"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="2"
+						y="2"
+						width="23"
+						height="20"
+						key="staticText-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[5.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="2"
+						width="514"
+						height="20"
+						key="staticText-15"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Agents/ Agency commission:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="16"
+						width="525"
+						height="190"
+						key="staticText-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[The seller confirms and declares to the Buyer that the Seller is the original manufacturer of the stores/ provider of the services referred to in this Supply Order and has not engaged any individual or firm, whether  Indian  or foreign to intercede, facilitate or in any way to recommend to the Government of India or any of its functionaries, whether officially or unofficially, to the award of the Supply Order to the Seller; nor has any amount been paid, promised or intended to be paid to any such individual or firm in respect of any such intercession, facilitation or recommendation. The Seller agrees that if it is established at any time to the satisfaction of the Buyer that the present declaration is in any way incorrect or if at a later stage it is discovered by the Buyer that the Seller has engaged any such individual/firm, and paid or intended to pay any amount, gift, reward, fees, commission or consideration to such person, party, firm or institution, whether before or after the signing of this Supply Order, the Seller will be liable to refund that amount to the Buyer. The Seller will also be debarred from entering into any supply Order with the Government of India for a minimum period of five years. The Buyer will also have a right to consider cancellation of the Supply Order either wholly or in parts without any entitlement or compensation to the Seller who shall in such an event be liable to refund all payments made by the Buyer in terms of the Supply Order along with interest at the rate of 2% per annum above LIBOR rate. The Buyer will also have the right to recover any such amount from any Supply Orders concluded earlier with the Government of India.
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="198"
+						width="23"
+						height="20"
+						key="staticText-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[6.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="200"
+						width="514"
+						height="20"
+						key="staticText-18"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Access to books of accounts:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="213"
+						width="525"
+						height="62"
+						key="staticText-19"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[In case it is found to the satisfaction of the Buyer that the Seller has engaged an Agent or paid commission or influenced any person to obtain the Supply Order as described in clauses relating to Agents/Agency Commission and penalty for use of undue influence, the Seller, on a specific request of the Buyer, shall provide necessary information/ inspection of the relevant financial documents/information.
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="268"
+						width="23"
+						height="20"
+						key="staticText-20"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[7.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="268"
+						width="514"
+						height="20"
+						key="staticText-21"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Non- disclosure of supply order documents:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="284"
+						width="525"
+						height="38"
+						key="staticText-22"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Except with the written consent of the Buyer/Seller, other party shall not disclose the Supply Order or any provision, specification, plan, design, pattern, sample or information thereof to any third party.
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="316"
+						width="23"
+						height="20"
+						key="staticText-23"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[8.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="316"
+						width="514"
+						height="20"
+						key="staticText-24"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Liquidated damages:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="332"
+						width="525"
+						height="78"
+						key="staticText-25"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[In the event of the Seller's failure to submit the Bonds, Guarantees and Documents, supply the stores/goods and conduct trials, installation of equipment, training, etc as specified in this Supply Order, the Buyer may, at his discretion, withhold any payment until the completion of the Supply Order. The Buyer may also deduct from the Seller as agreed, Liquidated Damages to the sum of 0.5% of the Supply Order price of the delayed/undelivered stores/services mentioned above for every week of delay or part of a week, subject to the maximum value of the Liquidated Damages being not higher than 10% of the value of delayed stores.
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="410"
+						width="23"
+						height="20"
+						key="staticText-26"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[9.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="410"
+						width="514"
+						height="20"
+						key="staticText-27"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Termination of the supply order:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="427"
+						width="525"
+						height="116"
+						key="staticText-28"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[The  buyer shall have the right to terminate this supply order in part or in full in any of the following cases:
+a) The delivery of the material is delayed for causes not attributable to Force Majeure for more than (02 months) after the scheduled date of delivery
+b) The seller is declared bankrupt or becomes insolvent
+c) The delivery of the material is delayed due to causes of Force Majeure by more than (01 month)
+d) The buyer has noticed that the seller has utilized the services of any Indian/ foreign agent in getting this supply order and paid any commission to such individual/ company, etc.
+e) As per decision of the Arbitration Tribunal
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="534"
+						width="23"
+						height="20"
+						key="staticText-29"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[10.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="534"
+						width="521"
+						height="20"
+						key="staticText-30"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Notices:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="554"
+						width="532"
+						height="116"
+						key="staticText-31"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[The  buyer shall have the right to terminate this supply order in part or in full in any of the following cases:
+a) The delivery of the material is delayed for causes not attributable to Force Majeure for more than (02 months) after the scheduled date of delivery
+b) The seller is declared bankrupt or becomes insolvent
+c) The delivery of the material is delayed due to causes of Force Majeure by more than (01 month)
+d) The buyer has noticed that the seller has utilized the services of any Indian/ foreign agent in getting this supply order and paid any commission to such individual/ company, etc.
+e) As per decision of the Arbitration Tribunal
+]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="660"
+						width="23"
+						height="20"
+						key="staticText-32"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[11.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="660"
+						width="521"
+						height="20"
+						key="staticText-33"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Transfer and sub-letting:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="25"
+						y="676"
+						width="532"
+						height="37"
+						key="staticText-34"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[The seller has no right to give, bargain, sell, assign or sublet or otherwise dispose of the supply order or any part thereof, as well as to give or to let a third party take benefit or advantage of the present supply order or any part thereof.
+]]></text>
+				</staticText>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

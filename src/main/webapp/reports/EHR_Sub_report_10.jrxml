@@ -1,0 +1,1088 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="EHR_Sub_report_10"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="595"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="true"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="P_PATIENTID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\Users\\jyoti\\Desktop\\REPORTS\\EHR Report\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="P_VISITID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT  VT.VISIT_ID AS VISIT_ID,
+
+        row_number() OVER (PARTITION BY 1::integer) AS ENCOUNTER_NO,
+
+        MAT.APPOINTMENT_TYPE_NAME AS ENCOUNTER_TYPE,
+
+        TO_CHAR(VT.VISIT_DATE,'DD/MM/YYYY') AS ENCOUNTER_DATE,
+
+        TO_CHAR(VT.VISIT_DATE,'HH24:MI') AS ENCOUNTER_TIME,
+
+        (SELECT FIRST_NAME FROM ship.USERS WHERE USER_ID=VT.INT_DOCTOR_ID) AS PROVIDER_NAME,
+
+        (SELECT HOSPITAL_NAME FROM ship.MAS_HOSPITAL WHERE HOSPITAL_ID = (SELECT HOSPITAL_ID FROM USERS WHERE USER_ID=INT_DOCTOR_ID)) AS PROVIDER_LOCATION,
+
+        OPH.CHIEF_COMPLAIN AS CHIEF_COMPLAIN,
+
+        OPH.PRESENT_ILLNESS_HISTORY AS PRESENT_ILLNESS_HISTORY,
+
+        OPH.PAST_MEDICAL_HISTORY AS PAST_MEDICAL_HISTORY,
+
+        OPH.PAST_SURGICAL_HISTORY AS PAST_SURGICAL_HISTORY,
+
+        OPH.MEDICATION_HISTORY AS MEDICATION_HISTORY,
+
+        OPH.PERSONAL_HISTORY AS PERSONAL_HISTORY,
+
+        OPH.SOCIAL_HISTORY  AS SOCIAL_HISTORY,
+
+        OPH.FAMILY_HISTORY AS FAMILY_HISTORY,
+
+        OPH.ALLERGY_HISTORY AS ALLERGY_HISTORY,
+
+        OPH.IMPLANT_HISTORY AS IMPLANT_HISTORY,
+
+        '' AS IMMUNIZATION_HISTORY,
+
+        '' AS OTHER_EHR,
+
+        OPD.TEMPERATURE AS TEMPERATURE,
+
+        OPD.PULSE AS PULSE, 
+
+        OPD.BP_SYSTOLIC||'/'||OPD.BP_DIASTOLIC AS BLOOD_PRESSURE,
+
+        OPD.RR AS RESPIRATARY_RATE,
+
+        OPD.SPO2 AS SPO2,
+
+        OPD.HEIGHT AS HEIGHT,
+
+        OPD.WEIGHT AS WEIGHT,
+
+        OPD.BMI AS BMI,
+
+        OPD.POLLOR AS GE_POLLOR,
+
+        OPD.EDEMA AS GE_EDEMA,
+
+        OPD.CYANOSIS AS GE_CYANOSIS,
+
+        OPD.HAIR_NAIL AS GE_HAIR_NAIL,
+
+        OPD.ICTERUS AS GE_JAUINDICE,
+
+        OPD.LYMPH_NODE AS GE_LYMPH_NODE,
+
+        OPD.CLUBBING AS GE_CLUBBING,
+
+        OPD.GCS AS GE_THYROID,
+
+        OPD.TREMORS AS GE_TREMORS,
+
+        OPD.GENERAL_OTHER AS GE_GENERAL_OTHER,
+
+        OPD.CNS AS SE_CNS ,
+
+        OPD.CHEST_RESP AS SE_CHEST_RESP ,
+
+        OPD.MUSCULOSKELETAL AS SE_MUSCULOSKELETAL ,
+
+        OPD.CVS AS SE_CVS ,
+
+        OPD.SKIN AS SE_SKIN ,
+
+        OPD.GI AS SE_GI ,
+
+        OPD.GENITO_URINARY AS SE_GENITO_URINARY ,
+
+        OPD.SYSTEM_OTHER AS SE_SYSTEM_OTHER,
+
+        OPD.WORKING_DIAGNOSIS AS WORKING_DIAGNOSIS,
+
+        OPD.SNOMED_DIAGNOSIS AS SNOMED_DIAGNOSIS,
+
+        OPD.ICD_DIAGNOSIS AS ICD_DIAGNOSIS,
+
+        OPD.DISPOSAL1_ID,
+
+        MD.DISPOSAL_NAME,
+
+        OPD.DISPOSAL_DAYS,
+
+        (CASE WHEN MAT.APPOINTMENT_TYPE_NAME ='OPD' THEN 'Chief Complaint' ELSE MAT.APPOINTMENT_TYPE_NAME || ' Chief Complaint' END)AS CHIEF_COMPLAINTEXT,
+
+        OPH.PRESENT_ILLNESS_HISTORY CASENOTE
+
+FROM    ship.VISIT VT
+
+        LEFT OUTER JOIN ship.MAS_APPOINTMENT_TYPE MAT ON MAT.APPOINTMENT_TYPE_ID=VT.APPOINTMENT_TYPE_ID
+
+        LEFT OUTER JOIN ship.OPD_PATIENT_DETAILS OPD ON OPD.VISIT_ID=VT.VISIT_ID
+
+        LEFT OUTER JOIN ship.OPD_PATIENT_HISTORY OPH ON OPH.VISIT_ID=VT.VISIT_ID
+
+        LEFT OUTER JOIN ship.MAS_DISPOSAL MD ON MD.DISPOSAL_ID=OPD.DISPOSAL1_ID
+
+WHERE   VT.PATIENT_ID=$P{P_PATIENTID} AND UPPER(VT.VISIT_STATUS)='C' AND  VT.VISIT_ID = $P{P_VISITID}
+
+ORDER BY VT.VISIT_DATE DESC]]></queryString>
+
+	<field name="visit_id" class="java.lang.Long"/>
+	<field name="encounter_no" class="java.lang.Long"/>
+	<field name="encounter_type" class="java.lang.String"/>
+	<field name="encounter_date" class="java.lang.String"/>
+	<field name="encounter_time" class="java.lang.String"/>
+	<field name="provider_name" class="java.lang.String"/>
+	<field name="provider_location" class="java.lang.String"/>
+	<field name="chief_complain" class="java.lang.String"/>
+	<field name="present_illness_history" class="java.lang.String"/>
+	<field name="past_medical_history" class="java.lang.String"/>
+	<field name="past_surgical_history" class="java.lang.String"/>
+	<field name="medication_history" class="java.lang.String"/>
+	<field name="personal_history" class="java.lang.String"/>
+	<field name="social_history" class="java.lang.String"/>
+	<field name="family_history" class="java.lang.String"/>
+	<field name="allergy_history" class="java.lang.String"/>
+	<field name="implant_history" class="java.lang.String"/>
+	<field name="immunization_history" class="java.lang.String"/>
+	<field name="other_ehr" class="java.lang.String"/>
+	<field name="temperature" class="java.lang.String"/>
+	<field name="pulse" class="java.lang.String"/>
+	<field name="blood_pressure" class="java.lang.String"/>
+	<field name="respiratary_rate" class="java.lang.String"/>
+	<field name="spo2" class="java.lang.String"/>
+	<field name="height" class="java.lang.String"/>
+	<field name="weight" class="java.lang.String"/>
+	<field name="bmi" class="java.lang.String"/>
+	<field name="ge_pollor" class="java.lang.String"/>
+	<field name="ge_edema" class="java.lang.String"/>
+	<field name="ge_cyanosis" class="java.lang.String"/>
+	<field name="ge_hair_nail" class="java.lang.String"/>
+	<field name="ge_jauindice" class="java.lang.String"/>
+	<field name="ge_lymph_node" class="java.lang.String"/>
+	<field name="ge_clubbing" class="java.lang.String"/>
+	<field name="ge_thyroid" class="java.lang.String"/>
+	<field name="ge_tremors" class="java.lang.String"/>
+	<field name="ge_general_other" class="java.lang.String"/>
+	<field name="se_cns" class="java.lang.String"/>
+	<field name="se_chest_resp" class="java.lang.String"/>
+	<field name="se_musculoskeletal" class="java.lang.String"/>
+	<field name="se_cvs" class="java.lang.String"/>
+	<field name="se_skin" class="java.lang.String"/>
+	<field name="se_gi" class="java.lang.String"/>
+	<field name="se_genito_urinary" class="java.lang.String"/>
+	<field name="se_system_other" class="java.lang.String"/>
+	<field name="working_diagnosis" class="java.lang.String"/>
+	<field name="snomed_diagnosis" class="java.lang.String"/>
+	<field name="icd_diagnosis" class="java.lang.String"/>
+	<field name="disposal1_id" class="java.lang.Long"/>
+	<field name="disposal_name" class="java.lang.String"/>
+	<field name="disposal_days" class="java.lang.String"/>
+	<field name="chief_complaintext" class="java.lang.String"/>
+	<field name="casenote" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="320"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="26"
+						width="534"
+						height="16"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-1"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[ENCOUNTER DETAILS :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="44"
+						width="108"
+						height="16"
+						key="staticText-2"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Encounter Number]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="62"
+						width="108"
+						height="16"
+						key="staticText-3"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Encounter Date]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="255"
+						y="44"
+						width="95"
+						height="16"
+						key="staticText-4"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Encounter Type]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="255"
+						y="62"
+						width="95"
+						height="16"
+						key="staticText-5"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Encounter Time]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="80"
+						width="533"
+						height="16"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-6"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[ATTENDING PROVIDER DETAILS :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="99"
+						width="108"
+						height="16"
+						key="staticText-7"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Provider Name]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="254"
+						y="99"
+						width="96"
+						height="16"
+						key="staticText-9"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Location ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="239"
+						width="535"
+						height="16"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-32"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[OBJECTIVE:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="257"
+						width="97"
+						height="16"
+						key="staticText-33"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Temperature(°F)  ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="276"
+						y="257"
+						width="72"
+						height="16"
+						key="staticText-34"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[BP(mmHg)           ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="144"
+						y="257"
+						width="69"
+						height="16"
+						key="staticText-35"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Pulse(/min)  ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="410"
+						y="257"
+						width="80"
+						height="16"
+						key="staticText-36"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[RR(/min)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="0"
+						y="275"
+						width="97"
+						height="16"
+						key="staticText-37"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[SpO2(%)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="144"
+						y="275"
+						width="69"
+						height="16"
+						key="staticText-38"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Height(cm)         ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="276"
+						y="275"
+						width="72"
+						height="16"
+						key="staticText-39"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Weight(kg)     ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="410"
+						y="275"
+						width="80"
+						height="16"
+						key="staticText-40"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[BMI(kg/m2)]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="461"
+						y="275"
+						width="74"
+						height="16"
+						key="textField"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{bmi}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="329"
+						y="275"
+						width="82"
+						height="16"
+						key="textField"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{weight}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="193"
+						y="275"
+						width="84"
+						height="16"
+						key="textField"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{height}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="71"
+						y="275"
+						width="74"
+						height="16"
+						key="textField"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{spo2}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="461"
+						y="257"
+						width="74"
+						height="16"
+						key="textField"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{respiratary_rate}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="193"
+						y="257"
+						width="84"
+						height="16"
+						key="textField"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{pulse}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="71"
+						y="257"
+						width="74"
+						height="16"
+						key="textField"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{temperature}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="329"
+						y="99"
+						width="205"
+						height="16"
+						key="textField"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provider_location}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="329"
+						y="62"
+						width="205"
+						height="16"
+						key="textField"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{encounter_time}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="88"
+						y="62"
+						width="166"
+						height="16"
+						key="textField"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{encounter_date}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="329"
+						y="44"
+						width="205"
+						height="16"
+						key="textField"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{encounter_type}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="##0" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="88"
+						y="44"
+						width="166"
+						height="16"
+						key="textField"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Long"><![CDATA[$F{encounter_no}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="88"
+						y="99"
+						width="165"
+						height="16"
+						key="textField"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{provider_name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="329"
+						y="257"
+						width="82"
+						height="16"
+						key="textField"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{blood_pressure}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="154"
+						width="534"
+						height="0"
+						key="line-1"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</line>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="154"
+						width="533"
+						height="7"
+						key="subreport-1"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="P_PATIENTID">
+						<subreportParameterExpression><![CDATA[$P{P_PATIENTID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="P_VISITID">
+						<subreportParameterExpression><![CDATA[$P{P_VISITID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//Chief_Complaint.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="162"
+						width="533"
+						height="6"
+						key="subreport-2"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="P_PATIENTID">
+						<subreportParameterExpression><![CDATA[$P{P_PATIENTID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="P_VISITID">
+						<subreportParameterExpression><![CDATA[$P{P_VISITID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//History_of_Present_Illness.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="169"
+						width="533"
+						height="8"
+						key="subreport-3"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="P_PATIENTID">
+						<subreportParameterExpression><![CDATA[$P{P_PATIENTID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="P_VISITID">
+						<subreportParameterExpression><![CDATA[$P{P_VISITID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//Past_Medical_History.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="178"
+						width="533"
+						height="6"
+						key="subreport-4"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="P_PATIENTID">
+						<subreportParameterExpression><![CDATA[$P{P_PATIENTID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="P_VISITID">
+						<subreportParameterExpression><![CDATA[$P{P_VISITID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//Past_Surgeries.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="185"
+						width="533"
+						height="6"
+						key="subreport-5"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="P_PATIENTID">
+						<subreportParameterExpression><![CDATA[$P{P_PATIENTID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="P_VISITID">
+						<subreportParameterExpression><![CDATA[$P{P_VISITID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//Medication_History.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="192"
+						width="533"
+						height="7"
+						key="subreport-7"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="P_PATIENTID">
+						<subreportParameterExpression><![CDATA[$P{P_PATIENTID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="P_VISITID">
+						<subreportParameterExpression><![CDATA[$P{P_VISITID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//Social_History.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="200"
+						width="533"
+						height="5"
+						key="subreport-8"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="P_PATIENTID">
+						<subreportParameterExpression><![CDATA[$P{P_PATIENTID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="P_VISITID">
+						<subreportParameterExpression><![CDATA[$P{P_VISITID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//Family_History.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="206"
+						width="533"
+						height="6"
+						key="subreport-9"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="P_PATIENTID">
+						<subreportParameterExpression><![CDATA[$P{P_PATIENTID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="P_VISITID">
+						<subreportParameterExpression><![CDATA[$P{P_VISITID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//Allergy_History.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="222"
+						width="533"
+						height="7"
+						key="subreport-11"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="P_PATIENTID">
+						<subreportParameterExpression><![CDATA[$P{P_PATIENTID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="P_VISITID">
+						<subreportParameterExpression><![CDATA[$P{P_VISITID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//EHR_Immunization_History.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="230"
+						width="533"
+						height="7"
+						key="subreport-12"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="P_PATIENTID">
+						<subreportParameterExpression><![CDATA[$P{P_PATIENTID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="P_VISITID">
+						<subreportParameterExpression><![CDATA[$P{P_VISITID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//Any_Other_Information_Significant_for_EHR_report_1.jasper"]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="136"
+						width="533"
+						height="16"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-41"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[SUBJECTIVE:]]></text>
+				</staticText>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="294"
+						width="533"
+						height="7"
+						key="subreport-13"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="P_PATIENTID">
+						<subreportParameterExpression><![CDATA[$P{P_PATIENTID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="P_VISITID">
+						<subreportParameterExpression><![CDATA[$P{P_VISITID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//General_Examination_report_1.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="302"
+						width="533"
+						height="8"
+						key="subreport-14"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="P_PATIENTID">
+						<subreportParameterExpression><![CDATA[$P{P_PATIENTID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="P_VISITID">
+						<subreportParameterExpression><![CDATA[$P{P_VISITID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//System_Examination_report_1.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="311"
+						width="533"
+						height="9"
+						key="subreport-15"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="P_PATIENTID">
+						<subreportParameterExpression><![CDATA[$P{P_PATIENTID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="P_VISITID">
+						<subreportParameterExpression><![CDATA[$P{P_VISITID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//Assessment_report_1.jasper"]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement
+						mode="Transparent"
+						x="137"
+						y="0"
+						width="213"
+						height="23"
+						key="staticText-42"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="11" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[ENCOUNTER SHEET]]></text>
+				</staticText>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="213"
+						width="533"
+						height="7"
+						key="subreport-16"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<subreportParameter  name="P_PATIENTID">
+						<subreportParameterExpression><![CDATA[$P{P_PATIENTID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SUBREPORT_DIR">
+						<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="P_VISITID">
+						<subreportParameterExpression><![CDATA[$P{P_VISITID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//EHR_implant_history_report.jasper"]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="117"
+						width="108"
+						height="16"
+						key="staticText-43"
+						positionType="Float"
+						isRemoveLineWhenBlank="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Phone Number]]></text>
+				</staticText>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Lab_Main_Report"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="611"
+		 pageHeight="842"
+		 columnWidth="551"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoDataSection"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="path" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String(" ")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FROM_DATE" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="TO_DATE" isForPrompting="true" class="java.util.Date">
+		<defaultValueExpression ><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Level_of_user" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="User_id" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="genderId" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="MMU_ID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="investigationId" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fromAge" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="toAge" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["C:\\Users\\jyoti\\Desktop\\MB\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[SELECT  DISTINCT (CASE WHEN $P{MMU_ID}= 0 THEN 'ALL' ELSE MMU_NAME END)
+FROM    DG_RESULT_ENTRY_HD HD LEFT OUTER JOIN DG_RESULT_ENTRY_DT DT    ON HD.RESULT_ENTRY_HD_ID=DT.RESULT_ENTRY_HD_ID
+                              LEFT OUTER JOIN PATIENT PT    ON PT.PATIENT_ID=HD.PATIENT_ID
+							  LEFT OUTER JOIN MAS_ADMINISTRATIVE_SEX SEX ON SEX.ADMINISTRATIVE_SEX_ID=PT.ADMINISTRATIVE_SEX_ID
+							  LEFT OUTER JOIN DG_MAS_INVESTIGATION DMI ON  DMI.INVESTIGATION_ID=DT.INVESTIGATION_ID
+                              LEFT OUTER JOIN DG_SUB_MAS_INVESTIGATION DSMI ON DT.RESULT_TYPE='m' and DSMI.SUB_INVESTIGATION_ID=DT.SUB_INVESTIGATION_ID
+                              LEFT OUTER JOIN MAS_MMU ON MAS_MMU.MMU_ID =HD.MMU_ID
+WHERE   HD.MAIN_CHARGECODE_ID='2' AND DT.VALIDATED='V'
+		AND HD.VERIFIED='V' AND DT.RESULT_DETAIL_STATUS='C' 
+		AND HD.RESULT_STATUS='C' And DT.RESULT IS NOT NULL
+		AND HD.RESULT_DATE::date BETWEEN $P{FROM_DATE}   AND $P{TO_DATE}       
+		AND (DT.INVESTIGATION_ID = $P{investigationId}  OR $P{investigationId} = 0) 
+		AND (PT.ADMINISTRATIVE_SEX_ID = $P{genderId} OR $P{genderId} = 0) 	
+		AND PT.age between $P{fromAge} and (case when $P{toAge} = 0 then 125 else $P{toAge} end )AND
+		(HD.MMU_ID = $P{MMU_ID} OR $P{MMU_ID}= 0) AND
+	  MAS_MMU.MMU_ID IN (
+	  	SELECT 	MMU.MMU_ID
+		FROM 	MAS_MMU MMU,CITY_MMU_MAPPING MCM,(SELECT  	to_number(foo,'99999999') IDS
+				     FROM 	regexp_split_to_table((SELECT 	(CASE WHEN 'M' = $P{Level_of_user} THEN substring(M.MMU_ID, 1 ,length(M.MMU_ID)-1) 
+										      WHEN 'C' = $P{Level_of_user} THEN substring(M.CITY_ID, 1 ,length(M.CITY_ID)-1) 
+										      WHEN 'D' = $P{Level_of_user} THEN substring(M.DISTRICT_ID, 1 ,length(M.DISTRICT_ID)-1) 
+										      ELSE '1' END)
+									FROM 	USERS M 
+									WHERE 	M.USER_ID =$P{User_id}), E',') As foo)  ALL_ID 
+		WHERE MCM.MMU_ID = MMU.MMU_ID AND
+			( (MMU.MMU_ID=ALL_ID.IDS AND 'M' =$P{Level_of_user}) OR
+	  		(MCM.CITY_ID=ALL_ID.IDS AND 'C' =$P{Level_of_user}) OR
+			(MMU.STATE_ID=ALL_ID.IDS AND 'S' =$P{Level_of_user}) OR
+			(MMU.DISTRICT_ID=ALL_ID.IDS AND 'D' =$P{Level_of_user}) ) 
+		)]]></queryString>
+
+	<field name="mmu_name" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="76"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="1"
+						y="41"
+						width="550"
+						height="18"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Lab Reports]]></text>
+				</staticText>
+				<image  evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1"
+						y="1"
+						width="100"
+						height="75"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch"/>
+					<imageExpression class="java.lang.String"><![CDATA[$P{path}]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="1"
+						y="21"
+						width="550"
+						height="18"
+						key="textField"
+						isPrintWhenDetailOverflows="true">
+							<printWhenExpression><![CDATA[($P{MMU_ID}.intValue() == 0 ?  Boolean.FALSE: Boolean.TRUE )]]></printWhenExpression>
+						</reportElement>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{mmu_name}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="1"
+						y="2"
+						width="550"
+						height="18"
+						key="staticText-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="11" isBold="true"/>
+					</textElement>
+				<text><![CDATA[MUKHYA MANTRI SLUM SWASTHYA YOJANA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="102"
+						y="55"
+						width="63"
+						height="20"
+						key="staticText-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<text><![CDATA[From Date  :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="167"
+						y="55"
+						width="78"
+						height="20"
+						key="textField-1"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{FROM_DATE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="417"
+						y="55"
+						width="55"
+						height="20"
+						key="staticText-15"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="10" isBold="true"/>
+					</textElement>
+				<text><![CDATA[To Date  :]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="471"
+						y="55"
+						width="80"
+						height="20"
+						key="textField-2"
+						isRemoveLineWhenBlank="true"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="9"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[$P{TO_DATE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="39"  isSplitAllowed="true" >
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="3"
+						width="549"
+						height="16"
+						key="subreport-1"
+						positionType="Float"/>
+					<subreportParameter  name="FROM_DATE">
+						<subreportParameterExpression><![CDATA[$P{FROM_DATE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TO_DATE">
+						<subreportParameterExpression><![CDATA[$P{TO_DATE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Level_of_user">
+						<subreportParameterExpression><![CDATA[$P{Level_of_user}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="User_id">
+						<subreportParameterExpression><![CDATA[$P{User_id}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="genderId">
+						<subreportParameterExpression><![CDATA[$P{genderId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="MMU_ID">
+						<subreportParameterExpression><![CDATA[$P{MMU_ID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="investigationId">
+						<subreportParameterExpression><![CDATA[$P{investigationId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="fromAge">
+						<subreportParameterExpression><![CDATA[$P{fromAge}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="toAge">
+						<subreportParameterExpression><![CDATA[$P{toAge}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//Lab_Sub_Summary_Report.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="21"
+						width="549"
+						height="16"
+						key="subreport-2"
+						positionType="Float"/>
+					<subreportParameter  name="FROM_DATE">
+						<subreportParameterExpression><![CDATA[$P{FROM_DATE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TO_DATE">
+						<subreportParameterExpression><![CDATA[$P{TO_DATE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Level_of_user">
+						<subreportParameterExpression><![CDATA[$P{Level_of_user}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="User_id">
+						<subreportParameterExpression><![CDATA[$P{User_id}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="genderId">
+						<subreportParameterExpression><![CDATA[$P{genderId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="MMU_ID">
+						<subreportParameterExpression><![CDATA[$P{MMU_ID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="investigationId">
+						<subreportParameterExpression><![CDATA[$P{investigationId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="fromAge">
+						<subreportParameterExpression><![CDATA[$P{fromAge}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="toAge">
+						<subreportParameterExpression><![CDATA[$P{toAge}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//Lab_Sub_Detail_Report.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+		<noData>
+			<band height="26"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="1"
+						y="5"
+						width="534"
+						height="21"
+						key="staticText-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[NO DATA FOUND]]></text>
+				</staticText>
+			</band>
+		</noData>
+</jasperReport>

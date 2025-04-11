@@ -1,0 +1,215 @@
+/////////////Mas City add Column  indent_city ///////////////////
+ALTER TABLE mas_city
+  ADD indent_city varchar(1);
+ /////////////////////////////////// 
+   
+ALTER TABLE capture_equipment_checklist_details
+  ADD camp_id bigint ;
+  
+  ALTER TABLE capture_inspection_details
+  ADD camp_id bigint ;
+  
+  ////////////////18-09-2022/////////////////////
+  ALTER TABLE mas_district
+  ADD upss varchar(250);
+  
+    
+  alter TABLE capture_equipment_checklist_details drop column camp_id
+  
+  alter TABLE capture_inspection_details drop column camp_id
+ 
+ ////////////////24-09-2022/////////////////////
+ alter table patient add column patient_image varchar(200);
+ 
+ CREATE SEQUENCE patient_data_upload_seq INCREMENT 1 START 1; 
+create table patient_data_upload ( patient_data_upload_id bigint not null
+								  default nextval('patient_data_upload_seq' ),
+								  patient_id bigint, file_data character varying(200),
+								  status character varying(1), last_chg_by bigint, 
+								  last_chg_date timestamp without time zone, 
+								  CONSTRAINT patient_data_upload_pkey PRIMARY KEY (patient_data_upload_id),
+								  CONSTRAINT fk_patient_data_patient_id 
+								  FOREIGN KEY (patient_id) REFERENCES public.patient (patient_id) 
+								  MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION,
+								  CONSTRAINT fk_patient_data_user_id FOREIGN KEY (last_chg_by)
+								  REFERENCES public.users (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON 
+								  DELETE NO ACTION );
+	///////////////////////////////////////////////////////////////////////////
+	
+	
+	ALTER TABLE MAS_STORE_ITEM
+  ADD INACTIVE_FOR_ENTRY varchar(1);
+  
+  
+  
+  /////////////////////////////7/11/2022/////////////////////////
+   ALTER TABLE STORE_INTERNAL_INDENT_T
+  ALTER COLUMN total_cost TYPE NUMERIC (10, 2);
+  
+  
+  //////////////////////////11/11/2022///////////////////////////////////
+  
+ alter table AUTHORITY_MAPPING add column status varchar(1);
+ 
+ 
+ ////////////////////////////////////////////
+   ALter table STORE_ISSUE_T add total_cost numeric(10,2)
+  //////////////////////////////////////
+  
+///////////////////////////////////////////////////
+ALTER TABLE MAS_STORE_FINANCIAL
+  ADD mark_financial_year varchar(1);
+////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+ update mas_store_supplier set status ='y'
+ 
+ 
+ //////////////////////////////// 28-02-2023 ////////////////////
+  			create table upss_manufacturer_mapping ( upss_manu_id bigint not null,
+								   
+								 SUPPLIER_ID bigint,
+								  district_id bigint, 
+								  status character varying(1), 
+								  last_chg_by bigint, 
+								  last_chg_date timestamp without time zone, 
+								  CONSTRAINT upss_manu_pkey PRIMARY KEY (upss_manu_id)
+								   );
+	 			 	 
+								    
+					 CREATE SEQUENCE upss_manu_id_seq
+					  START WITH 1
+					  INCREMENT BY 1
+					  CACHE 20;
+				
+				select setval('upss_manu_id_seq', 200, true);
+				////////////////////////////////////////////////////////////////
+//////////////phase 24/06/23/////////////////////////
+					  ALTER TABLE fund_allocation_hd
+  ADD phase varchar(50);
+  
+     ALTER TABLE medicine_invoice
+  ADD phase varchar(50);
+  
+   
+ 
+
+-- FUNCTION: public.asp_fund_allocation_financial_phase(integer,varchar)
+
+-- DROP FUNCTION IF EXISTS public.asp_fund_allocation_financial_phase(integer,varchar);
+
+CREATE OR REPLACE FUNCTION public.asp_fund_allocation_financial_phase(
+	p_financial_id integer,phase_val varchar)
+    RETURNS SETOF refcursor 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+/*
+BEGIN
+SELECT asp_fund_allocation_financial_phase(12,'phase1')
+FETCH ALL IN "<unnamed portal 4>";
+ROLLBACK
+commit
+*/
+
+DECLARE RC1 refcursor;
+		
+BEGIN 
+    /*  Ist Result Set*/
+  	OPEN RC1 FOR
+	
+	SELECT 
+	COALESCE((SELECT  	sum(hd.total_amount) allocated_amount
+	FROM 	fund_allocation_hd hd 
+	WHERE   hd.financial_id =p_financial_id  AND hd.phase=phase_val AND
+			hd.status ='A') ,0):: bigint Total_allocated ,
+	COALESCE((SELECT  sum(hd.total_amount) allocated_amount
+	FROM 	fund_allocation_hd hd 
+	WHERE   hd.financial_id =p_financial_id AND hd.phase=phase_val AND
+			hd.status ='A' and
+			hd.fund_allocation_date = (SELECT  MAX(hd.fund_allocation_date) 
+	FROM 	fund_allocation_hd hd 
+	WHERE   hd.financial_id =p_financial_id  AND hd.phase=phase_val AND
+			hd.status ='A' ) ),0):: bigint Previous_allocated, 
+	COALESCE((select COALESCE(SUM(hcb_balance),0):: bigint
+	 from 	fund_hcb 
+	 where 	(upss_id,hcb_date,head_type_id) in (SELECT upss_id,max(c.hcb_date),head_type_id
+								 from 	fund_hcb c ,mas_store_financial msf 
+								 where 	msf.financial_id = p_financial_id  and
+										c.hcb_date between msf.start_date and msf.end_date
+									Group by upss_id,head_type_id) ),0):: bigint Balance;
+	RETURN NEXT RC1;   
+	
+END ;
+$BODY$;
+
+ALTER FUNCTION public.asp_fund_allocation_financial_phase(integer,varchar)
+    OWNER TO postgres;
+  
+  drop table capture_interest
+  	
+  	create table capture_interest_dt ( capture_interest_dt_id bigint not null,
+								   
+								 city_id bigint,
+								  district_id bigint, 
+								     head_type_id bigint,
+								     interest  bigint,
+								     FINANCIAL_ID bigint,
+								  status character varying(1),
+								  allocation_flag  character varying(2),
+								   
+								  created_by bigint,
+								  created_on timestamp without time zone,
+								  approved_by bigint,
+								  approved_date timestamp without time zone,
+								  
+								  
+								  CONSTRAINT capture_interest_dt_pkey PRIMARY KEY (capture_interest_dt_id)
+								   );
+	
+  	 	
+		
+		 CREATE SEQUENCE capture_interest_dt_id_seq
+					  START WITH 1
+					  INCREMENT BY 1
+					  CACHE 20;
+				
+				select setval('capture_interest_dt_id_seq', 200, true);
+				
+  
+  
+  	create table capture_interest_hd ( capture_interest_hd_id bigint not null,
+								   
+								 
+								  financial_id bigint,
+								  financial_year character varying(50),
+								  created_by bigint,
+								  created_on timestamp without time zone,
+								  
+								approved_by bigint,
+								  approved_date timestamp without time zone,								  
+								  status character varying(1),
+								remarks	  character varying(500),
+								  CONSTRAINT capture_interest_hd_pkey PRIMARY KEY (capture_interest_hd_id)
+								   );
+		CREATE SEQUENCE capture_interest_hd_id_seq
+					  START WITH 1
+					  INCREMENT BY 1
+					  CACHE 20;
+				
+				select setval('capture_interest_hd_id_seq', 200, true);
+				
+				ALTER TABLE capture_interest_hd
+  ADD phase varchar(50);
+  
+  ALTER TABLE fund_hcb
+  ADD phase varchar(50);
+  
+  ALTER TABLE vendor_invoice_payment
+  ADD phase varchar(50);
+  
+  ALTER TABLE capture_vendor_bill_detail
+  ADD phase varchar(50);
+//////////////////////////////////////////////////			    

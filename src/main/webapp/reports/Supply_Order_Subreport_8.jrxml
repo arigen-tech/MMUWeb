@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Supply_Order_Subreport_8"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="611"
+		 pageHeight="842"
+		 columnWidth="611"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="AllSectionsNoDetail"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="729"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="24"
+						y="2"
+						width="541"
+						height="36"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[The seller shall collect the defective or rejected goods from the location nominated by the buyer and deliver the repaired or replaced goods at the same location under Seller’s arrangement]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="2"
+						width="22"
+						height="20"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[e)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="37"
+						width="541"
+						height="52"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Claims may also be settled by reduction of cost of goods under claim from bonds submitted by the Seller or payment of claim amount by Seller through demand draft drawn on an Indian Bank, in favour of Principal Controller/Controller of Defence Accounts concerned  ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="37"
+						width="22"
+						height="20"
+						key="staticText-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[f)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="81"
+						width="541"
+						height="42"
+						key="staticText-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[The quality claims will be raised solely by the Buyer and without any certification/ countersignature by the Seller's representative stationed in India. ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="81"
+						width="22"
+						height="20"
+						key="staticText-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[g)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="114"
+						width="541"
+						height="20"
+						key="staticText-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Warranty]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="114"
+						width="22"
+						height="20"
+						key="staticText-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[29.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="134"
+						width="541"
+						height="199"
+						key="staticText-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Except as otherwise provided in the invitation tender, the Seller hereby declares that the goods, stores articles sold/supplied to the Buyer under this Supply Order shall be of the best quality and workmanship and new in all respects and shall be strictly in accordance with the specification and particulars contained/mentioned in Supply Order. The Seller hereby guarantees that the said goods/stores/articles would continue to conform to the description and quality aforesaid for a period of 12 months from the date of delivery of the said goods stores/articles to the Buyer or 15 months from the date of shipment/dispatch from the Seller's works whichever is earlier and that notwithstanding the fact that the Buyer may have inspected and/or approved the said goods/stores/articles, if during the aforesaid period of 12/15 months the said goods/stores/articles be discovered not to conform to the description and quality aforesaid not giving satisfactory performance or have deteriorated, and the decision of the Buyer in that behalf shall be final and binding on the Seller and the Buyer shall be entitled to call upon the Seller to rectify the goods/stores/articles or such portion thereof as is found to be defective by the Buyer within a reasonable period, or such specified period as may be allowed by the Buyer in his discretion on application made thereof by the Seller, and in such an event, the above period shall apply to the goods/stores/articles rectified from the date of rectification mentioned in warranty thereof, otherwise the Seller shall pay to the Buyer such compensation as may arise by reason of the breach of the warranty therein contained. ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="134"
+						width="22"
+						height="20"
+						key="staticText-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[I.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="321"
+						width="541"
+						height="52"
+						key="staticText-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Guarantee that they will supply spare parts, if and when required on agreed basis for an agreed price. The agreed basis could be and including but without any limitation an agreed discount on the published catalogue or an agreed percentage of profit on the landed cost. ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="321"
+						width="22"
+						height="20"
+						key="staticText-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[II.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="360"
+						width="541"
+						height="36"
+						key="staticText-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Warranty to the effect that before going out of production for the spare parts they will give adequate advance notice to the Buyer of the equipment so that the latter may undertake the balance of the lifetime requirements. ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="360"
+						width="22"
+						height="20"
+						key="staticText-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[III.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="391"
+						width="541"
+						height="38"
+						key="staticText-15"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Warranty to the affect that they will make available the blue prints of drawings of the spares if and when required in connection with the main equipment. ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="391"
+						width="22"
+						height="20"
+						key="staticText-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[IV.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="424"
+						width="541"
+						height="20"
+						key="staticText-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Product Support: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="424"
+						width="22"
+						height="20"
+						key="staticText-18"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[30.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="442"
+						width="576"
+						height="20"
+						key="staticText-19"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[The Seller agrees to provide Product Support for the stores, (hiring of material as mentioned in part II of this supply order). ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="442"
+						width="22"
+						height="20"
+						key="staticText-20"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[a)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="462"
+						width="541"
+						height="20"
+						key="staticText-21"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[System ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="482"
+						width="541"
+						height="33"
+						key="staticText-22"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[The Seller agrees to undertake Maintenance Supply Order for a maximum period of 12 months, extendable till the complete Engineering Support Package is provided by the Settler.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="482"
+						width="22"
+						height="20"
+						key="staticText-23"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[b)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="513"
+						width="541"
+						height="47"
+						key="staticText-24"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[In the event of any obsolescence during the above mentioned period of product support in respect of any component or sub-system, mutual consultation between the Seller and Buyer will be undertaken to arrive at an acceptable solution including additional cost, if any. ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="513"
+						width="22"
+						height="20"
+						key="staticText-25"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[c)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="552"
+						width="541"
+						height="47"
+						key="staticText-26"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[Any improvement/modification/ up gradation being undertaken by Seller or their sub suppliers on the stores/equipment being purchased under the Supply Order will be communicated by the Seller to the Buyer and, if required by the Buyer, these will be carried out by the Seller at Buyer's cost. ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="551"
+						width="22"
+						height="20"
+						key="staticText-27"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[d)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="594"
+						width="541"
+						height="75"
+						key="staticText-28"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[The Seller agrees to provide an Engineering Support Package as modified after confirmatory Maintenance Evaluation Trials (METs). The SELLER agrees to undertake the repair and maintenance of the equipment, SMTs/STEs test set up, assemblies/ sub assemblies and stores supplied under this Supply Order for a period of 01 years as maintenance supply order as specified or provision of complete Engineering Support package to the Buyer whichever is later, as per terms and conditions mutually agreed between the Seller and the Buyer.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="594"
+						width="22"
+						height="20"
+						key="staticText-29"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica" size="9" isBold="false"/>
+					</textElement>
+				<text><![CDATA[e)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="669"
+						width="541"
+						height="20"
+						key="staticText-30"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Annual Maintenance Supply Order( AMC) Clause - NA ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="669"
+						width="22"
+						height="20"
+						key="staticText-31"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[31.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="689"
+						width="541"
+						height="20"
+						key="staticText-32"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Engineering Support Package (ESP) clause: NA ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="689"
+						width="22"
+						height="20"
+						key="staticText-33"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[32.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="24"
+						y="709"
+						width="541"
+						height="20"
+						key="staticText-34"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Price Variation (PV) Clause — NA ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="709"
+						width="22"
+						height="20"
+						key="staticText-35"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="9" isBold="true"/>
+					</textElement>
+				<text><![CDATA[33.]]></text>
+				</staticText>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

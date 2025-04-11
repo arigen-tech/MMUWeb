@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Treatment_SubReport_report_Batch2" pageWidth="421" pageHeight="595" columnWidth="421" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="VISIT_ID" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Option" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[Select total * MRP as Rate,  MAS_STORE_ITEM.NOMENCLATURE , PATIENT_PRESCRIPTION_DT.Dosage, MAS_STORE_UNIT.STORE_UNIT_NAME ,
+OPD_PATIENT_DETAILS.RECMMD_MED_ADVICE,MAS_FREQUENCY.FREQUENCY_NAME ,PATIENT_PRESCRIPTION_DT.NO_OF_DAYS ,
+PATIENT_PRESCRIPTION_DT.TOTAL as total, /*PATIENT_PRESCRIPTION_DT.MAS_FREQUENCY.FREQUENCY_HIN_NAME*/  INSTRUCTION,STORE_ITEM_BATCH_STOCK.MRP as MRP,
+PATIENT_PRESCRIPTION_DT.qty_issued
+From PATIENT_PRESCRIPTION_DT
+LEFT OUTER JOIN PATIENT_PRESCRIPTION_HD on PATIENT_PRESCRIPTION_HD.PRESCRIPTION_HD_ID=PATIENT_PRESCRIPTION_DT.PRESCRIPTION_HD_ID
+LEFT OUTER JOIN MAS_STORE_ITEM on MAS_STORE_ITEM.ITEM_ID=PATIENT_PRESCRIPTION_DT.ITEM_ID
+LEFT OUTER JOIN MAS_STORE_UNIT on MAS_STORE_UNIT.STORE_UNIT_ID=MAS_STORE_ITEM.DISP_UNIT_ID
+LEFT OUTER JOIN MAS_FREQUENCY on MAS_FREQUENCY.FREQUENCY_ID=PATIENT_PRESCRIPTION_DT.FREQUENCY_ID
+LEFT OUTER JOIN OPD_PATIENT_DETAILS on OPD_PATIENT_DETAILS.OPD_PATIENT_DETAILS_ID=PATIENT_PRESCRIPTION_HD.OPD_PATIENT_DETAILS_ID
+LEFT OUTER JOIN STORE_ISSUE_T on STORE_ISSUE_T.PRESCRIPTION_DT_ID=PATIENT_PRESCRIPTION_DT.PRESCRIPTION_DT_ID
+LEFT OUTER JOIN STORE_ITEM_BATCH_STOCK on STORE_ITEM_BATCH_STOCK.STOCK_ID= STORE_ISSUE_T.BATCH_STOCK_ID
+WHERE PATIENT_PRESCRIPTION_HD.VISIT_ID=$P{VISIT_ID} and $P{Option}<>0
+ORDER BY NOMENCLATURE]]>
+	</queryString>
+	<field name="rate" class="java.lang.Double"/>
+	<field name="nomenclature" class="java.lang.String"/>
+	<field name="dosage" class="java.lang.String"/>
+	<field name="store_unit_name" class="java.lang.String"/>
+	<field name="recmmd_med_advice" class="java.lang.String"/>
+	<field name="frequency_name" class="java.lang.String"/>
+	<field name="no_of_days" class="java.lang.Long"/>
+	<field name="total" class="java.lang.Long"/>
+	<field name="instruction" class="java.lang.String"/>
+	<field name="mrp" class="java.lang.Double"/>
+	<field name="qty_issued" class="java.lang.Long"/>
+	<variable name="Srno" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[new java.lang.Integer(1)]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="29" splitType="Stretch">
+			<staticText>
+				<reportElement key="staticText-1" mode="Opaque" x="0" y="0" width="361" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" isUnderline="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Treatment :]]></text>
+			</staticText>
+			<line>
+				<reportElement key="line-1" x="0" y="12" width="368" height="1"/>
+			</line>
+			<line>
+				<reportElement key="line-2" x="0" y="27" width="368" height="1"/>
+			</line>
+			<staticText>
+				<reportElement key="staticText-2" x="317" y="14" width="49" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6" isBold="true" isStrikeThrough="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Instruction]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-4" x="179" y="14" width="33" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Frequency]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-5" x="152" y="14" width="23" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Dosage]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-7" x="117" y="14" width="31" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Disp unit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-9" x="22" y="14" width="82" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Drug Name]]></text>
+			</staticText>
+			<line>
+				<reportElement key="line-14" x="367" y="13" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement key="line-15" x="0" y="13" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement key="line-17" x="149" y="13" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement key="line-18" x="178" y="13" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement key="line-19" x="315" y="13" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement key="line-20" x="20" y="13" width="1" height="16"/>
+			</line>
+			<staticText>
+				<reportElement key="staticText-11" x="1" y="14" width="19" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Sr.No.]]></text>
+			</staticText>
+			<line>
+				<reportElement key="line-22" x="115" y="13" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement key="line-25" x="212" y="13" width="1" height="16"/>
+			</line>
+			<staticText>
+				<reportElement key="staticText-13" x="214" y="14" width="32" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Days]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="staticText-14" x="286" y="14" width="29" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[ Issued]]></text>
+			</staticText>
+			<line>
+				<reportElement key="line-28" x="284" y="13" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement key="line-29" x="248" y="13" width="1" height="16"/>
+			</line>
+			<staticText>
+				<reportElement key="staticText-15" x="251" y="14" width="32" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="14" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField" x="22" y="0" width="82" height="12" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nomenclature}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField" x="119" y="0" width="26" height="12" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{store_unit_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="##0" isBlankWhenNull="true">
+				<reportElement key="textField" x="179" y="0" width="33" height="12" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{frequency_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField" x="317" y="0" width="49" height="12" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{instruction}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-3" positionType="Float" x="0" y="13" width="368" height="1"/>
+			</line>
+			<line>
+				<reportElement key="line-4" positionType="Float" stretchType="RelativeToTallestObject" x="367" y="0" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<line>
+				<reportElement key="line-5" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<line>
+				<reportElement key="line-9" positionType="Float" stretchType="RelativeToTallestObject" x="149" y="0" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<line>
+				<reportElement key="line-10" positionType="Float" stretchType="RelativeToTallestObject" x="178" y="0" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<line>
+				<reportElement key="line-12" positionType="Float" stretchType="RelativeToTallestObject" x="284" y="0" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField" x="152" y="0" width="23" height="12" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{dosage}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-21" positionType="Float" stretchType="RelativeToTallestObject" x="20" y="0" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<line>
+				<reportElement key="line-23" positionType="Float" stretchType="RelativeToTallestObject" x="115" y="0" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<line>
+				<reportElement key="line-24" positionType="Float" stretchType="RelativeToTallestObject" x="212" y="0" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<textField isBlankWhenNull="false">
+				<reportElement key="textField" x="0" y="0" width="19" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{Srno}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement key="textField" x="215" y="0" width="31" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{no_of_days}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-27" positionType="Float" stretchType="RelativeToTallestObject" x="315" y="0" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true">
+				<reportElement key="textField-1" x="287" y="0" width="28" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{qty_issued}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement key="line-30" positionType="Float" stretchType="RelativeToTallestObject" x="248" y="0" width="1" height="14" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true">
+				<reportElement key="textField-2" x="253" y="1" width="28" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

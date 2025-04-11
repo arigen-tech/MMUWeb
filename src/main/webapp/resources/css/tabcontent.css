@@ -1,0 +1,161 @@
+/* ######### CSS for Shade Tabs. Remove if not using ######### */
+.tabcontainer {border: 1px solid #A4D0FF;padding: 10px 0px 10px 0px;margin-bottom: 40px;}
+.tabcontainerIn {	
+	width:1004px;
+	/*width:982px;*/
+	margin-bottom: 1em; padding: 0px; float:left; margin:0px;}
+.tabcontainerIn .Block {width:1004px; background:url(../images/formBg.gif) repeat-x #EFF3F8; border: 1px solid #CCCFD2;}
+.shadetabs {padding: 0px 0px 3px 0px; 
+	margin-left: 0;
+	margin-top: 1px;
+	margin-bottom: 0;
+	font: bold 12px Verdana;
+	list-style-type: none;
+	text-align: left;
+	/*set to left, center, or right to align the menu as desired*/
+}
+.shadetabsIn {
+	padding: 3px 0;
+	margin:0px 0px 0px 5px;
+	font: bold 12px Verdana;
+	list-style-type: none;
+	text-align: left;
+	float:left;
+	/*set to left, center, or right to align the menu as desired*/
+}
+.shadetabs li {
+	display: inline;
+	margin: 0;
+}
+
+.shadetabs li a {
+	text-decoration: none;
+	position: relative;
+	z-index: 1;
+	padding: 6px 7px;
+	margin-right: 3px;
+	border: 1px solid #A4D0FF;
+	color: #2d2b2b;
+	background: #ffffff url(../images/tabcontent/shade.gif) top left repeat-x;
+}
+
+.shadetabs li a:visited {
+	color: #2d2b2b;
+}
+
+.shadetabs li a:hover {
+	text-decoration: underline;
+	color: #2d2b2b;
+}
+
+.shadetabs li a.selected { /*selected main tab style */
+	position: relative;
+	top: 1px;
+}
+
+* html .shadetabs li a.selected { /*selected main tab style */
+	position: fixed;
+	top: 1px;
+}
+
+.shadetabs li a.selected { /*selected main tab style */
+	background: url(../images/tabcontent/shadeactive.gif) repeat-x;
+	border-bottom-color: white;
+}
+
+.shadetabs li a.selected:hover { /*selected main tab style */
+	text-decoration: none;
+}
+
+.tabcontent {
+	display: none;
+	padding: 0px 5px 0px 5px;
+}
+.tabcontentIn {
+	display: none;
+	padding: 0px;
+}
+* html.tabcontent {
+	display: none;
+	padding: 0px;
+}
+
+@media print {
+	.tabcontent {
+		display: block !important;
+	}
+}
+
+#countrytabs label {
+	background: none;
+	padding: 0px;
+	margin-right: 3px;
+	border: 1px solid #A4D0FF;
+	color: #2d2b2b;
+	text-align: left;
+	width: auto;
+	font-size:12px;
+}
+
+#countrytabs label a {
+	text-decoration: none;
+	background: #ffffff url(../images/tabcontent/shade.gif) top left
+		repeat-x;
+	display: block;
+	width: auto;
+	padding: 3px 10px 0px 10px;
+	font-size:12px;
+}
+
+#countrytabs label a.selected {
+	background: url(../images/tabcontent/shadeactive.gif) repeat-x;
+	border-bottom-color: white;
+	color:#ffffff;
+}
+
+
+#countrytabsIn label {
+	background: none;
+	padding: 0px;
+	margin-right: 3px;
+	color: #000000;
+	text-align: left;
+	width: auto;
+}
+
+#countrytabsIn label a {
+	text-decoration: none;
+	background: #ffffff url(../images/tabLeft.jpg) no-repeat left 90%;
+	display: block;
+	width: auto;
+	padding: 0px 0px 0px 10px;
+	color:#ffffff;
+	font-size:12px;
+}
+#countrytabsIn label a span{
+	background: #ffffff url(../images/tabRight.jpg) no-repeat right 90%;
+	color:#000000;
+	display:block;
+	padding: 0px 10px 0px 0px;
+	font-size:12px;
+}
+#countrytabsIn label a:hover {
+	background: #ffffff url(../images/tabLeft.jpg) no-repeat left 45%;
+	display: block;
+	color:#000000;
+}
+#countrytabsIn label a:hover span{
+	background: #ffffff url(../images/tabRight.jpg) no-repeat right 45%;
+	color:#000000;
+	display:block;
+	}
+
+
+#countrytabsIn label a.selected {
+	background: #ffffff url(../images/tabLeft.jpg) no-repeat left 0%;
+	color:#000000;
+}
+#countrytabsIn label a.selected span {
+	background: #ffffff url(../images/tabRight.jpg) no-repeat right 0%;
+	color:#ffffff;
+}

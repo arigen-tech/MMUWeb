@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Utilization_Certificate_2" pageWidth="611" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="551" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="District_id" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="City_id" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Asondate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_phase" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT 'MMU' AS HeadType, coalesce(Available,0) as  "Available Balance",coalesce(-1*Utilized ,0)as "Amount Utilized",per as  "Utilized(%)" FROM
+(select  head_type_id,
+         (select SUM(COALESCE(hcb_balance,0)) from fund_hcb where fund_hcb_id in (
+                                       select max(fund_hcb_id) from fund_hcb
+                                              INNER JOIN mas_store_financial msf on $P{Asondate} BETWEEN START_DATE AND END_DATE and upper(msf.status)='Y'
+                                       where head_type_id='1'
+                                       and hcb_date ::date between msf.START_DATE and  $P{Asondate}
+                                       and upss_id=$P{District_id}
+                                       and (phase = $P{p_phase} OR $P{p_phase}='')
+                                       and (city_id = $P{City_id} or $P{City_id}=0) group by phase,city_id
+                                       ))Available,
+        (select SUM(COALESCE(dr_cr,0)) from fund_hcb INNER JOIN mas_store_financial msf  ON  $P{Asondate} BETWEEN START_DATE AND END_DATE and upper(msf.status)='Y'
+        where head_type_id='1' and hcb_date ::date between msf.START_DATE and  $P{Asondate}
+        and upss_id=$P{District_id}
+        and (phase = $P{p_phase} OR $P{p_phase}='')
+        and (city_id = $P{City_id} or $P{City_id}=0) and dr_cr < 0 group by phase = $P{p_phase} OR $P{p_phase}='') Utilized,
+         0 "per"
+        from fund_hcb
+        INNER JOIN mas_store_financial msf  ON  $P{Asondate} BETWEEN START_DATE AND END_DATE and upper(msf.status)='Y'
+        where head_type_id='1' and upss_id=$P{District_id}
+        and (phase = $P{p_phase} OR $P{p_phase}='')
+        and (city_id = $P{City_id} or $P{City_id}=0)
+        and hcb_date ::date between msf.START_DATE and  $P{Asondate}
+        group by head_type_id)A
+union all
+SELECT 'IEC' AS HeadType ,   coalesce(Available,0) as  "Available Balance",coalesce(-1*Utilized,0) as "Amount Utilized",per as  "Utilized(%)" FROM
+(select  head_type_id Headtype,
+       (select SUM(COALESCE(hcb_balance,0)) from fund_hcb where fund_hcb_id in (
+        select max(fund_hcb_id) from fund_hcb INNER JOIN mas_store_financial msf  ON   $P{Asondate} BETWEEN START_DATE AND END_DATE
+        and upper(msf.status)='Y' where head_type_id='2' and hcb_date ::date between msf.START_DATE and $P{Asondate} and upss_id=$P{District_id}
+        and (phase = $P{p_phase} OR $P{p_phase}='')
+        and (city_id = $P{City_id} or $P{City_id}=0) group by phase,city_id
+        ))Available,
+        (select SUM(COALESCE(dr_cr,0)) from fund_hcb INNER JOIN mas_store_financial msf  ON  $P{Asondate} BETWEEN START_DATE AND END_DATE
+        and upper(msf.status)='Y' where head_type_id='2' and hcb_date ::date between msf.START_DATE and  $P{Asondate} and upss_id=$P{District_id}
+        and (phase = $P{p_phase} OR $P{p_phase}='')
+        and (city_id = $P{City_id} or $P{City_id}=0) and dr_cr < 0 group by phase = $P{p_phase} OR $P{p_phase}='') Utilized,
+         0 "per"
+        from fund_hcb
+        INNER JOIN mas_store_financial msf  on  $P{Asondate} BETWEEN START_DATE AND END_DATE and upper(msf.status)='Y'
+        where head_type_id='2' and upss_id=$P{District_id}
+	 and (phase = $P{p_phase} OR $P{p_phase}='')
+        and (city_id = $P{City_id} or $P{City_id}=0)
+        and hcb_date ::date between msf.START_DATE and $P{Asondate}
+       group by head_type_id)I
+union all
+SELECT 'Medicine' AS HeadType,  coalesce(Available,0) as  "Available Balance",coalesce(-1*Utilized,0) as "Amount Utilized",per as  "Utilized(%)" FROM
+(select  head_type_id Headtype,
+       (select SUM(COALESCE(hcb_balance,0)) from fund_hcb where fund_hcb_id in (
+        select max(fund_hcb_id) from fund_hcb INNER JOIN mas_store_financial msf  ON $P{Asondate} BETWEEN START_DATE AND END_DATE
+        and upper(msf.status)='Y' where head_type_id='3' and hcb_date ::date between msf.START_DATE and  $P{Asondate} and upss_id=$P{District_id}
+        and (phase = $P{p_phase} OR $P{p_phase}='')
+        and (city_id = $P{City_id} or $P{City_id}=0) group by phase,city_id
+        ))Available,
+        (select SUM(COALESCE(dr_cr,0)) from fund_hcb INNER JOIN mas_store_financial msf  ON  $P{Asondate} BETWEEN START_DATE AND END_DATE
+        and upper(msf.status)='Y' where head_type_id='3' and hcb_date ::date between msf.START_DATE and  $P{Asondate}  and upss_id=$P{District_id}
+        and (phase = $P{p_phase} OR $P{p_phase}='')
+        and (city_id = $P{City_id} or $P{City_id}=0) and dr_cr < 0 group by phase = $P{p_phase} OR $P{p_phase}=''
+        ) Utilized,
+         0 "per"
+        from fund_hcb
+        INNER JOIN mas_store_financial msf  ON  $P{Asondate} BETWEEN START_DATE AND END_DATE and upper(msf.status)='Y'
+        where head_type_id='3' and upss_id=$P{District_id}
+	and (phase = $P{p_phase} OR $P{p_phase}='')
+        and (city_id = $P{City_id} or $P{City_id}=0)
+        and hcb_date ::date between msf.START_DATE and  $P{Asondate}
+       group by head_type_id)M;]]>
+	</queryString>
+	<field name="headtype" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Available Balance" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Amount Utilized" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Utilized(%)" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="Srno" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[new java.lang.Integer(1)]]></variableExpression>
+	</variable>
+	<variable name="total_e" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="total_avail" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Available Balance}]]></variableExpression>
+	</variable>
+	<variable name="total_utilized" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{Amount Utilized}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<line>
+				<reportElement key="line-1" x="0" y="2" width="322" height="1"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement key="line-2" x="0" y="2" width="1" height="18"/>
+			</line>
+			<staticText>
+				<reportElement key="staticText-1" x="4" y="4" width="89" height="11"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Head type]]></text>
+			</staticText>
+			<line>
+				<reportElement key="line-3" x="0" y="19" width="322" height="2"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement key="line-6" x="93" y="2" width="1" height="18"/>
+			</line>
+			<staticText>
+				<reportElement key="staticText-4" x="205" y="4" width="104" height="11"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Utilized]]></text>
+			</staticText>
+			<line direction="BottomUp">
+				<reportElement key="line-7" x="321" y="2" width="1" height="18"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement key="line-19" x="203" y="2" width="1" height="18"/>
+			</line>
+			<staticText>
+				<reportElement key="staticText-9" x="98" y="4" width="89" height="11"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Available Balance	]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<line direction="BottomUp">
+				<reportElement key="line-9" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="-1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement key="line-10" positionType="Float" mode="Opaque" x="0" y="15" width="322" height="1"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement key="line-13" positionType="Float" stretchType="RelativeToTallestObject" x="93" y="0" width="1" height="15"/>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement key="textField-3" x="205" y="1" width="104" height="12" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{Amount Utilized}]]></textFieldExpression>
+			</textField>
+			<line direction="BottomUp">
+				<reportElement key="line-14" positionType="Float" stretchType="RelativeToTallestObject" x="321" y="0" width="1" height="16"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement key="line-20" positionType="Float" stretchType="RelativeToTallestObject" x="203" y="0" width="1" height="15"/>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="#,##0.0" isBlankWhenNull="true">
+				<reportElement key="textField-6" x="96" y="1" width="104" height="12" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{Available Balance}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="4" y="0" width="88" height="14"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{headtype}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="21" splitType="Stretch">
+			<line>
+				<reportElement key="line-16" positionType="Float" mode="Opaque" x="0" y="16" width="322" height="1"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement key="line-17" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="1" height="15"/>
+			</line>
+			<line direction="BottomUp">
+				<reportElement key="line-18" positionType="Float" stretchType="RelativeToTallestObject" x="321" y="-3" width="1" height="19"/>
+			</line>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="104" y="0" width="83" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{total_avail}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="true">
+				<reportElement x="214" y="1" width="83" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{total_utilized}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="staticText-7" x="5" y="2" width="86" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

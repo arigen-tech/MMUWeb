@@ -1,0 +1,139 @@
+/* CSS Document for Airforce SMC*/ /* Created By Anshu Khadka */
+	/* Copyright JK Technosoft */
+
+body {
+	/* background:url(../images/iafWatermark.jpg) no-repeat center 190px; */
+	font-family: Tahoma;
+	font-size: 12px;
+	color: #000000;
+	margin:0px;
+	padding:0px;
+}
+
+.printWrapper {width:1024px; height:auto; margin:0 auto; }
+
+h1 {
+	font-size:1.833em;
+	text-align:center;
+	margin:5px 0px 2px 0px;
+	
+	}
+h2 {
+	font-size:1.5em;
+	text-align:center;
+	margin:5px 0px 2px 0px;
+	
+	}
+	
+h3 {
+	font-size:1.167em;
+	text-align:center;
+	margin:5px 0px 5px 0px;
+}
+
+h4 {
+	font-size:1.167em;
+	text-align:center;
+	margin:5px 0px 5px 0px;
+	}
+
+h5 {
+	font-size:1.083em;
+	text-align:center;
+	margin:5px 0px 5px 0px;
+	text-decoration: underline;
+	margin:10px 0px -5px 65px;
+	float:left;	
+	}
+
+label {
+	width:164px;
+	margin:5px 0px 0px 0px;
+	font:bold 1.083em arial;
+	height:auto;
+	float:left;
+	
+}
+label.value {
+	font:normal 1em arial;	
+}
+
+.clear, .Clear {clear:both;}
+
+.grid {
+width:100%;
+margin-top:10px;
+}
+.grid table {
+	border:1px solid #ccc;
+	width:100%;
+	font:normal 1em arial;
+	color:#000000;
+	border-collapse: collapse;
+	}
+
+.grid table th, .grid table thead {font-weight:bold; text-align: LEFT;}
+.grid table th, .grid table td {border:1px solid #ccc; padding:5px;}
+.grid table td.border-top {border:1px solid #ccc; border-bottom:none;}
+.grid table td.border-other {border:none; border-left:1px solid #ccc; border-right:1px solid #ccc;}
+.gridSmall {
+margin-top:10px;
+width:950px;
+float:right;
+}
+.gridSmall table {
+	border:1px solid #ccc;
+	width:100%;
+	font:normal 1em arial;
+	color:#000000;
+	border-collapse: collapse;
+	}
+
+.gridSmall table th, .gridSmall table thead {font-weight:bold;}
+.gridSmall table th, td {border:1px solid #ccc; padding:1px;}
+ul {float:left;
+font-weight:bold;
+padding-left:5px;
+}
+ul li { margin:5px 15px 0px 0px;
+display: inline;
+list-style: none;
+}
+p{width:780px;float: left;}
+
+.section1 h1 {white-space:nowrap;}
+
+.footer {
+	float:right;
+	margin-right:10px;	
+}
+
+.footer label{width:120px;}
+
+h6{ font-size:1em; text-align:center;}
+
+fieldset{width:1024px; font-size:12px;}
+
+.print_wp{width:70px; height:30px; position:fixed; bottom:10; right:10px; float:right;}
+
+.printButton {
+    background: url(../images/loginButton-Bg.jpg) repeat-x;
+    border-radius: 3px;
+    border: 1px solid #0284ca;
+    color: #FFFFFF;
+    font: bold 12px Arial, Helvetica, sans-serif;
+    text-align: center;
+    width: auto;
+    height: 25px;
+    float: left;
+    margin: 2px 6px 0px 0px;
+    padding: 0px 12px;
+    text-transform: uppercase;
+    text-shadow: 0px 2px 2px #000;
+    cursor: pointer;
+}
+
+
+
+
+

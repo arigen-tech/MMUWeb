@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="Treatment_SubReport_report_Batch1"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="421"
+		 pageHeight="595"
+		 columnWidth="421"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="VISIT_ID" isForPrompting="true" class="java.lang.Integer">
+		<defaultValueExpression ><![CDATA[new Integer(0)]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<queryString><![CDATA[select sum(AKS.ST_FLAG)ST_FLAG,aks.VISIT_ID from (
+Select (CASE WHEN STORE_ISSUE_T.BATCH_STOCK_ID IS NULL THEN 0 ELSE 1 END )ST_FLAG,PATIENT_PRESCRIPTION_HD.VISIT_ID
+From PATIENT_PRESCRIPTION_HD
+INNER JOIN PATIENT_PRESCRIPTION_DT on PATIENT_PRESCRIPTION_HD.PRESCRIPTION_HD_ID=PATIENT_PRESCRIPTION_DT.PRESCRIPTION_HD_ID
+LEFT OUTER JOIN STORE_ISSUE_T on STORE_ISSUE_T.PRESCRIPTION_DT_ID=PATIENT_PRESCRIPTION_DT.PRESCRIPTION_DT_ID
+LEFT OUTER JOIN STORE_ITEM_BATCH_STOCK on STORE_ITEM_BATCH_STOCK.STOCK_ID= STORE_ISSUE_T.BATCH_STOCK_ID
+WHERE PATIENT_PRESCRIPTION_HD.VISIT_ID=$P{VISIT_ID}
+)aks
+group by aks.VISIT_ID]]></queryString>
+
+	<field name="st_flag" class="java.lang.Integer"/>
+	<field name="visit_id" class="java.lang.Long"/>
+
+	<variable name="Srno" class="java.lang.Integer" resetType="Report" calculation="Count">
+		<variableExpression><![CDATA[new java.lang.Integer(1)]]></variableExpression>
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="3"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="23"  isSplitAllowed="true" >
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="1"
+						width="382"
+						height="10"
+						key="subreport-2"
+						positionType="Float"
+						isPrintInFirstWholeBand="true">
+							<printWhenExpression><![CDATA[$F{st_flag}.intValue() == 0 ?Boolean.TRUE:Boolean.FALSE]]></printWhenExpression>
+						</reportElement>
+					<subreportParameter  name="VISIT_ID">
+						<subreportParameterExpression><![CDATA[$P{VISIT_ID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Option">
+						<subreportParameterExpression><![CDATA[$F{st_flag}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//Treatment_SubReport_report_1.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="13"
+						width="381"
+						height="10"
+						key="subreport-3"
+						positionType="Float"
+						isPrintInFirstWholeBand="true">
+							<printWhenExpression><![CDATA[$F{st_flag}.intValue() == 0 ?Boolean.FALSE:Boolean.TRUE]]></printWhenExpression>
+						</reportElement>
+					<subreportParameter  name="VISIT_ID">
+						<subreportParameterExpression><![CDATA[$P{VISIT_ID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Option">
+						<subreportParameterExpression><![CDATA[$F{st_flag}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "//Treatment_SubReport_report_Batch2.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>
