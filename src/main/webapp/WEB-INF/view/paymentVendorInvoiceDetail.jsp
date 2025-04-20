@@ -20,6 +20,11 @@
 		userName = session.getAttribute("userName") + "";
 	}
 	
+	String userId = "1";
+	if (session.getAttribute("userId") != null) {
+		userId = session.getAttribute("userId") + "";
+	}
+	
 	String userTypeDesignation="";
 	if (session.getAttribute("userTypeDesignation") != null) {
 		userTypeDesignation = session.getAttribute("userTypeDesignation") + "";
@@ -555,6 +560,8 @@ function submitAuditorForm(){
           'finalPaymentDate':$('#finalPaymentDate').val(),
           'cityId':$('#cityId').val(),
           'phase':phase,
+          'paymentRemarks':$('#paymentRemarks').val(),
+          'userId':$('#userId').val()
     }
   var noteSheetData = $('#captureNodalOfficerForm')[0];
 	 var formData = new FormData(noteSheetData);
@@ -696,6 +703,7 @@ function isNumberKey(evt) {
 		           <input  name="authorityRoleName" id="authorityRoleName" type="hidden" value="<%=session.getAttribute("authorityName")%>"/>
 		           <input  name="finalApproval" id="finalApproval" type="hidden" value="<%=session.getAttribute("finalApproval")%>"/>
 		           <input  name="phaseValId" id="phaseValId" type="hidden" value=""/>
+		           <input  name="userId " id="userId" type="hidden" value="<%=userId%>"/>
 					<div class="col-12">
 						<div class="card">
 							<div class="card-body">
@@ -1049,8 +1057,32 @@ function isNumberKey(evt) {
 											</div>
 										</div>
 									</div>
-									
+									<div class="col-lg-4 col-sm-6">
+                                            <div class="form-group row">
+                                                <div class="col-md-5">
+                                                    <label class="col-form-label">Upload Payment Recepit</label>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <div class="fileUploadDiv">
+                                                        <input type="file" class="inputUpload" id="paymentfileName" name="paymentfileName">
+                                                        <label class="inputUploadlabel">Choose File</label>
+                                                        <span id="" class="inputUploadFileName">No File Chosen</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+									<div class="col-lg-4 col-sm-6">
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">Remarks</label>
+											</div>
+											<div class="col-md-7">
+												<textarea name="paymentRemarks" id="paymentRemarks" class="form-control"></textarea>
+											</div>
+										</div>
+									</div>
 								</div>
+								
 								 </form>
                                   
 									<div class="row">

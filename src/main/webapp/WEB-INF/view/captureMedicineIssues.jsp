@@ -447,7 +447,7 @@ function getMonthAndYear(){
 	}
 	jQuery('#month').append(months);
 	
-	for(var i=2;i>=0;i--){
+	for(var i=5;i>=0;i--){
 		year += '<option value='+(currentYear-i)+'>' +(currentYear-i)+ '</option>';
 	}
 	for(var i=1;i<6;i++){

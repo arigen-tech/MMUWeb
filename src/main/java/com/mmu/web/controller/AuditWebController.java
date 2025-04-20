@@ -395,6 +395,11 @@ public class AuditWebController {
 				name = keys[0] + "_" + request.getParameter("name");
 				file = Paths.get(path, name);
 			}
+			else if("vendor_bill\\payment_Recepit".equals(type)) {
+				path += type;
+				name = keys[0] + "_" + request.getParameter("name");
+				file = Paths.get(path, name);
+			}
 			else if ("fund_letter".equals(type)) {
 				path += type;
 				name = keys[0] + "_" + request.getParameter("name");
@@ -492,7 +497,8 @@ public class AuditWebController {
         			}
         			else if("U".equals(uploadFlag)){
         				auditPath += "/UC_Upload_Document/";
-        			}else {
+        			}
+        			else {
         				auditPath += "/vendor_bill/supporting_document/";
         			}
         			try {
@@ -557,6 +563,9 @@ public class AuditWebController {
 			}
 			else if("U".equals(uploadFlag)){
 				auditPath += "/UC_Upload_Document/";
+			}
+			else if("P".equals(uploadFlag)){
+				auditPath += "/vendor_bill/payment_Recepit/";
 			}else {
 				auditPath += "/vendor_bill/";
 			}
@@ -1496,6 +1505,7 @@ public class AuditWebController {
         }
 
         payloadJSON.put("noteSheetArray", noteSheetArray);
+        payloadJSON.put("paymentRecepitFileName", this.uploadFile(multipartHttpServletRequest, "P"));
 		String URL = HMSUtil.getProperties("urlextension.properties", "saveOrUpdateAuthorityVendorBillDetails");
 		return RestUtils.postWithHeaders(
 				(IpAndPortNo + URL).trim(),
