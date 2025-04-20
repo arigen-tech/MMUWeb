@@ -54,6 +54,10 @@ $(document).ready(function(){
         //window.location = "download?name="+$(this).data('name')+"&type=audit_report&keys="+$('#invoiceNo').val();
         window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=audit_report&keys="+$('#invoiceNo').val(), '_blank').focus();
     }); 
+     
+     $('#downloadRecepitBill').on('click', function(){
+         window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_bill\\payment_Recepit&keys="+$('#invoiceNo').val(), '_blank').focus();
+     });
 });
 
 function loadBillDetails(){
@@ -107,6 +111,9 @@ function loadBillDetails(){
 					supportingDocs +='</td><td class="width200"><textarea name="medicalDocs" readonly id="medicalDocs'+listSupportingDocs[i].captureVendorSupportingDocsId+'" class="form-control" id="medicalDocumentsDetails">'+listSupportingDocs[i].documentNote+'</textarea></td>';
 					supportingDocs +='<td> <button name="data" class="btn btn-primary" type="button" data-name="'+listSupportingDocs[i].fileName+'" onclick="getSupportingDownloadData(this)">View/Download Supporting Document</button></td>';
 					supportingDocs +='</td></tr>';
+					}else if(listSupportingDocs[i].screen_name=='paymentScreen'){
+						$('#paymentRemarks').val(listSupportingDocs[i].documentNote);
+						$('#downloadRecepitBill').attr('data-name', listSupportingDocs[i].fileName);
 					}
 				}
 				$j('#supportingDocs').append(supportingDocs);
@@ -892,6 +899,27 @@ function getPenaltyAuthorityDetailsByUpss(){
 											</div>
 											<div class="col-md-7">
 												<input type="text" id="transNo" class="form-control" readonly/>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-4 col-sm-6">
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">Payment Recepit</label>
+											</div>
+											<div class="col-md-7">
+										    	<button class="btn btn-primary" id="downloadRecepitBill">View/Download</button>
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-lg-4 col-sm-6">
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">Remarks</label>
+											</div>
+											<div class="col-md-7">
+												<textarea name="paymentRemarks" id="paymentRemarks" class="form-control"></textarea>
 											</div>
 										</div>
 									</div>
