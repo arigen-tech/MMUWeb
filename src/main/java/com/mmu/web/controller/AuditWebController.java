@@ -390,12 +390,12 @@ public class AuditWebController {
 				name = keys[0] + "_" + request.getParameter("name");
 				file = Paths.get(path, name);
 			}
-			else if("vendor_bill\\supporting_document".equals(type)) {
+			else if("vendor_supporting_document".equals(type)) {
 				path += type;
 				name = keys[0] + "_" + request.getParameter("name");
 				file = Paths.get(path, name);
 			}
-			else if("vendor_bill\\payment_Recepit".equals(type)) {
+			else if("vendor_payment_Recepit".equals(type)) {
 				path += type;
 				name = keys[0] + "_" + request.getParameter("name");
 				file = Paths.get(path, name);
@@ -410,7 +410,7 @@ public class AuditWebController {
 				name = keys[0] + "_" + request.getParameter("name");
 				file = Paths.get(path, name);
 			}
-			else if ("audit_report\\manual_penalty".equals(type)) {
+			else if ("audit_manual_penalty".equals(type)) {
 				path += type;
 				name = keys[0] + "_" + request.getParameter("name");
 				file = Paths.get(path, name);
@@ -485,7 +485,7 @@ public class AuditWebController {
         				auditPath += "/equipment/"+detailId+"/"+captureId+"/"+checklistId+"/";
         			} 
         			else if("A".equals(uploadFlag)){
-        				auditPath += "/audit_report/manual_penalty/";
+        				auditPath += "/audit_manual_penalty/";
         				
         			}
         			else if("N".equals(uploadFlag)){
@@ -499,7 +499,7 @@ public class AuditWebController {
         				auditPath += "/UC_Upload_Document/";
         			}
         			else {
-        				auditPath += "/vendor_bill/supporting_document/";
+        				auditPath += "/vendor_supporting_document/";
         			}
         			try {
 
@@ -565,7 +565,7 @@ public class AuditWebController {
 				auditPath += "/UC_Upload_Document/";
 			}
 			else if("P".equals(uploadFlag)){
-				auditPath += "/vendor_bill/payment_Recepit/";
+				auditPath += "/vendor_payment_Recepit/";
 			}else {
 				auditPath += "/vendor_bill/";
 			}
