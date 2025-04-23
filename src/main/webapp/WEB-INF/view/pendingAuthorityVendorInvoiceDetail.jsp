@@ -101,6 +101,16 @@ $(document).ready(function(){
         //window.location = "download?name="+$(this).data('name')+"&type=audit_report&keys="+$('#invoiceNo').val();
         window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=audit_report&keys="+$('#invoiceNo').val(), '_blank').focus();
     });
+    
+    var today = new Date();
+	var dd = String(today.getDate()).padStart(2, '0');
+	var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+	var yyyy = today.getFullYear();
+	
+	//today =  yyyy + '-' + mm + '-' +dd;
+	 today = dd + '/' + mm + '/' +yyyy;
+    $('#actionDate').val(today);
+ 
 });
 
 function backFunction(){
@@ -600,6 +610,7 @@ function submitAuditorForm(){
           'vendorInvoiceApprovalId':$('#vendorInvoiceApprovalId').val(),
           'lastApprovalMsg':lastApprovalMsg,
           'penaltyAmountImposedAuth':$('#penaltyAmountImposedAuth').val(),
+          'actionDate':$('#actionDate').val(),
           'userId':$('#userId').val()
     }
      
@@ -756,8 +767,11 @@ function disbaledAuditorForwardTo(){
 	  }else if($('#noteSheetFlag').val()=="yes"){
 		  $('#penaltyAmount').prop('readonly', true);
 		 
+		 
 	  }else{
 		  $('#penaltyAmount').prop('readonly', true);
+		  var amountPrevious=$('#penaltyAmountImposed').val();
+		  $('#penaltyAmount').val(amountPrevious);
 		  $('#caseSheet1').hide()
 		  $('#caseSheet2').hide() 
 	  }
@@ -1322,7 +1336,9 @@ function isNumberKey(evt) {
 												</select>
 											</div>
 										</div>
+										
 										</div></div>
+										
 										<div class="row" id="penaltyA" style="display:none">
 										<div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
@@ -1343,6 +1359,17 @@ function isNumberKey(evt) {
 											</div>
 
 										</div>
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">Date</label>
+											</div>
+											<div class="col-md-7">
+											<div class="dateHolder">
+											<input type="text" name="actionDate" class="calDate form-control" id="actionDate" value="" readonly placeholder="DD/MM/YYYY" />
+											
+										</div></div>
+										</div>
+										
 									</div>
 								
                                   </div>
@@ -1363,6 +1390,7 @@ function isNumberKey(evt) {
 											</div>
 										</div>
 									</div>
+									
                                   </div>
                                   
                                   <div class="col-12" id="caseSheet1" style="display:none">

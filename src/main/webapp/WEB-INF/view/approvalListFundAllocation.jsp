@@ -123,7 +123,7 @@
            	}
 			 
 		 		htmlTable = htmlTable+"<tr id='"+dataList[i].fundAllocationHdId+"' >";
-				htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].createdDate+"</td>";
+				htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].fundAllocationDate+"</td>";
 				htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].finanicalYear+"</td>";
 				htmlTable = htmlTable +"<td style='width: 150px;'>"+phase+"</td>";
 				

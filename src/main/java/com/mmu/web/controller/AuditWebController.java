@@ -1331,6 +1331,7 @@ public class AuditWebController {
 		payloadJSON.put("mmuPenaltyListData", multipartHttpServletRequest.getParameter("mmuPenaltyListData"));
 		payloadJSON.put("penaltyAmountImposed", multipartHttpServletRequest.getParameter("penaltyAmountImposed"));
 		payloadJSON.put("userId", multipartHttpServletRequest.getParameter("userId"));
+		payloadJSON.put("actionDate", multipartHttpServletRequest.getParameter("actionDate"));
 		
 		// Handle the data from <tbody id="mmuPenaltyDetails">
         JSONArray penaltyDetailsMMUArray = new JSONArray();

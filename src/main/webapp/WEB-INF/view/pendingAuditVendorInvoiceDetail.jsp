@@ -71,6 +71,15 @@ $(document).ready(function(){
     
     	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val(), '_blank').focus();
     });  */
+    
+    var today = new Date();
+	var dd = String(today.getDate()).padStart(2, '0');
+	var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+	var yyyy = today.getFullYear();
+	
+	//today =  yyyy + '-' + mm + '-' +dd;
+	 today = dd + '/' + mm + '/' +yyyy;
+    $('#actionDate').val(today);
   
 });
 
@@ -1075,7 +1084,19 @@ function isNumberKey(evt) {
 												</select>
 											</div>
 										</div>
+										
 									</div>
+									<div class="col-md-4">
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">Date</label>
+											</div>
+											<div class="col-md-7">
+											<div class="dateHolder">
+											<input type="text" name="actionDate" class="calDate form-control" id="actionDate" value="" readonly placeholder="DD/MM/YYYY" />
+											</div>
+											</div>
+										</div></div>
                                   
                                     </div>
 									</form>
