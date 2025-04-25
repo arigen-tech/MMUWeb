@@ -56,7 +56,7 @@ $(document).ready(function(){
     }); 
      
      $('#downloadRecepitBill').on('click', function(){
-         window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_bill\\payment_Recepit&keys="+$('#invoiceNo').val(), '_blank').focus();
+         window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_payment_Recepit&keys="+$('#invoiceNo').val(), '_blank').focus();
      });
 });
 
@@ -353,14 +353,14 @@ function get(name){
 function getSupportingDownloadData(button)
 {
 	var namVal= button.getAttribute('data-name');
-	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=vendor_bill\\supporting_document&keys="+$('#invoiceNo').val(), '_blank').focus();	
+	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=vendor_supporting_document&keys="+$('#invoiceNo').val(), '_blank').focus();	
 }
 
 
 function getMaualPenaltyDownloadData(button)
 {
 	var namVal= button.getAttribute('data-name');
-	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=audit_report\\manual_penalty&keys="+$('#invoiceNo').val(), '_blank').focus();	
+	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=audit_manual_penalty&keys="+$('#invoiceNo').val(), '_blank').focus();	
 }
 
 function getNoteShetDownloadData(button)

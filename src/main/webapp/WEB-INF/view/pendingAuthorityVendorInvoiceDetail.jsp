@@ -469,7 +469,24 @@ function getAuthorityList(){
 }
 
 function submitAuditorForm(){
-	
+	var actionDate = $('#actionDate').val();
+	   if(!actionDate){
+	       alert('Please Select Approval Date!');
+	       return false;
+	   }else{
+	        var dts = actionDate.split('/');
+	        var insDts = new Date(dts[2], dts[1]-1, dts[0]);
+	        var invDate = $('#invoiceDate').val();
+	        var actualInv=invDate.split('/');
+	        var invoiceDate=new Date(actualInv[2], actualInv[1]-1, actualInv[0]);
+	        //var currDate = new Date(todaysDate.getFullYear(), todaysDate.getMonth(), todaysDate.getDate());
+	        if(insDts.getTime() < invoiceDate.getTime()){
+	            alert('Approval Date should not be earlier than the Invoice date!');
+	            return false;
+	        }
+	        
+	   }
+	   
 	const noteSheets = document.querySelectorAll('textarea[name="caseSheet"]');
     const fileInputs = document.querySelectorAll('input[name="caseSheetUpload"]');
     const notes = [];
@@ -748,13 +765,13 @@ function getPenaltyAuthorityDetailsByUpss(){
 function getSupportingDownloadData(button)
 {
 	var namVal= button.getAttribute('data-name');
-	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=vendor_bill\\supporting_document&keys="+$('#invoiceNo').val(), '_blank').focus();	
+	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=vendor_supporting_document&keys="+$('#invoiceNo').val(), '_blank').focus();	
 }
 
 function getMaualPenaltyDownloadData(button)
 {
 	var namVal= button.getAttribute('data-name');
-	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=audit_report\\manual_penalty&keys="+$('#invoiceNo').val(), '_blank').focus();	
+	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=audit_manual_penalty&keys="+$('#invoiceNo').val(), '_blank').focus();	
 }
 
 function disbaledAuditorForwardTo(){
