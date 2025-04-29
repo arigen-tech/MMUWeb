@@ -203,6 +203,21 @@ var $j = jQuery.noConflict();
 											</div>
 										</div>
 									</div>
+									<div class="col-lg-4 col-sm-6">
+                                        <div class="form-group row">
+                                            <div class="col-md-5">
+                                                <label class="col-form-label">Audit Type</label>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <select class="form-control" id="searchType" >
+                                                    <option value="">--Select--</option>
+                                                    <option value="A">Attendance</option>
+                                                    <option value="E">Equipment Audit</option>
+                                                    <option value="I">Inspection Audit</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
 								<div class="col-md-4">
 												<div class="form-group row">
 													<div class="col-md-5">

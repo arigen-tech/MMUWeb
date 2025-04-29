@@ -86,7 +86,7 @@
 		 }
 		 else if(district != "" || fromDate != ""||toDate != "" || statusSearch != "")
 		 {
-			 nPageNo = 1;
+			 //nPageNo = 1;
 		    var data = {"PN":nPageNo,"district":district,"fromDate":fromDate,"toDate":toDate,"statusSearch":statusSearch,"type":"All","creatdBy":vendorId,"vendorId":valueVendorId};
 		 } 
 	    else
