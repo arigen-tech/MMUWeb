@@ -22,7 +22,7 @@ import org.json.JSONObject;
 import org.springframework.web.servlet.view.document.AbstractXlsxView;
 
 
-public class ExportExcelAuditType extends AbstractXlsxView {
+public class ExportExcelPenaltyRegister extends AbstractXlsxView {
   
   static String fromDate="";
   static String toDate="";
@@ -35,43 +35,21 @@ public class ExportExcelAuditType extends AbstractXlsxView {
     	  
 	String jsondata=model.get("data").toString();
 	// Parse the compositeResponse JSON object
-    JSONObject compositeResponse = new JSONObject(jsondata);
-    // Retrieve and parse the responseData string
-    String responseDataString = compositeResponse.getString("responseData");
-    JSONObject responseData = new JSONObject(responseDataString);
-    // Access the data array
-    JSONArray jsonArray = responseData.getJSONArray("data");
+	JSONObject json=new JSONObject(jsondata);
+	JSONArray jsonArray = json.getJSONArray("listObject");
+	//JSONObject js=(JSONObject) json.get("listObject");
+	//String js1=js.get("listObject").toString();
     
- // Extract the requestData JSON object
-    JSONObject requestData = compositeResponse.getJSONObject("requestData");
-    String type;
-    if(requestData.getString("searchType").equals("E")) {
-    	type="Equipment Penalty List";
-    }else if(requestData.getString("searchType").equals("I")) {
-    	type="Inspection Penalty List";
-    }else {
-    	type="Attendance Penalty List";
-    }
-    // Print the fields in requestData
-     System.out.println("Attendance Year: " + requestData.getString("attnYear"));
-    System.out.println("Attendance Month: " + requestData.getString("attnMonth"));
-    System.out.println("Search Type: " + requestData.getString("searchType"));
-    
-	
-   
-	//toDate=js.getString("toDate").toString();
-	//String header="Stock Status Report(MMU Wise)";
-	// String[] header1= {"","","Stock Status Report(MMU Wise)","",""};
-    //String[] header2= {"","Serial No.","City Name","MMU Name","Stock Of MMU EDL Wise","Summary of EDL not available in MMU's (As on date"+asondate+""};
-    String[] header1= {"Penalty Audit Report :"+type};	
-    String[] header2= {"S.No.","Incident Date","Incident Description","Penalty Amount"    		
+ 
+    String[] header1= {"Penalty Register"};	
+    String[] header2= {"S.No.","City","MMU","Incident Date","Type","Incident Description","Penalty Amount"    		
     		};
     int rowNum = 2;
     
     // Creating sheet with in the workbook
     Sheet sheet = workbook.createSheet("PenaltyList reg");
     /** for header **/
-    String fileName = "PenaltyList"+"_"+""+type+".xlsx";    
+    String fileName = "PenaltyRegister.xlsx";    
     response.setContentType("application/application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); 
     response.setHeader("Content-Disposition", "attachment; filename="+fileName); 
     Font font = workbook.createFont();
@@ -112,20 +90,23 @@ public class ExportExcelAuditType extends AbstractXlsxView {
       cell.setCellStyle(style);
     }
    
-    sheet.addMergedRegion(org.apache.poi.ss.util.CellRangeAddress.valueOf("$A$1:$D$1"));
+    sheet.addMergedRegion(org.apache.poi.ss.util.CellRangeAddress.valueOf("$A$1:$G$1"));
     //sheet.addMergedRegion(org.apache.poi.ss.util.CellRangeAddress.valueOf("$B$1:$B$2"));
     //sheet.addMergedRegion(org.apache.poi.ss.util.CellRangeAddress.valueOf("$C$1:$C$2"));
     //sheet.addMergedRegion(org.apache.poi.ss.util.CellRangeAddress.valueOf("$D$1:$E$1"));
     //sheet.addMergedRegion(org.apache.poi.ss.util.CellRangeAddress.valueOf("$E$1:$E$2"));
     try
     {
-		//JSONArray jsonArray=new JSONArray(jsArray);	
+		//JSONArray jsonArray=new JSONArray(jsonArray);	
 			
-		int a1=0;
+		float a1=0;
 		int a2=0;
 		String description = null;
+		String type = null;
 		String penaltyAmount=null;
 		String incidentDate=null;
+		String city=null;
+		String mmu=null;
 		
 		
 		int rowTotal = 0;
@@ -133,7 +114,7 @@ public class ExportExcelAuditType extends AbstractXlsxView {
 		if(jsonArray.length()==0) {
 			rowTotal=2;
 		}
-		Integer totalOfPenaltyAmount=0;
+		float totalOfPenaltyAmount=0;
 		Integer labTest=0;
         for(int i=0;i<jsonArray.length();i++)
         {
@@ -142,15 +123,27 @@ public class ExportExcelAuditType extends AbstractXlsxView {
         	row3 = sheet.createRow(rowNum++);
             JSONObject jsonObject1 = jsonArray.getJSONObject(i);
             //sheet.getPageSetup().setRightHeader("Stock Status Report(MMU Wise)");
-            if(jsonObject1.optString("incidentDate") !=null && !jsonObject1.optString("incidentDate").isEmpty()) {
-            	incidentDate=jsonObject1.optString("incidentDate").toString();
+            if(jsonObject1.optString("city") !=null && !jsonObject1.optString("city").isEmpty()) {
+            	city=jsonObject1.optString("city").toString();
+            }
+            if(jsonObject1.optString("mmu") !=null && !jsonObject1.optString("mmu").isEmpty()) {
+            	mmu=jsonObject1.optString("mmu").toString();
+            }
+            if(jsonObject1.optString("dateOfPenalty") !=null && !jsonObject1.optString("dateOfPenalty").isEmpty()) {
+            	incidentDate=jsonObject1.optString("dateOfPenalty").toString();
+            }
+            if(jsonObject1.optString("dateOfPenalty") !=null && !jsonObject1.optString("dateOfPenalty").isEmpty()) {
+            	incidentDate=jsonObject1.optString("dateOfPenalty").toString();
             }
             if(jsonObject1.optString("description") !=null && !jsonObject1.optString("description").isEmpty()) {
             	description=jsonObject1.optString("description").toString();
             }
+            if(jsonObject1.optString("typeOfPenalty") !=null && !jsonObject1.optString("typeOfPenalty").isEmpty()) {
+            	type=jsonObject1.optString("typeOfPenalty").toString();
+            }
             if(jsonObject1.optString("penaltyAmount") !=null && !jsonObject1.optString("penaltyAmount").isEmpty()) {
             	penaltyAmount=jsonObject1.optString("penaltyAmount").toString();
-            	a1=Integer.parseInt(jsonObject1.optString("penaltyAmount").toString());
+            	a1=Float.parseFloat(jsonObject1.optString("penaltyAmount").toString());
             	totalOfPenaltyAmount=totalOfPenaltyAmount+a1;
             }
              
@@ -158,20 +151,26 @@ public class ExportExcelAuditType extends AbstractXlsxView {
            
             
             row3.createCell(0).setCellValue(j);
-            row3.createCell(1).setCellValue(jsonObject1.optString("incidentDate"));
-            row3.createCell(2).setCellValue(jsonObject1.optString("description"));
-            row3.createCell(3).setCellValue(jsonObject1.optString("penaltyAmount"));
+            row3.createCell(1).setCellValue(jsonObject1.optString("city"));
+            row3.createCell(2).setCellValue(jsonObject1.optString("mmu"));
+            row3.createCell(3).setCellValue(jsonObject1.optString("dateOfPenalty"));
+            row3.createCell(4).setCellValue(jsonObject1.optString("typeOfPenalty"));
+            row3.createCell(5).setCellValue(jsonObject1.optString("description"));
+            row3.createCell(6).setCellValue(jsonObject1.optString("penaltyAmount"));
                          
                                     
-            Cell cell = row3.createCell(5);
+            Cell cell = row3.createCell(8);
             rowTotal = sheet.getLastRowNum();
         }
         Row row4 = sheet.createRow(rowTotal+1);
         
         row4.createCell(0).setCellValue("");
         row4.createCell(1).setCellValue("");
-        row4.createCell(2).setCellValue("Total");
-        row4.createCell(3).setCellValue(totalOfPenaltyAmount);
+        row4.createCell(2).setCellValue("");
+        row4.createCell(3).setCellValue("");
+        row4.createCell(4).setCellValue("");
+        row4.createCell(5).setCellValue("Total");
+        row4.createCell(6).setCellValue(totalOfPenaltyAmount);
         //row4.createCell(4).setCellValue(labTest);
        // row4.createCell(2).setCellValue(tot_t_labour_male);
         

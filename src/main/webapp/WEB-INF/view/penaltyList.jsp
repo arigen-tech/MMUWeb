@@ -22,6 +22,25 @@
 <%@include file="..//view/commonJavaScript.jsp"%>
 
 <script type="text/javascript">
+
+
+<% 
+String userId = "1";
+if (session.getAttribute("user_id") != null) {
+	userId = session.getAttribute("user_id") + "";
+}
+
+String levelOfUser = "1";
+if (session.getAttribute("levelOfUser") != null) {
+	levelOfUser = session.getAttribute("levelOfUser") + "";
+}
+
+String mmuId = "1";
+if (session.getAttribute("mmuId") != null) {
+	mmuId = session.getAttribute("mmuId") + "";
+}
+%>
+
     var nPageNo=1;
 	var $j = jQuery.noConflict();
 	
@@ -210,6 +229,45 @@ function exportExcel(){
 			+ searchType;	
  
  }
+ 
+function generateReport(){
+	
+	var mmuId = $j('#mmuId').val();
+ 	var attnMonth = $j('#attnMonth').val();
+ 	var attnYear = $j('#attnYear').val();
+ 	var searchType = $j('#searchType').val();
+    var data = {"pageNo": 0,"mmuId":mmuId,"attnMonth":attnMonth,"attnYear":attnYear,"searchType":searchType};
+    if(!searchType){
+	    alert('Please select Search Type!');
+	    return false;
+	}
+	if((mmuId == undefined || mmuId == '') && (attnMonth == undefined || attnMonth == '') && (attnYear == undefined || attnYear == '') ){	
+		alert("At least one option must be entered");
+		return;
+	}
+	  
+	 
+    
+    var User_id = <%=userId%>;
+    var Level_of_user = '<%=levelOfUser%>';
+    	  
+var url = "${pageContext.request.contextPath}/report/printPenaltyRegisterList?mmu_id="
+		+ mmuId			
+		+ "&attnMonth="
+		+ attnMonth
+		+ "&attnYear="
+		+ attnYear
+		+ "&User_id="
+		+ User_id
+		+ "&Level_of_user="
+		+ Level_of_user				
+		+ "&searchType="
+		+ searchType;
+
+    openPdfModel(url)
+
+
+}
 
 </script>
 </head>
@@ -288,7 +346,7 @@ function exportExcel(){
 									<div class="col-lg-3 col-sm-6">
 										
 										<button type="button"  id="exportExcel" class="btn btn-primary m-t-3" onclick="exportExcel();">Excel</button>
-										<button type="button"  id="exportPdf" class="btn btn-primary m-t-3" onclick="exportExcel();">PDF</button>
+										<button type="button"  id="exportPdf" class="btn btn-primary m-t-3" onclick="generateReport();">PDF</button>
 										
 									</div>
 									

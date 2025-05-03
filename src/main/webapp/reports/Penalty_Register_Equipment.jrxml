@@ -53,37 +53,7 @@ inner join mas_mmu_vendor mmv ON mmu.mmu_vendor_id=mmv.mmu_vendor_id
 WHERE CED.inspection_date between $P{From_Date} and $P{To_Date} and
 	  UPPER(CEC.create_incident)='Y' AND
 	  (CED.MMU_ID = $P{MMU_ID} OR $P{MMU_ID} = 0) AND
-	  (CED.city_id = $P{CITY_ID} OR $P{CITY_ID} = 0)and
-	  (mmu.mmu_vendor_id = $P{VENDOR_ID} OR $P{VENDOR_ID}=0) AND
-	  	 MMU.MMU_ID IN (
-	  	SELECT 	MMU.MMU_ID
-		FROM 	MAS_MMU MMU,(SELECT  	to_number(foo,'99999999') IDS
-				     FROM 	regexp_split_to_table((SELECT 	(CASE WHEN 'M' = $P{Level_of_user} THEN substring(M.MMU_ID, 1 ,length(M.MMU_ID)-1)
-										      WHEN 'C' = $P{Level_of_user} THEN substring(M.CITY_ID, 1 ,length(M.CITY_ID)-1)
-										      WHEN 'D' = $P{Level_of_user} THEN substring(M.DISTRICT_ID, 1 ,length(M.DISTRICT_ID)-1)
-										      ELSE '1' END)
-									FROM 	USERS M
-									WHERE 	M.USER_ID =$P{User_id}), E',') As foo)  ALL_ID
-		WHERE ( (MMU.MMU_ID=ALL_ID.IDS AND 'M' =$P{Level_of_user}) OR
-	  		(MMU.CITY_ID=ALL_ID.IDS AND 'C' =$P{Level_of_user}) OR
-			(MMU.STATE_ID=ALL_ID.IDS AND 'S' =$P{Level_of_user}) OR
-			(MMU.DISTRICT_ID=ALL_ID.IDS AND 'D' =$P{Level_of_user}) )
-)
-UNION ALL
-SELECT 	city.city_name,mmu.mmu_name,CONCAT(MEQ.checklist_name,'- ',CEC.remarks) AS description,MP.penalty_description,CEC.incident_date,MP.penalty_amount,
-(SELECT MMU_NAME FROM MAS_MMU WHERE MMU_ID = $P{MMU_ID})  As hospital_name
-FROM 	public.capture_inspection_checklist CEC
-inner join mas_inspection_checklist MEQ ON MEQ.checklist_id=CEC.inspection_checklist_id
-inner join mas_penalty MP ON MP.penalty_id=MEQ.penalty_id
-inner join capture_inspection_details CED ON CEC.capture_inspection_detail_id=CED.capture_inspection_detail_id
-inner join mas_mmu mmu ON CED.mmu_id=mmu.mmu_id
-inner join mas_city city ON city.city_id=mmu.city_id
-inner join mas_mmu_vendor mmv ON mmu.mmu_vendor_id=mmv.mmu_vendor_id
-WHERE CED.inspection_date between $P{From_Date} and $P{To_Date} and
-	  UPPER(CEC.create_incident)='Y' AND
-	  (CED.MMU_ID = $P{MMU_ID} OR $P{MMU_ID} = 0) AND
-	  (CED.city_id = $P{CITY_ID} OR $P{CITY_ID} = 0)and
-	  (mmu.mmu_vendor_id = $P{VENDOR_ID} OR $P{VENDOR_ID}=0) AND
+	  (CED.city_id = $P{CITY_ID} OR $P{CITY_ID} = 0) AND
 	  	 MMU.MMU_ID IN (
 	  	SELECT 	MMU.MMU_ID
 		FROM 	MAS_MMU MMU,(SELECT  	to_number(foo,'99999999') IDS
@@ -139,7 +109,7 @@ WHERE CED.inspection_date between $P{From_Date} and $P{To_Date} and
 				<textElement textAlignment="Center">
 					<font size="11" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<text><![CDATA[Penalty Register ]]></text>
+				<text><![CDATA[ Penalty Register : Equipment]]></text>
 			</staticText>
 			<image>
 				<reportElement key="image-1" x="1" y="1" width="100" height="75"/>

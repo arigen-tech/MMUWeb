@@ -1,6 +1,7 @@
 package com.mmu.web.controller;
 
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -5977,7 +5978,7 @@ public class ReportWebController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//System.out.println("TO_DATE "+td);
+		System.out.println("TO_DATE and FROM_DATE "+fd+"::"+td);
 		parameters.put("To_Date", td);
 		
 		String userHome = request.getServletContext().getRealPath("/resources/images/");
@@ -8046,6 +8047,91 @@ public class ReportWebController {
 		return null;
 
 	}
+	
+	@RequestMapping(value = "/printPenaltyRegisterList", method = RequestMethod.GET)
+	public ModelAndView printPenaltyRegisterList(HttpServletRequest request, HttpServletResponse response) {
+		
+		Map<String, Object> connectionMap = new HashMap<String, Object>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		Box box= HMSUtil.getBox(request);
+		JSONObject json = new JSONObject(box);
+		
+		
+		String fromdate="";
+		String todate="";
+		Date startDate = null;
+		Date endDate=null;
+		JSONArray mmu_id= new JSONArray();
+		
+		JSONArray User_id= new JSONArray();
+		JSONArray Level_of_user= new JSONArray();
+		JSONArray Search_Type= new JSONArray();
+		
+		
+		JSONArray month= new JSONArray();
+		JSONArray year= new JSONArray();
+		if(json.get("attnMonth") !=null)
+		{
+			month = json.getJSONArray(("attnMonth"));
+			year= json.getJSONArray(("attnYear"));
+			
+			int int_month=Integer.parseInt(month.getString(0));
+			int int_year=Integer.parseInt(year.getString(0));
+			 startDate = HMSUtil.getStartDate(int_year, int_month);
+			 endDate = HMSUtil.getEndDate(int_year, int_month);
+		}
+		
+		
+		if(json.get("User_id") !=null)
+		{
+			User_id = json.getJSONArray(("User_id"));
+		}
+		int int_User_id= Integer.parseInt(User_id.getString(0));
+		
+		if(json.get("Level_of_user") !=null)
+		{
+			Level_of_user = json.getJSONArray("Level_of_user");
+		}
+		String str_Level_of_user= Level_of_user.getString(0);
+		
+		if(json.get("mmu_id") !=null)
+		{
+			mmu_id = json.getJSONArray(("mmu_id"));
+		}
+		int int_mmu_id= Integer.parseInt(mmu_id.getString(0));
+		String searchType = null;	
+		if(json.get("searchType") !=null)
+		{
+			Search_Type = json.getJSONArray(("searchType"));
+			searchType=Search_Type.getString(0);
+		}
+		
+		
+		parameters.put("From_Date", startDate);
+		   System.out.println("TO_DATE and from_date :"+startDate+"::"+endDate);
+		parameters.put("To_Date", endDate);
+		
+		String userHome = request.getServletContext().getRealPath("/resources/images/");
+		String imagePath = userHome+"/mmu-logo.png";
+	    parameters.put("path", imagePath);
+	    parameters.put("User_id", int_User_id);
+		parameters.put("Level_of_user", str_Level_of_user);
+		parameters.put("MMU_ID", int_mmu_id);
+		
+		parameters.put("SUBREPORT_DIR", request.getServletContext().getRealPath("/reports/"));
+		
+		//System.out.println(request.getServletContext().getRealPath("/reports/"));
+
+		connectionMap = reportDao.getConnectionForReportMis();
+		if(searchType.equals("E")) {
+		HMSUtil.generateReportInPopUp("Penalty_Register_Equipment", "Equipment Penalty Register", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
+		}else {
+			HMSUtil.generateReportInPopUp("Penalty_Register_Inspection", "Inspection Penalty Register", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
+		}
+		return null;
+	
+	}	
 	
 
 }

@@ -12,6 +12,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -445,6 +447,20 @@ public static String calculateAge(Date birthDate) {
 			}
 
 		}
+	 
+
+ public static Date getStartDate(int year, int month) {
+	 //Date orderDateTime = null;
+	 LocalDate date = LocalDate.of(year, month, 1);
+    return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+ }
+
+ public static Date getEndDate(int year, int month) {
+     YearMonth yearMonth = YearMonth.of(year, month);
+	 LocalDate date = yearMonth.atEndOfMonth();
+	    // Convert LocalDate to java.util.Date
+	    return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+ }
 	 
 	
 }
