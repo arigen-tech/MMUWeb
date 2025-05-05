@@ -291,13 +291,11 @@ var $j = jQuery.noConflict();
 
                                              <div class="col-md-12 text-right">
 
-                                                 <button type="button" class="btn btn-primary reception_mi_reports"  onclick="generateReport();"> Generate Report</button>
-                                                 
+                                               <button type="button" class="btn btn-primary reception_mi_reports" style="margin-right: 25px;" onclick="generateReport();"> Generate Report</button>
+   												<button type="button" class="btn btn-primary reception_mi_reports" onclick="exportExcel();"> Export Excel</button>
 
                                              </div>
-                                             <div class="col-md-12 text-right">
-                                              <button type="button" class="btn btn-primary reception_mi_reports"  onclick="exportExcel();"> Export Excel</button>
-                                             </div>
+                                           
 
                                          </form>
 
