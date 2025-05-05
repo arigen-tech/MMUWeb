@@ -8126,8 +8126,10 @@ public class ReportWebController {
 		connectionMap = reportDao.getConnectionForReportMis();
 		if(searchType.equals("E")) {
 		HMSUtil.generateReportInPopUp("Penalty_Register_Equipment", "Equipment Penalty Register", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
-		}else {
+		}else if(searchType.equals("I")){
 			HMSUtil.generateReportInPopUp("Penalty_Register_Inspection", "Inspection Penalty Register", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
+		}else {
+			HMSUtil.generateReportInPopUp("Penalty_Register_Attendance", "Attendance Penalty Register", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
 		}
 		return null;
 	
