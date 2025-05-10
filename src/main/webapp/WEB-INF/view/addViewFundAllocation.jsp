@@ -539,9 +539,9 @@ function saveSubmitFundAllocationFunction(val) {
 			<div class="container-fluid">
 
 				<div class="internal_Htext">Add/View Fund Allocation</div>
-               <form name="headMainData" id="headMainData" method="post" enctype='multipart/form-data'
-											action="#" autocomplete="on">
+              
 				<div class="row">
+		 <form id="headMainData">
 				<input type="hidden"  name="userId" value=<%=userId%> id="userId" />
 				<input  name="statusFlag" id="statusFlag" type="hidden" value="" />
 				<input  name="financialYear" id="financialYear" type="hidden" value="" />
@@ -741,45 +741,7 @@ function saveSubmitFundAllocationFunction(val) {
 									<input type="button"  id="closeBtn" type="button" class="btn  btn-primary " onclick="backListReport()" value="Close" />
 								</div>
                                </div>
-                               
-                              <!--  
-                               <div class="row m-t-20">
-                               	<div class="col-12">
-                               		<h6 class="font-weight-bold text-theme text-underline">Fund Allocation History </h6>
-                               	</div>
-                               	
-                               	<div class="col-12">
-                               		<div class="table-responsive">
-                               			<table class="table table-striped table-hover table-bordered ">
-                                        <thead class="bg-success" style="color:#fff;">
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Total Amount</th>
-                                                <th>UPSS</th>
-                                                <th>Head Type</th>
-                                                <th>Allocated Fund</th>
-                                                <th>Letter Number</th>
-                                                <th>View File</th>
-                                            </tr>
-                                        </thead>
-                                        
-                                     <tbody id="">
-										 <tr>
-										 	<td>22/05/2022</td>
-										 	<td>50,000</td>
-										 	<td>data</td>
-										 	<td>data</td>
-										 	<td>data</td>
-										 	<td>data</td>
-										 	<td><a href='#' class='btn btn-primary'><i class='fa fa-file-alt'></i> View </a></td>
-										 </tr>
-                     				 </tbody>
-                                    </table>
-                               		</div>                               	
-                               	</div>
-                               </div> -->
-                               
-                               	
+                         	</form>
 							</div>
 						</div>
 						
@@ -789,14 +751,14 @@ function saveSubmitFundAllocationFunction(val) {
 					<!-- end col -->
 				</div>
 				<!-- end row -->
-
+		
 			</div>
 			<!-- container -->
 			<!-- content -->
 		</div>
 	</div>
 	<!-- END wrapper -->
-</form>
+
 <div class="modal" id="msgForSaved" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">

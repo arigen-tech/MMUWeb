@@ -467,11 +467,13 @@ public class AuditWebController {
     	String originalFileName = "";
         if (fileData != null && !fileData.isEmpty()) {
                 originalFileName = fileData.getOriginalFilename();
+                //originalFileName = originalFileName.replaceAll("[^a-zA-Z0-9._-]", "_");
                 // Define the directory to save the file (you can customize this path)
                  String auditPath = environment.getProperty("mmu.web.audit.basePath");
         		if (originalFileName!=null) {
         			MultipartFile file = fileData;
         			originalFileName = file.getOriginalFilename();
+        			originalFileName = originalFileName.replaceAll("[^a-zA-Z0-9._-]", "_");
         			String detailId, captureId, checklistId;
         			if("I".equals(uploadFlag)){
         				detailId = multipartHttpServletRequest.getParameter("inspectionDetailId");
@@ -543,6 +545,7 @@ public class AuditWebController {
 		if (it.hasNext()) {
 			MultipartFile file = multipartHttpServletRequest.getFile(it.next());
 			originalFileName = file.getOriginalFilename();
+			originalFileName = originalFileName.replaceAll("[^a-zA-Z0-9._-]", "_");
 			String detailId, captureId, checklistId;
 			if("I".equals(uploadFlag)){
 				detailId = multipartHttpServletRequest.getParameter("inspectionDetailId");
@@ -620,6 +623,7 @@ public class AuditWebController {
 		for(Map.Entry<String, MultipartFile> entry: multipartHttpServletRequest.getFileMap().entrySet()){
 			MultipartFile file = entry.getValue();
 			String originFileName = file.getOriginalFilename();
+			originFileName = originFileName.replaceAll("[^a-zA-Z0-9._-]", "_");
 			if(originFileName != null && !originFileName.isEmpty()) {
 				originalFileNames.add(originFileName);
 				String auditPath = basePath + "/"+folderName+"/";

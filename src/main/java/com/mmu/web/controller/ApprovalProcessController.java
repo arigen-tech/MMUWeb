@@ -195,5 +195,27 @@ MedicalExamService medicalExamService;
 			mv.setViewName(jsp);
 			return mv;
 		}
+		
+		@RequestMapping(value = "/captureAttendanceOfflineData", method = RequestMethod.GET)
+		public ModelAndView attendanceOfflineDataProcess(){
+
+			return new ModelAndView("captureOfflineAttendance");
+		}
+		
+		@RequestMapping(value = "/saveOrUpdateAttendanceOfflineData", method = RequestMethod.POST)
+		public String saveOrUpdateAttendanceOfflineData(@RequestBody String payload) {
+			String URL = HMSUtil.getProperties("urlextension.properties", "saveOrUpdateAttendanceOfflineData");
+			return RestUtils.postWithHeaders(
+					(IpAndPortNo + URL).trim(),
+					new LinkedMultiValueMap<String, String>(),
+					payload
+			);
+		}
+		
+		@RequestMapping(value = "/attendanceDataSubmit", method = RequestMethod.GET)
+		public ModelAndView attendanceDataSubmit(){
+
+			return new ModelAndView("attendanceDetailsSubmit");
+		}
 		 
 }
