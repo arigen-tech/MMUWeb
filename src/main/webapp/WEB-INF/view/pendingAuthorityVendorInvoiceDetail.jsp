@@ -159,7 +159,7 @@ function loadBillDetails(){
  	              		var combo = "" ;
 	 	                $j("#actionId").empty();
 	 	          	    combo += '<option value="">Select</option>';
-	 	          	    combo += '<option value="A">Penalty suggested as per auditor</option>';
+	 	          	    combo += '<option value="A">Approve</option>';
 	 	          	    jQuery('#actionId').append(combo);
                 }else{
 	                $('#penaltyAmountImposed').val(rowData.calculatedPenaltyAmount);
