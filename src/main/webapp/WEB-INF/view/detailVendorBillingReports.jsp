@@ -439,12 +439,14 @@ function getVendorInvoicePaymentDetails(val) {
 						var vendorInvoicePaymentId=item.vendorInvoicePaymentId;
 						var penaltyAmount=item.penaltyAmount;
 						var paymentDate=item.paymentDate;
+						var advancedPayment=item.advancedPayment;
 						id="captureAuditDataSubmit"
 							$('#finalPaymentDate').val(paymentDate);
 							$('#finalInvoiceAmont').val(invoiceAmount);
 							$('#paymentPenaltyAmont').val(penaltyAmount);
 							$('#tdsDeduction').val(tdsDeduction);
 							$('#finalAmount').val(amountPaid);
+							$('#advancedAmount').val(advancedPayment);
 							$('#modeOfPayment').val(modeOfPayment);
 							$('#transNo').val(transactionNumber);
 							document.getElementById("tdsDeduction").readOnly = true;
@@ -1033,7 +1035,20 @@ function getNoteShetDownloadData(button)
 											</div>
 										</div>
 									</div>
-                                   <div class="col-lg-4 col-sm-6">
+									 <div class="col-lg-4 col-sm-6">
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">Advance Payment Deduction</label>
+											</div>
+											<div class="col-md-7">
+												<input type="text" id="advancedAmount" onblur="calculateFinalAmount()" onkeypress="return isNumberKey(event)" class="form-control" readonly/>
+											</div>
+										</div>
+									</div>
+                                  
+								</div>
+								<div class="row">
+									 <div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
 												<label class="col-form-label">Penalty Amount</label>
@@ -1043,9 +1058,6 @@ function getNoteShetDownloadData(button)
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									
                                     <div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
@@ -1059,7 +1071,7 @@ function getNoteShetDownloadData(button)
 									<div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
-												<label class="col-form-label">Final Amount</label>
+												<label class="col-form-label">Paid /Cleared Amount</label>
 											</div>
 											<div class="col-md-7">
 												<input type="text" id="finalAmount" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;"  class="form-control" readonly/>

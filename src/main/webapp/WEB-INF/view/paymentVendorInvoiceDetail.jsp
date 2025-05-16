@@ -178,6 +178,7 @@ function calculateFinalAmount() {
     var invoiceAmount = parseInt($('#finalInvoiceAmont').val());
     var penaltyAmount = parseInt($('#paymentPenaltyAmont').val());
     var tdsDeduction = parseInt($('#tdsDeduction').val());
+    var advancedAmount = parseInt($('#advancedAmount').val());
 
     if(invoiceAmount && invoiceAmount < tdsDeduction) {
         alert('Deduction amount can not be greater than invoice amount!');
@@ -186,7 +187,7 @@ function calculateFinalAmount() {
         return false;
     }
 
-    var totalDed = penaltyAmount + tdsDeduction;
+    var totalDed = penaltyAmount + tdsDeduction+advancedAmount;
     
     if(invoiceAmount && invoiceAmount < totalDed) {
         alert('Sum of penalty and deduction can not be greater than invoice amount!');
@@ -539,6 +540,10 @@ function submitAuditorForm(){
    var currentdate = getTodayDate(new Date());
    lastApprovalMsg='Payment completed on ('+$('#finalPaymentDate').val()+')';
 
+   var invoiceAmount = parseInt($('#finalInvoiceAmont').val());
+   var penaltyAmount = parseInt($('#paymentPenaltyAmont').val());
+   var calculateUtilzedAmount = invoiceAmount - penaltyAmount ;
+   
   var dataJSON = {
 
           'actionId': $('#actionId').val(),
@@ -561,7 +566,9 @@ function submitAuditorForm(){
           'cityId':$('#cityId').val(),
           'phase':phase,
           'paymentRemarks':$('#paymentRemarks').val(),
-          'userId':$('#userId').val()
+          'userId':$('#userId').val(),
+          'advancedAmount':$('#advancedAmount').val(),
+          'calculateUtilzedAmount':calculateUtilzedAmount
     }
   var noteSheetData = $('#captureNodalOfficerForm')[0];
 	 var formData = new FormData(noteSheetData);
@@ -998,7 +1005,20 @@ function isNumberKey(evt) {
 											</div>
 										</div>
 									</div>
-                                   <div class="col-lg-4 col-sm-6">
+									 <div class="col-lg-4 col-sm-6">
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">Advance Payment Deduction</label>
+											</div>
+											<div class="col-md-7">
+												<input type="text" id="advancedAmount" onblur="calculateFinalAmount()" onkeypress="return isNumberKey(event)" class="form-control" value="0"/>
+											</div>
+										</div>
+									</div>
+                                  
+								</div>
+								<div class="row">
+									 <div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
 												<label class="col-form-label">Penalty Amount Deducted</label>
@@ -1008,9 +1028,6 @@ function isNumberKey(evt) {
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									
                                     <div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
@@ -1024,7 +1041,7 @@ function isNumberKey(evt) {
 									<div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
-												<label class="col-form-label">Final Amount</label>
+												<label class="col-form-label">Paid /Cleared Amount</label>
 											</div>
 											<div class="col-md-7">
 												<input type="text" id="finalAmount" maxlength="13" onkeypress="return isNumberKey(event)"  class="form-control" readonly/>

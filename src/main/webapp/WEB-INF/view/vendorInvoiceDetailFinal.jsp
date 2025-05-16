@@ -307,9 +307,10 @@ function getVendorInvoicePaymentDetails(val) {
 						var vendorInvoicePaymentId=item.vendorInvoicePaymentId;
 						var penaltyAmount=item.penaltyAmount;
 						var paymentDate=item.paymentDate;
-						
+						var advancedPayment=item.advancedPayment;
 							$('#finalPaymentDate').val(paymentDate);
 							$('#finalInvoiceAmont').val(invoiceAmount);
+							$('#advancedAmount').val(advancedPayment);
 							$('#paymentPenaltyAmont').val(penaltyAmount);
 							$('#tdsDeduction').val(tdsDeduction);
 							$('#finalAmount').val(amountPaid);
@@ -841,7 +842,20 @@ function getPenaltyAuthorityDetailsByUpss(){
 											</div>
 										</div>
 									</div>
-                                   <div class="col-lg-4 col-sm-6">
+									 <div class="col-lg-4 col-sm-6">
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">Advance Payment Deduction</label>
+											</div>
+											<div class="col-md-7">
+												<input type="text" id="advancedAmount"  onkeypress="return isNumberKey(event)" class="form-control" readonly/>
+											</div>
+										</div>
+									</div>
+                                  
+								</div>
+								<div class="row">
+									 <div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
 												<label class="col-form-label">Penalty Amount</label>
@@ -851,9 +865,6 @@ function getPenaltyAuthorityDetailsByUpss(){
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									
                                     <div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
@@ -867,7 +878,7 @@ function getPenaltyAuthorityDetailsByUpss(){
 									<div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
-												<label class="col-form-label">Final Amount</label>
+												<label class="col-form-label">Paid /Cleared Amount</label>
 											</div>
 											<div class="col-md-7">
 												<input type="text" id="finalAmount" class="form-control" readonly/>
