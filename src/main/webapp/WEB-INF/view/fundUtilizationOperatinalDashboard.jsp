@@ -148,6 +148,7 @@ function genrateTable(seq,response){
 	 	'<td>'+response.cleared_amount+'</td>'+
 	 	'<td>'+response.penalty_amount+'</td>'+
 	 	'<td>'+response.tds_deduction+'</td>'+
+	 	'<td>'+response.advanced_payment+'</td>'+
 	 	'<td>'+response.upload_date+'</td>'+
 	 	'<td>'+response.last_approval_status+'</td>'+
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showFile(\''+response.file_view+'\',\''+response.invoice_no+'\');">'+response.file_view+'</a></td>'+
@@ -271,9 +272,10 @@ function showFile(fileName,invoice_no){
                                                     
                                                 <th>Invoice No.</th>
                                                 <th>Invoice Amount</th>
-                                                <th>Cleared Amount</th> 
+                                                <th>Cleared /Paid Amount</th> 
                                                 <th>Penalty Amount</th> 
-                                                <th>Total Deductions</th> 	
+                                                <th>TDS Deductions</th>
+                                                <th>Advanced Payment</th> 	
                                                 <th>Upload Date</th> 
                                                 <th>Last Approved Status</th>
                                                 <th>View</th>
@@ -290,7 +292,7 @@ function showFile(fileName,invoice_no){
 <div class="col-lg-4 col-sm-6">
 												<div class="form-group row">
 													<div class="col-md-5">
-														<label class="col-form-label">Total</label>
+														<label class="col-form-label">Total Utilized Amount</label>
 													</div>
 													<div class="col-md-7">
 														<input type="text" value="1,20,0000" class="form-control" readonly id="totalInvoiceAmount"/>
