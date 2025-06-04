@@ -22,8 +22,10 @@ public class CaptureInvoices {
 	private String userCityId;
 	private Long headTypeId;
 	private String phase;
+	private String headSubLabel;
+	private Long totalAmount;
 	public CaptureInvoices(String city, Integer cityId, String district, Integer districtId, Integer month,
-			Integer year, List<CaptureInvoice> invoiceDetails, String action, Long userId, String batchNo,Long headTypeId,String phase) {
+			Integer year, List<CaptureInvoice> invoiceDetails, String action, Long userId, String batchNo,Long headTypeId,String phase,String headSubLabel,Long totalAmount) {
 		super();
 		this.city = city;
 		this.cityId = cityId;
@@ -37,6 +39,8 @@ public class CaptureInvoices {
 		this.batchNo = batchNo;
 		this.headTypeId=headTypeId;
 		this.phase=phase;
+		this.headSubLabel=headSubLabel;
+		this.totalAmount=totalAmount;
 	}
 	public CaptureInvoices() {
 		super();
@@ -120,6 +124,17 @@ public class CaptureInvoices {
 	public void setHeadTypeId(Long headTypeId) {
 		this.headTypeId = headTypeId;
 	}
-	
+	public String getHeadSubLabel() {
+		return headSubLabel;
+	}
+	public void setHeadSubLabel(String headSubLabel) {
+		this.headSubLabel = headSubLabel;
+	}
+	public Long getTotalAmount() {
+		return totalAmount;
+	}
+	public void setTotalAmount(Long totalAmount) {
+		this.totalAmount = totalAmount;
+	}
 	
 }

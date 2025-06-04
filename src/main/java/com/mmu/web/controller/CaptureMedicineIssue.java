@@ -525,4 +525,36 @@ public class CaptureMedicineIssue {
 		
 		return mv;
 	}
+	
+	@RequestMapping(value="/captureMiscExpenses", method = RequestMethod.GET)
+	public ModelAndView captureMiscExpenses() {
+		return new ModelAndView("captureMiscExpenses");
+	}
+	
+	@RequestMapping(value="/pendingMiscExpenses", method = RequestMethod.GET)
+	public ModelAndView pendingMiscExpenses(HttpServletRequest request, HttpServletResponse response) {
+		//return new ModelAndView("pendingMedicineInvoice");
+		return new ModelAndView("pendingMisExpenses");
+	}
+	
+	@RequestMapping(value="/updateMisExpenses", method = RequestMethod.GET)
+	public ModelAndView updateMisExpenses(HttpServletRequest request, HttpServletResponse response) {
+		String Id = request.getParameter("id");
+		
+		
+		String jsp = "captureMiscExpensesUpdate";
+		ModelAndView mv = new ModelAndView();
+		
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		
+		String payload = "{\"Id\":\"" + Id + "\"}";
+		String URL = HMSUtil.getProperties("urlextension.properties", "getInvoiceList");
+		String responseData = RestUtils.postWithHeaders(IpAndPortNo.trim() + URL.trim(), requestHeaders, payload);
+		mv.addObject("response", responseData);
+		mv.setViewName(jsp);
+		
+		
+		return mv;
+	}
+	
 	}

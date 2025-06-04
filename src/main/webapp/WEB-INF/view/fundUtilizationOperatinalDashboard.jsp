@@ -18,6 +18,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     
 <%@include file="..//view/commonJavaScript.jsp" %>
+<% 
+String userId = "1";
+if (session.getAttribute("user_id") != null) {
+	userId = session.getAttribute("user_id") + "";
+}
+String distIdUsersVal = "";
+if (session.getAttribute("distIdUsers") != null && session.getAttribute("distIdUsers") !="" ) {
+	distIdUsersVal = session.getAttribute("distIdUsers").toString();
+	//distIdUsersVal = distIdUsersVal.replace(",","");
+}
+
+String levelOfUser = "0";
+if (session.getAttribute("levelOfUser") != null) {
+	levelOfUser = session.getAttribute("levelOfUser").toString();
+	levelOfUser = levelOfUser.replace(",","");
+}
+
+%>
 <script>
 var modelRequest = null;
 var modelResponse= null;
@@ -26,6 +44,7 @@ var upssName = ""
 var cityName = "";
 var typeName= "";
 var phase="";
+var totalMiscAmount=0;
 $(document).ready(function(){
 	var currentDate="";
 	var fromDate="";
@@ -34,6 +53,17 @@ $(document).ready(function(){
 	modelResponse = ${response};
 	console.log(modelResponse);
 	var response = modelResponse.data.fundInvoiceDataInfo;
+	var misResponse=modelResponse.miscExpenses;
+	const objMis = JSON.parse(misResponse);
+	var miscData=objMis.data;
+	console.log(misResponse);
+	for(var i=0;i<miscData.length;i++){
+		var resp = miscData[i];
+		totalMiscAmount+= Number(resp.invoiceAmount);
+		genrateMiscTable(i+1,resp);
+		
+	}
+	document.getElementById('totalMiscAmount').value =totalMiscAmount;
 	document.getElementById('serach_results').innerHTML =''+response.length+' matches';
 	document.getElementById('serach_results').style ='font-size: 15px; color: green;';
 	for(var i=0;i<response.length;i++){
@@ -43,7 +73,7 @@ $(document).ready(function(){
 		}else{
 			cityName = resp.city
 		}
-		totalAmounts+= Number(resp.cleared_amount);
+		totalAmounts+= Number(resp.final_amount);
 		genrateTable(i+1,resp);
 	}
 
@@ -64,14 +94,15 @@ $(document).ready(function(){
 });
 
 function exportExcel(){
- 	
+	var distIdVal='<%=distIdUsersVal%>';
+	 var levelOfUser='<%=levelOfUser%>';
 	 var fromDate =modelRequest.fromDate;
 	 var toDate = modelRequest.toDate;
 	 var upss_id = modelRequest.upss_id;
 	 var mmuCity =modelRequest.mmuCity;
 	 var flagType = modelRequest.flagType;
 	 var		phase=modelRequest.phase;
-window.location.href =  "${pageContext.request.contextPath}/dashboard/getInvoiceDashboardExcelReport?fromDate="
+window.location.href =  "${pageContext.request.contextPath}/dashboard/getUtilizedDashboardExcelReport?fromDate="
 			+ fromDate
 			+ "&toDate="
 			+toDate
@@ -84,11 +115,16 @@ window.location.href =  "${pageContext.request.contextPath}/dashboard/getInvoice
 			+"&upss_name="
 			+typeName
 			+ "&phase="
-			+ phase;	
+			+ phase
+			+ "&distIdVal="
+			+ distIdVal
+			+ "&levelOfUser="
+			+ levelOfUser;
 
 }
 function exportExcel1(){
- 	
+	 var distIdVal='<%=distIdUsersVal%>';
+	 var levelOfUser='<%=levelOfUser%>';
 	 var fromDate =modelRequest.fromDate;
 	 var toDate = modelRequest.toDate;
 	 var upss_id = modelRequest.upss_id;
@@ -108,7 +144,10 @@ function exportExcel1(){
 			+"&upss_name="
 			+typeName
 			+ "&phase="
-			+ phase;	
+			+ phase+ "&distIdVal="
+			+ distIdVal
+			+ "&levelOfUser="
+			+ levelOfUser;		
 
 }
 function exportPDF(){
@@ -156,6 +195,22 @@ function genrateTable(seq,response){
 	 '</tr>';
 	 $("#tbl_invoiceData").append(tableRow);
 }
+
+function genrateMiscTable(seq,response){
+	var iteration = $('#my-table tr').length;
+	
+	var tableRow='<tr>'+
+	 	'<td>'+seq+'</td>'+
+	 	'<td>'+response.createdBy+'</td>'+
+	 	'<td>'+response.upssNames+'</td>'+
+	 	'<td>'+response.cityName+'</td>'+
+	 	'<td>'+response.invoiceDate+'</td>'+
+	 	'<td>'+response.invoiceAmount+'</td>'+
+	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showFileMisc(\''+response.fileName+'\',\''+response.invoiceNumber+'\');">'+response.fileName+'</a></td>'+
+	 '</tr>';
+	 $("#tbl_invoiceMiscData").append(tableRow);
+}
+
 function showView(approval){
 	window.open("${pageContext.servletContext.contextPath}/captureMedicine/authorityWiseStatus?id="+approval, '_blank').focus();
 }
@@ -163,6 +218,12 @@ function showFile(fileName,invoice_no){
 	//window.open("${pageContext.servletContext.contextPath}/audit/download?fileName="+fileName.innerHTML, '_blank').focus();
 	//window.open("${pageContext.servletContext.contextPath}/audit/download?name="+fileName+"&type=vendor_bill&keys="+invoice_no, '_blank').focus();
 	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+fileName+"&type=vendor_bill&keys="+invoice_no, '_blank').focus();	
+}
+
+function showFileMisc(fileName,invoice_no){
+	//window.open("${pageContext.servletContext.contextPath}/audit/download?fileName="+fileName.innerHTML, '_blank').focus();
+	window.open("${pageContext.servletContext.contextPath}/captureMedicine/download?fileName="+fileName, '_blank').focus();
+	//window.open("${pageContext.servletContext.contextPath}/audit/download?name="+fileName+"&type=vendor_bill&keys="+invoice_no, '_blank').focus();	
 }
 
 
@@ -305,13 +366,55 @@ function showFile(fileName,invoice_no){
 											class="btn  btn-primary " onclick="exportExcel();">Excel</button>
 										<button type="button" id="updateBtn"
 											class="btn  btn-primary " onclick="exportPDF();">PDF</button>
-											<button type="button" id="backBtn"
-											class="btn  btn-primary " onclick="backScreen();">Back</button>		
+											
 										</div>
 									</div>
 										
-                                
-
+                                <div class="scrollableDiv m-b-10">
+                                 <div class="internal_Htext">Miscellaneous Expenditure -MMU Operations</div>
+                                    <table class="table table-striped table-hover table-bordered " id="my-table">
+                                        <thead class="bg-success" style="color:#fff;">
+                                           
+                                            <tr>                                                  
+                                                <th>S.No.</th> 
+                                                <th>Created By</th>
+                                                <th>UPSS</th> 
+                                                <th>City</th> 
+                                                <th>Date</th>
+                                                <th>Invoice Amount</th>
+                                                <th>View</th>
+                                                
+                                                                                      
+                                            </tr>
+                                        </thead>
+                                     <tbody id="tbl_invoiceMiscData">
+										
+                     				 </tbody>
+                                    </table>
+                                    </div>
+                                   <div class="row">
+									<div class="col-lg-4 col-sm-6">
+												<div class="form-group row">
+													<div class="col-md-5">
+														<label class="col-form-label">Total Amount</label>
+													</div>
+													<div class="col-md-7">
+														<input type="text" value="1,20,0000" class="form-control" readonly id="totalMiscAmount"/>
+													</div>
+												</div>
+											</div>
+										<div class="col-md-8 text-right">										
+											<button type="button" id="btnAddHospital"
+											class="btn  btn-primary " onclick="exportMiscExcel();">Excel</button>
+										<button type="button" id="updateBtn"
+											class="btn  btn-primary " onclick="exportMiscPDF();">PDF</button>	
+										<button type="button" id="backBtn"
+											class="btn  btn-primary " onclick="backScreen();">Back</button>		
+											
+										</div>
+									</div>
+									
+									</div>
                                     <!-- end row -->
 
                                 </div>

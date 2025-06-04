@@ -22,6 +22,7 @@ import com.mmu.web.excel.InvoiceExcelReport;
 import com.mmu.web.excel.MMUExpenditureMedicineExcelReport;
 import com.mmu.web.excel.MedicineInvoiceExcelReport;
 import com.mmu.web.excel.UPSSInvoiceExcelReport;
+import com.mmu.web.excel.UPSSUltilizedInvoiceExcelReport;
 import com.mmu.web.utils.HMSUtil;
 import com.mmu.web.utils.RestUtils;
 
@@ -164,6 +165,35 @@ public class WebDashBoardController {
 		map.put("upss_name", request.getParameter("upss_name"));
 		map.put("phase", request.getParameter("phase"));
 	    return new ModelAndView(new UPSSInvoiceExcelReport(), map);
+			
+	  }
+	
+	@RequestMapping(value = "/getUtilizedDashboardExcelReport", method = RequestMethod.GET)
+	public ModelAndView getUtilizedDashboardExcelReport(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {		
+		JSONObject payload=new JSONObject();
+		payload.put("fromDate", request.getParameter("fromDate"));
+		payload.put("toDate", request.getParameter("toDate"));
+		payload.put("mmuCity", request.getParameter("mmuCity"));
+		payload.put("upss_id", request.getParameter("upss_id"));
+		payload.put("flagType", request.getParameter("flagType"));
+		payload.put("phase", request.getParameter("phase"));
+		payload.put("distIdVal", request.getParameter("distIdVal"));
+		payload.put("levelOfUser", request.getParameter("levelOfUser"));
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();			
+		String Url = HMSUtil.getProperties("urlextension.properties","getUpssInvoiceData");
+		String OSBURL = IpAndPortNo + Url;	
+		
+		String data= RestUtils.postWithHeaders(OSBURL.trim(),requestHeaders, payload.toString());
+		Map<String,String> map = new HashMap<>();
+		map.put("data", data);
+		map.put("mmuCity", request.getParameter("mmuCity"));
+		map.put("fromDate", request.getParameter("fromDate"));
+		map.put("toDate", request.getParameter("toDate"));
+		map.put("flagType", request.getParameter("flagType"));
+		map.put("upss_name", request.getParameter("upss_name"));
+		map.put("phase", request.getParameter("phase"));
+	    return new ModelAndView(new UPSSUltilizedInvoiceExcelReport(), map);
 			
 	  }
 	

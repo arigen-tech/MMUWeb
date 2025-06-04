@@ -23,7 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.servlet.view.document.AbstractXlsxView;
 
-public class UPSSInvoiceExcelReport extends AbstractXlsxView{
+public class UPSSUltilizedInvoiceExcelReport extends AbstractXlsxView{
 	private static String[] CLEAR_HEADERS ={ "SN","Vendor","MMU","Invoice Date","Invoice No.","Invoice Amount","Cleared/ Paid Amount","Penalty Amount","TDS Deductions","Advanced Payment","Upload Date","Last Approved Status" };
 	private static String[] UNCLEAR_HEADERS ={ "SN","Vendor","MMU","Invoice Date",  "Invoice No.","Invoice Amount","UnCleared Amount","Upload Date","Last Approved Status" };
 	private static String[] TOTAL_HEADERS ={ "SN","Vendor","MMU","Invoice Date", "Upload Date", "Invoice No.","Invoice Amount","Last Approved Status" };
@@ -122,9 +122,10 @@ public class UPSSInvoiceExcelReport extends AbstractXlsxView{
         	
     		  JSONArray jsonArray=new JSONArray(js1);
     		  Integer totalInvoiceAmount = 0;
+    		  Integer totalUtilizeAmount = 0;
     		  int index=1;
     		  if(flagType.equalsIgnoreCase("C")) {
-    			  totalInvoiceAmount = 0;
+    			  totalUtilizeAmount = 0;
     			  for(int i=0;i<jsonArray.length();i++)
 	    	        {
   
@@ -144,7 +145,7 @@ public class UPSSInvoiceExcelReport extends AbstractXlsxView{
 	    	            row.createCell(10).setCellValue(jsonObject1.optString("upload_date"));
 	    	            row.createCell(11).setCellValue(jsonObject1.optString("last_approval_status"));
 	    	            //row.createCell(10).setCellValue(jsonObject1.optString("approval"));
-	    	            totalInvoiceAmount+=Integer.valueOf(jsonObject1.optString("total_invoice"));
+	    	            totalUtilizeAmount+=Integer.valueOf(jsonObject1.optString("final_amount"));
 	    	            index=5;
 	    	        }
     	        }else if(flagType.equalsIgnoreCase("U")) {
@@ -189,8 +190,8 @@ public class UPSSInvoiceExcelReport extends AbstractXlsxView{
 	    	        }
     	        }
     		  Row lastRow = sheet.createRow(rowNum+2);
-    		  lastRow.createCell(0).setCellValue("Total Invoice Amount ");
-    	      lastRow.createCell(index).setCellValue(""+totalInvoiceAmount);
+    		  lastRow.createCell(0).setCellValue("Total Utilized Amount ");
+    	      lastRow.createCell(index).setCellValue(""+totalUtilizeAmount);
         }
         catch(Exception exception) {
         	
