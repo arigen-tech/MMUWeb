@@ -14,7 +14,7 @@
                     <head>
                         <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
                         <%@include file="..//view/commonJavaScript.jsp" %>
-                            <title>Vendor Bill Submit </title>
+                            <title>CApture Attendance Offline Data </title>
                      </head>
 
                     <%
@@ -82,9 +82,7 @@
 												
 										</div> 
 										
-										<!-- <div class="col-md-2"> 
-												<button class="btn btn-primary opd_submit_btn"   type="button" onclick="return backListReport('1');" id="clicked">Back to List</button>  
-										</div> -->
+										
 
 											
 
@@ -159,39 +157,7 @@ $j(document).ready(function()
 				}
 			
 		});
-            function backListReport() {
-            	            var valueOfVendor=$('#typeOfVal').val(); 
-            	            if(valueOfVendor=="anmFirstTime"){
-                             	 window.location.href ="captureAttendanceOfflineData";
-               				}
-            				if(valueOfVendor=="anmSecondTime"){
-                          	 window.location.href ="anmOpdOfflineList";
-            				}
-            				if(valueOfVendor=="apmTime"){
-                             	 window.location.href ="pendingApprovalListOfflineData";
-                            }
-            				if(valueOfVendor=="authority"){
-                            	 window.location.href ="pendingVendorInvoiceApprovingAuthority";
-                         	}
-            				if(valueOfVendor=="payment"){
-                           	 window.location.href ="paymentWaitingListVendorInvoice";
-                        	}
-            }
             
-            function printReport(){
-            	var vendorBillDetailId=$('#captureVendorBillDetailId').val();
-          	 	 var url="${pageContext.request.contextPath}/report/printVendorInvoiceReport?captureVendorBillDetailId="+vendorBillDetailId;
-          	 	 openPdfModel(url);
-      
-          }
-           	 	/*  document.frm.action="${pageContext.request.contextPath}/report/printRolReport?hId="+hospitalId+"&dId="+departmentId+"";
-           	 	 document.frm.method="GET";
-           		 document.frm.submit();  */
-           	 /* }else{
-           		 alert("Please select Unit");
-           			return false; */
-           	// }
-           	 
                       
             
  </script> 
