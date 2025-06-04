@@ -44,6 +44,7 @@ var upssName = ""
 var cityName = "";
 var typeName= "";
 var phase="";
+var miscData="";
 var totalMiscAmount=0;
 $(document).ready(function(){
 	var currentDate="";
@@ -55,7 +56,7 @@ $(document).ready(function(){
 	var response = modelResponse.data.fundInvoiceDataInfo;
 	var misResponse=modelResponse.miscExpenses;
 	const objMis = JSON.parse(misResponse);
-	var miscData=objMis.data;
+	 miscData=objMis.data;
 	console.log(misResponse);
 	for(var i=0;i<miscData.length;i++){
 		var resp = miscData[i];
@@ -121,6 +122,35 @@ window.location.href =  "${pageContext.request.contextPath}/dashboard/getUtilize
 			+ "&levelOfUser="
 			+ levelOfUser;
 
+}
+
+function exportMiscExcel(){
+	var distIdVal='<%=distIdUsersVal%>';
+	 var levelOfUser='<%=levelOfUser%>';
+	 var fromDate =modelRequest.fromDate;
+	 var toDate = modelRequest.toDate;
+	 var upss_id = modelRequest.upss_id;
+	 var mmuCity =modelRequest.mmuCity;
+	 var flagType = modelRequest.flagType;
+	 var		phase=modelRequest.phase;
+	 window.location.href =  "${pageContext.request.contextPath}/dashboard/getMiscDashboardExcelReport?fromDate="
+			+ fromDate
+			+ "&toDate="
+			+toDate
+			+ "&upss_id="
+			+upss_id
+			+ "&flagType=C"
+			
+			+ "&mmuCity="
+			+ mmuCity
+			+"&upss_name="
+			+typeName
+			+ "&phase="
+			+ phase
+			+ "&distIdVal="
+			+ distIdVal
+			+ "&levelOfUser="
+			+ levelOfUser;
 }
 function exportExcel1(){
 	 var distIdVal='<%=distIdUsersVal%>';
