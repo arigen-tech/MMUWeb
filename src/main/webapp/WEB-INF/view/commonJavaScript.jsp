@@ -646,6 +646,66 @@ function getTodayDate(inputdate) {
 	return date1;
 }
 
+function calculateAmountMedIEC(item) {
+    var invId = $(item).closest('tr').find("td:eq(4)").find(":input").attr("id");
+    var invAmount=$(item).closest('tr').find("td:eq(4)").find(":input").val();
+    var tsAmount=$(item).closest('tr').find("td:eq(5)").find(":input").val();
+    var dedAmount=$(item).closest('tr').find("td:eq(6)").find(":input").val();
+   
+    /* if (invoiceAmount.length > 10) {
+        alert("Invoice amount should be max 10 digit");
+        $('#tdsDeduction').val('');
+        return false;
+    }
+    
+    // Remove decimal part by taking only the integer part
+    amt = s[0];
+
+    if (amt.length > 13) {
+        alert('TDS amount can be only 12 digit number!');
+        $('#tdsDeduction').val('');
+        return false;
+    }
+    
+    // Update the tdsDeduction field with the integer value
+    $('#tdsDeduction').val(amt); */
+
+    var invoiceAmount = parseInt(invAmount);
+    var deductionAmount = parseInt(dedAmount);
+    var tdsDeduction = parseInt(tsAmount);
+    var tdsId = $(item).closest('tr').find("td:eq(5)").find(":input").attr("id");
+    var dedId = $(item).closest('tr').find("td:eq(6)").find(":input").attr("id");
+    var paidId = $(item).closest('tr').find("td:eq(7)").find(":input").attr("id");
+    if(invoiceAmount && invoiceAmount < tdsDeduction) {
+        alert('TDS amount can not be greater than invoice amount!');
+        var tdsId = $(item).closest('tr').find("td:eq(5)").find(":input").attr("id");
+        $('#'+tdsId).val('');
+        //$('#finalAmount').val('');
+        return false;
+    }
+
+    var totalDed = deductionAmount + tdsDeduction;
+    
+    if(invoiceAmount && invoiceAmount < totalDed) {
+        alert('Sum of tds and deduction can not be greater than invoice amount!');
+        $('#'+tdsId).val('');
+        $('#'+dedId).val('');
+        $('#'+paidId).val('');
+        return false;
+    }
+
+    var calculateAmount = invoiceAmount - totalDed;
+    var utilizedAmount=invoiceAmount-deductionAmount;
+    var n1 = calculateAmount; // No need to use toFixed() since we are dealing with integers
+    var paidId = $(item).closest('tr').find("td:eq(7)").find(":input").attr("id");
+    var utilizedId = $(item).closest('tr').find("td:eq(8)").find(":input").attr("id");
+    if(tsAmount!="" && dedAmount!=""){
+    	$('#'+paidId).val(n1);
+    	$('#'+utilizedId).val(utilizedAmount);
+    }
+    
+}
+
 </script>
 	
 	

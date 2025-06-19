@@ -24,6 +24,8 @@ public class CaptureInvoices {
 	private String phase;
 	private String headSubLabel;
 	private Long totalAmount;
+
+
 	public CaptureInvoices(String city, Integer cityId, String district, Integer districtId, Integer month,
 			Integer year, List<CaptureInvoice> invoiceDetails, String action, Long userId, String batchNo,Long headTypeId,String phase,String headSubLabel,Long totalAmount) {
 		super();
@@ -41,6 +43,7 @@ public class CaptureInvoices {
 		this.phase=phase;
 		this.headSubLabel=headSubLabel;
 		this.totalAmount=totalAmount;
+		
 	}
 	public CaptureInvoices() {
 		super();
@@ -136,5 +139,7 @@ public class CaptureInvoices {
 	public void setTotalAmount(Long totalAmount) {
 		this.totalAmount = totalAmount;
 	}
+	
+	
 	
 }

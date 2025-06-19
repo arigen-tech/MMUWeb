@@ -14,6 +14,11 @@ public class CaptureInvoice {
 	private String invoiceDate;
 	private String invoiceNum;
 	private Long inoviceAmount;
+	private Long tdsAmount;
+	private Long deductionAmount;
+	private Long paidAmount;
+	private Long utilizedAmount;
+	private String deductionRemarks;
 	@JsonInclude(Include.NON_NULL)
 	private MultipartFile fileTypeValue;
 	private String fileName;
@@ -22,7 +27,8 @@ public class CaptureInvoice {
 	
 	
 	public CaptureInvoice(Integer sourceOfMedicine, Integer medicalStore, String invoiceDate, String invoiceNum,
-			Long inoviceAmount, MultipartFile fileTypeValue, String fileName, Long invoiceId) {
+			Long inoviceAmount, MultipartFile fileTypeValue, String fileName, Long invoiceId,
+			Long tdsAmount,Long deductionAmount,Long paidAmount,Long utilizedAmount,String deductionRemarks) {
 		super();
 		this.sourceOfMedicine = sourceOfMedicine;
 		this.medicalStore = medicalStore;
@@ -32,6 +38,11 @@ public class CaptureInvoice {
 		this.fileTypeValue = fileTypeValue;
 		this.fileName = fileName;
 		this.invoiceId = invoiceId;
+		this.tdsAmount = tdsAmount;
+		this.deductionAmount = deductionAmount;
+		this.paidAmount = paidAmount;
+		this.utilizedAmount = utilizedAmount;
+		this.deductionRemarks = deductionRemarks;
 	}
 	public CaptureInvoice() {
 		super();
@@ -84,6 +95,42 @@ public class CaptureInvoice {
 	}
 	public void setInvoiceId(Long invoiceId) {
 		this.invoiceId = invoiceId;
+	}
+	
+	public Long getTdsAmount() {
+		return tdsAmount;
+	}
+	public void setTdsAmount(Long tdsAmount) {
+		this.tdsAmount = tdsAmount;
+	}
+	
+	public Long getPaidAmount() {
+		return paidAmount;
+	}
+	public void setPaidAmount(Long paidAmount) {
+		this.paidAmount = paidAmount;
+	}
+	public Long getUtilizedAmount() {
+		return utilizedAmount;
+	}
+	public void setUtilizedAmount(Long utilizedAmount) {
+		this.utilizedAmount = utilizedAmount;
+	}
+	
+
+	
+	
+	public Long getDeductionAmount() {
+		return deductionAmount;
+	}
+	public void setDeductionAmount(Long deductionAmount) {
+		this.deductionAmount = deductionAmount;
+	}
+	public String getDeductionRemarks() {
+		return deductionRemarks;
+	}
+	public void setDeductionRemarks(String deductionRemarks) {
+		this.deductionRemarks = deductionRemarks;
 	}
 	@Override
 	public int hashCode() {
