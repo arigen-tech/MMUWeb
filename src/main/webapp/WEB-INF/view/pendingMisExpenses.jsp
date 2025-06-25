@@ -50,12 +50,12 @@ var nPageNo=1;
 
 $(document).ready(function(){
 	//getSourceOfMedicine();
-	getMasPhase();
+	//getMasPhase();
 	getDistrictList();
 	getPendingInvoice('ALL');
 	
 });
-var phaseId='';
+<%-- var phaseId='';
 var phaseValue='';
 var phaseName='';
 function getMasPhase(){
@@ -87,7 +87,7 @@ function getMasPhase(){
 				    }
 				    
 				});
-	}
+	} --%>
 function showAll(){
 	var text = "--SELECT--";
 	 
@@ -116,11 +116,11 @@ function getPendingInvoice(MODE){
 	var vendorName=$("#ditrictList").val();	
 	 var fromDate=$('#fromDate').val();
 	 var toDate=$('#toDate').val();
-	 var phaseVal=$('#phase').val();
+	 //var phaseVal=$('#phase').val();
 	 if(MODE == 'ALL'){
-		var data = {"PN":nPageNo, "vendorName":"","headTypeId":"1"};			
+		var data = {"PN":nPageNo, "vendorName":"","headTypeId":"4"};			
 	 }else{
-			var data = {"PN":nPageNo, "vendorName":vendorName,"fromDate":fromDate,"toDate":toDate,"headTypeId":"2","phase":phaseVal};
+			var data = {"PN":nPageNo, "vendorName":vendorName,"fromDate":fromDate,"toDate":toDate,"headTypeId":"4"};
 	  } 
 	var url = "searchMedicineInvoice";		
 	var bClickable = true;
@@ -169,16 +169,12 @@ function makeTable(jsonData)
 			if(parts.length>1){
 				invoiceDate=parts[2]+"/"+parts[1]+"/"+parts[0];
 			}
-			var phase="";
-           	if(data.phase!="" && data.phase!=undefined){
-           		phase=data.phase;
-           	}else{
-           		phase="";
-           	}
+			//var phase="";
+           	
 			htmlTable = htmlTable+"<tr id='"+data.batchNo+"' >";
 			htmlTable = htmlTable +"<td style='width: 150px;'>"+data.districtName+"</td>";
 			htmlTable = htmlTable +"<td style='width: 150px;'>"+data.cityName+"</td>";
-			htmlTable = htmlTable +"<td style='width: 150px;'>"+phase+"</td>";
+			//htmlTable = htmlTable +"<td style='width: 150px;'>"+phase+"</td>";
 			htmlTable = htmlTable +"<td style='width: 150px;'>"+monthName+'/'+data.billYear+"</td>"; 
 		
 			htmlTable = htmlTable +"<td style='width: 150px;'>"+invoiceDate+"</td>";
@@ -270,7 +266,7 @@ function addRow(data){
 	var newRowContent ='<tr>'+
 	'<td id="th1" class ="inner_md_htext">'+data.districtName+'</th>'+
 	'<td id="th2" class ="inner_md_htext">'+data.cityName+'</th>'+
-	'<td id="th9" class ="inner_md_htext">'+data.phase+'</th>'+
+	//'<td id="th9" class ="inner_md_htext">'+data.phase+'</th>'+
    	'<td id="th3" class ="inner_md_htext">'+data.billMonth+'-'+data.billYear+'</th>'+
     '<td id="th4" class ="inner_md_htext">'+data.sourceOfMedicine+'</th>'+
     '<td id="th5" class ="inner_md_htext">'+data.invoiceNum+'</th>'+
@@ -317,20 +313,20 @@ function executeClickEvent(id,jsonData)
 									</div> -->
 									
 									
-									<div class="col-md-4">
+									<!-- <div class="col-md-4">
 										<div class="row col-auto">
 											<div class="col-md-5">
 												<label class="col-form-label">Phase</label>
 											</div>
 											<div class="col-md-7">
 												<select class="form-control" id="phase"  >
-													<!-- <option value="">--SELECT--</option>
+													<option value="">--SELECT--</option>
 												 	<option value="Phase1">Phase1</option>
-													<option value="Phase2">Phase2</option> -->
+													<option value="Phase2">Phase2</option>
 												</select>
 											</div>
 										</div>
-									</div>
+									</div> -->
 									<div class="col-md-4">
 										<div class="row col-auto">
 											<div class="col-md-5">
@@ -412,7 +408,7 @@ function executeClickEvent(id,jsonData)
 												<tr>
 													<th id="th1" class="inner_md_htext">UPSS</th>
 													<th id="th2" class="inner_md_htext">City</th>
-													<th id="th9" class="inner_md_htext">Phase</th>
+													<!-- <th id="th9" class="inner_md_htext">Phase</th> -->
 													<th id="th3" class="inner_md_htext">Month/Year</th>
 													
 													

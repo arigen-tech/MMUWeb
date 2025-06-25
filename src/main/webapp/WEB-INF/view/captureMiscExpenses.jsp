@@ -50,7 +50,7 @@ function enableDiasbleButton(status){
 	}
 }
 $(document).ready(function(){
-	getMasPhase();
+	//getMasPhase();
 	getDistrictList();
 	getSourceOfMedicine();
 	//getMedicalStore();
@@ -68,7 +68,7 @@ $(document).ready(function(){
 	});
 });
 
-var phaseId='';
+<%-- var phaseId='';
 var phaseValue='';
 var phaseName='';
 function getMasPhase(){
@@ -100,7 +100,7 @@ function getMasPhase(){
 				    }
 				    
 				});
-			}
+			} --%>
 
 function isFutureDate(idate){
 	var today = new Date().getTime(),
@@ -151,10 +151,10 @@ function saveData(action){
     }
 	var formData = new FormData();
 	
-	if(!$('#phase').val()){
+	/* if(!$('#phase').val()){
         alert('Please select Phase .');
         return false;
-    }
+    } */
 	   if(!$('#ditrictList').val()){
          alert('Please select UPSS .');
          return false;
@@ -187,6 +187,11 @@ function saveData(action){
 		   var invoice_number = $(this).find("input[id*='invoice_number_"+this.id+"']").val();
 		   var invoiceDate = $(this).find("input[id*='invoiceDate_"+this.id+"']").val();
 		   var invoice_amount = $(this).find("input[id*='invoice_amount_"+this.id+"']").val();
+		   var tds_amount = $(this).find("input[id*='tds_amount_"+this.id+"']").val();
+		   var deduction_amount = $(this).find("input[id*='deduction_amount_"+this.id+"']").val();
+		   var paid_amount = $(this).find("input[id*='paid_amount_"+this.id+"']").val();
+		   var utilized_amount = $(this).find("input[id*='utilized_amount_"+this.id+"']").val();
+		   var deduction_remarks = $(this).find("textarea[id*='deduction_remarks_"+this.id+"']").val();
 		   var fileUpload = $(this).find("input[id*='fileUpload_"+this.id+"']");
 		   totalAmount += parseInt(invoice_amount);
 		   var file = $(fileUpload)[0].files[0];
@@ -241,8 +246,18 @@ function saveData(action){
 	           return false;
 		   }
 		  
-		   if(!invoice_amount){
-			    alert('Invoice Amount should not be blank!');
+		   if(!invoice_amount || invoice_amount=="0"){
+			    alert('Invoice Amount should not be blank or 0!');
+			    everyFieldValidate = false;
+	           return false;
+		   }
+		   if(!tds_amount || tds_amount=="0"){
+			    alert('TDS Amount should not be blank or 0!');
+			    everyFieldValidate = false;
+	           return false;
+		   }
+		   if(!deduction_amount || deduction_amount=="0"){
+			    alert('Deduction Amount should not be blank or 0!');
 			    everyFieldValidate = false;
 	           return false;
 		   }
@@ -264,6 +279,11 @@ function saveData(action){
 		    formData.append("invoiceDetails['"+j+"'].invoiceDate",invoiceDate);
 		    formData.append("invoiceDetails['"+j+"'].invoiceNum",invoice_number);
 		    formData.append("invoiceDetails['"+j+"'].inoviceAmount",invoice_amount);
+		    formData.append("invoiceDetails['"+j+"'].tdsAmount",tds_amount);
+		    formData.append("invoiceDetails['"+j+"'].deductionAmount",deduction_amount);
+		    formData.append("invoiceDetails['"+j+"'].paidAmount",paid_amount);
+		    formData.append("invoiceDetails['"+j+"'].utilizedAmount",utilized_amount);
+		    formData.append("invoiceDetails['"+j+"'].deductionRemarks",deduction_remarks);
 		    formData.append("invoiceDetails['"+j+"'].fileTypeValue",file);
 		    formData.append("invoiceDetails['"+j+"'].fileName",fileName);
 		     
@@ -279,8 +299,8 @@ function saveData(action){
 		formData.append("year",$('#year').val());
 		formData.append("action",action);
 		formData.append("userId",<%= userId%>);
-		formData.append("headTypeId","1");
-		formData.append("phase",$('#phase').val());
+		formData.append("headTypeId","4");
+		formData.append("phase","");
 		formData.append("headSubLabel","MISC");
 		formData.append("totalAmount",totalAmount);
 		if(!everyFieldValidate){
@@ -356,13 +376,13 @@ function getDistrictList(){
 function getFundAvailableBalance(){
 	var upssId=$('#ditrictList').val();
 	var cityId=$('#cityList').val();
-	var phaseval=$('#phase').val();
+	//var phaseval=$('#phase').val();
 	jQuery.ajax({
 	 	crossOrigin: true,
 	    method: "POST",			    
 	    crossDomain:true,
-	    url: "${pageContext.servletContext.contextPath}/audit/getFundAvailableBalance",
-	    data: JSON.stringify({'upssId':upssId,'cityId':cityId,'headTypeId':"1",'phase':phaseval}),
+	    url: "${pageContext.servletContext.contextPath}/audit/getFundAvailableBalanceWithoutPhase",
+	    data: JSON.stringify({'upssId':upssId,'cityId':cityId,'headTypeId':"4"}),
 	    contentType: "application/json; charset=utf-8",
 	    dataType: "json",
 	    success: function(result){
@@ -581,6 +601,27 @@ function addRow(){
  	'<td>'+
  	'<input type="text" name="invoice_amount" id="invoice_amount_'+iteration+'" class="form-control" placeholder="Invoice Amount" onkeypress="return isNumberKey(event)" maxlength="10">'+
   	'</td>'+
+  	
+  	'<td>'+
+ 	'<input type="text" name="tds_amount" id="tds_amount_'+iteration+'" class="form-control" onChange="calculateAmountMedIEC(this)" placeholder="TDS Amount" onkeypress="return isNumberKey(event)" maxlength="10">'+
+  	'</td>'+
+  	
+  	'<td>'+
+ 	'<input type="text" name="deduction_amount" id="deduction_amount_'+iteration+'" onChange="calculateAmountMedIEC(this)" class="form-control" placeholder="Deduction Amount" onkeypress="return isNumberKey(event)" maxlength="10">'+
+  	'</td>'+
+  	
+  	'<td>'+
+ 	'<input type="text" name="paid_amount" id="paid_amount_'+iteration+'" class="form-control" placeholder="Paid Amount" onkeypress="return isNumberKey(event)" readonly maxlength="10">'+
+  	'</td>'+
+  	
+  	'<td>'+
+ 	'<input type="text" name="utilized_amount" id="utilized_amount_'+iteration+'" class="form-control" placeholder="Utilized Amount" onkeypress="return isNumberKey(event)" readonly maxlength="10">'+
+  	'</td>'+
+  	
+  	'<td>'+
+ 	'<textarea name="deduction_remarks" id="deduction_remarks_'+iteration+'" class="form-control" placeholder="Deduction Remarks"></textarea>'+
+  	'</td>'+
+  	
   	'<td>'+
   		'<div class="fileUploadDiv">'+
 		  	'<input type="file" class="inputUpload" name="fileUpload" id="fileUpload_'+iteration+'" accept="application/pdf,application/vnd.ms-excel,.xlsx">'+
@@ -627,20 +668,20 @@ function isNumberKey(evt) {
 
 								<div class="row">
 								<input type="hidden"  name="cityIdVal" value=<%= session.getAttribute("cityId") %> id="cityIdVal" />
-								<div class="col-md-3">
+								<!-- <div class="col-md-3">
 										<div class="row col-auto">
 											<div class="col-md-5">
 												<label class="col-form-label">Phase</label>
 											</div>
 											<div class="col-md-7">
 												<select class="form-control" id="phase"  >
-													<!-- <option value="">--SELECT--</option>
+													<option value="">--SELECT--</option>
 												 	<option value="Phase1">Phase1</option>
-													<option value="Phase2">Phase2</option> -->
+													<option value="Phase2">Phase2</option>
 												</select>
 											</div>
 										</div>
-									</div>
+									</div> -->
 									<div class="col-md-3">
 										<div class="row col-auto">
 											<div class="col-md-5">
@@ -721,6 +762,11 @@ function isNumberKey(evt) {
 														<th>Invoice Date</th>
 														<th>Invoice No.</th>
 														<th>Invoice Amount</th>
+														<th>TDS Amount</th>
+														<th>Deduction  Amount</th>
+														<th>Paid Amount</th>
+														<th>Utilized Amount</th>
+														<th>Deduction Remarks</th>
 														<th>File</th>
 														<th>Action</th>
 													</tr>
@@ -752,6 +798,29 @@ function isNumberKey(evt) {
 															placeholder="Invoice Amount"
 															onkeypress="return isNumberKey(event)"
 															maxlength="10"></td>
+														<td><input type="text" name="tds_amount"
+															id="tds_amount_<%=inc%>" class="form-control"
+															placeholder="TDS Amount" onChange="calculateAmountMedIEC(this)"
+															onkeypress="return isNumberKey(event)"
+															maxlength="10"></td>
+														<td><input type="text" name="deduction_amount"
+															id="deduction_amount_<%=inc%>" class="form-control"
+															placeholder="Deduction Amount" onChange="calculateAmountMedIEC(this)"
+															onkeypress="return isNumberKey(event)"
+															maxlength="10"></td>
+														<td><input type="text" name="paid_amount"
+															id="paid_amount_<%=inc%>" class="form-control"
+															placeholder="Paid Amount"
+															onkeypress="return isNumberKey(event)"
+															maxlength="10" readonly></td>
+														<td><input type="text" name="utilized_amount"
+															id="utilized_amount_<%=inc%>" class="form-control"
+															placeholder="Utilized Amount"
+															onkeypress="return isNumberKey(event)"
+															maxlength="10" readonly></td>
+														<td><textarea  name="deduction_remarks"
+															id="deduction_remarks_<%=inc%>" class="form-control"
+															placeholder="Deduction Remarks"></textarea></td>	
 														<td>
 															<div class="fileUploadDiv">
 																<input type="file" class="inputUpload" name="fileUpload" id="fileUpload_<%=inc%>" accept="application/pdf,application/vnd.ms-excel,.xlsx">

@@ -139,7 +139,7 @@
 		// 		htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].upssNames+"</td>";
 			 						
 				htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].finanicalYear+"</td>";	
-				htmlTable = htmlTable +"<td style='width: 150px;'>"+phase+"</td>";
+				/* htmlTable = htmlTable +"<td style='width: 150px;'>"+phase+"</td>"; */
 	//			htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].upssNames+"</td>";
 				//htmlTable = htmlTable +"<td style='width: 150px;'>"+dataList[i].createdBy+"</td>";
 				
@@ -335,7 +335,7 @@
                                             <tr>
                                                 
                                                 <th>Financial Year</th>
-                                                <th>Phase</th>
+                                               <!--  <th>Phase</th> -->
                                                <!--  <th>UPSS</th>
                                                 <th>City</th>
                                                 <th>Head Type</th> 

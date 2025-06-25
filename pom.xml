@@ -276,11 +276,7 @@
 			    <version>4.5.13</version>
 			</dependency>
 	
-	<dependency>
-    <groupId>net.bull.javamelody</groupId>
-    	<artifactId>javamelody-core</artifactId>
-   		 <version>1.99.2</version>
-	</dependency>
+	
 
 		<!-- <dependency> <groupId>ashaUpload</groupId> <artifactId>upload</artifactId> 
 			<scope>system</scope> <version>1.9</version> <systemPath>${basedir}/WebContent/WEB-INF/lib/uploadbean.jar</systemPath> 

@@ -59,13 +59,13 @@ $(document).ready(function(){
 	
 	
 	getMasHeadType();
-	getMasPhase();
+	//getMasPhase();
 	GetDistrictList();
 	//getStoreFinancialYear();
 	
 });
 
-function getMasPhase(){
+<%-- function getMasPhase(){
 	jQuery.ajax({
 	 	crossOrigin: true,
 	    method: "POST",			    
@@ -86,7 +86,7 @@ function getMasPhase(){
 	    }
 	    
 	});
-}
+} --%>
 
 function getStoreFinancialYear(){
 	 //$j("#financialYear").empty();
@@ -128,11 +128,15 @@ function getMasHeadType(){
 	    success: function(result){
 	    	var combo = "" ;
 	    	for(var i=0;i<result.masHeadTypeData.length;i++){
+	    		if(result.masHeadTypeData[i].headTypeName.startsWith("Int")){
 	    		combo += '<option value='+result.masHeadTypeData[i].headTypeId+'>' +result.masHeadTypeData[i].headTypeName+ '</option>';
+	   
+	    		}
 	    		
 	    	}
 	    	
 	    	jQuery('#headType').append(combo);
+	 		document.getElementById('headType').selectedIndex = 0;
 	    	
 	    }
 	    
@@ -205,26 +209,30 @@ function addHeadAmountRow() {
 		  $trNew.find('select').val(function(index, value) {
 		    return $trLast.find('select').eq(index).val();
 		  });
+		  $trNew.find("option[selected]").removeAttr("selected");
+		  $trNew.find('select').prop('selectedIndex', 0);
 		  $trNew.find("td:eq(0)").find('select').prop('id', 'upss'+countRecall+'');
 		  $trNew.find("td:eq(1)").find('select').prop('id', 'cityId'+countRecall+'');
-		  $trNew.find("td:eq(2)").find(":input").val("");
+		  $trNew.find("td:eq(2)").find('select').prop('id', 'headType'+countRecall+'');
+		  $trNew.find("td:eq(3)").find('input').prop('id', 'allocatedAmount'+countRecall+'');
+		 // $trNew.find("td:eq(4)").find('input[type="file"]').prop('name', 'fileUpload'+countRecall);
+		  //$trNew.find("td:eq(4)").find('input[type="file"]').prop('id', 'fileUpload'+countRecall);
+		  // Remove the old file input and replace with a fresh one in the new row
+		    var $fileDiv = $trNew.find("td:eq(4)").find('.fileUploadDiv');
+		    $fileDiv.find('input[type="file"]').remove(); // Remove old file input
+		
+		    // Create new file input and label/span
+		    var fileInputId = 'fileUpload' + countRecall;
+		    var $newFileInput = $('<input type="file" class="inputUpload" name="fileUpload" id="fileUpload' + fileInputId + '" accept="application/pdf,application/vnd.ms-excel,.xlsx">');
+		    var $newLabel = $('<label class="inputUploadlabel" for="'+fileInputId+'">Choose File</label>');
+		    var $newSpan = $('<span class="inputUploadFileName">No File Chosen</span>');
+		
+		    $fileDiv.empty().append($newFileInput, $newLabel, $newSpan);
+
+		 // $trNew.find("td:eq(2)").find(":input").val("");
 		  $trNew.find("td:eq(3)").find(":input").val("");
-		  //$trLast.find('select').eq(0).prop('id', 'upss'+countRecall+'');
-		 // $trLast.find('select').eq(1).prop('id', 'cityId'+countRecall+'');
-		  //$trLast.find("option[selected]").prop('id', 'upss'+countRecall+'');
-		  //$trLast.find("option[selected]").prop('id', 'cityId'+countRecall+'');
 		  $trLast.after($trNew);
 	
-	/* var aClone = $('#headAmountGrid>tr:last').clone(true)
-	//aClone.find(":input").val("");
-	aClone.find("td:eq(0)").find(":input").prop('id', 'upss'+countRecall+'');
-	aClone.find("td:eq(1)").find(":input").prop('id', 'cityId'+countRecall+'');
-	aClone.find("option[selected]").prop('id', 'upss'+countRecall+'');
-	aClone.find("option[selected]").prop('id', 'cityId'+countRecall+'');
-	//aClone.find("option[selected]").attr('selected', 'selected');
-	aClone.clone(true).appendTo('#headAmountGrid'); */
-	//var val = $('#headAmountGrid>tr:last').find("td:eq(0)").find(":input")[0];
-	//autocomplete(val, arryNomenclature);
 	
 }
 
@@ -251,12 +259,12 @@ function saveSubmitFundAllocationFunction(val) {
  		return false;
     }
       
-      var phaseVal = $('#phase').val();
+      /* var phaseVal = $('#phase').val();
       if(phaseVal==""||phaseVal=="0")
     {
     	alert("Please select Phase");
  		return false;
-    }
+    } */
 //////////////////////////////table validation part ////////////////	
     var  idforTable='';
     var caluculateTotalAmount=0;
@@ -365,7 +373,7 @@ function saveSubmitFundAllocationFunction(val) {
             'userId':$('#userId').val(),
             'createdUserId':"",
             'captureInterestHdId': "",
-            'phaseVal':phaseVal,
+            //'phaseVal':phaseVal,
             "listofHeader" : tableDataHd
     }
     
@@ -381,7 +389,7 @@ function saveSubmitFundAllocationFunction(val) {
     $.ajax({
     	type: 'POST',
 		    url : url,
-    //    enctype: 'multipart/form-data',
+        enctype: 'multipart/form-data',
         data: formData,
         processData: false,
         contentType: false,
@@ -567,20 +575,20 @@ function saveSubmitFundAllocationFunction(val) {
 										</div>
 									</div>
 							 
-							 	<div class="col-md-4">
+							 	<!-- <div class="col-md-4">
 										<div class="form-group row">
 											<div class="col-md-5">
 												<label class="col-form-label">Phase</label>
 											</div>
 											<div class="col-md-7">
 												<select class="form-control" id="phase"  onchange="">
-													<!-- <option value="">Select</option>
+													<option value="">Select</option>
 													<option value="Phase1">Phase1</option>
-													<option value="Phase2">Phase2</option> -->
+													<option value="Phase2">Phase2</option>
 												</select>
 											</div>
 										</div>
-									</div>
+									</div> -->
 							 
 							 </div>
 								
@@ -591,6 +599,7 @@ function saveSubmitFundAllocationFunction(val) {
                                                 <th>City</th>
                                                 <th>Head Type</th>
                                                 <th>Interest</th>
+                                                <th>File</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -608,14 +617,20 @@ function saveSubmitFundAllocationFunction(val) {
 										 		</select>
 										 	</td>
 										 	<td>
-										 		<select class="form-control" id="headType" name="headType" onchange="checkDuplicateRecord(this);">
-										 			<option value="">Select</option>
+										 		<select class="form-control" id="headType" name="headType" readonly onchange="checkDuplicateRecord(this);">
+										 			<!-- <option value="">Select</option> -->
 										 		</select>
 										 	</td>
 										 	<td>
 										 		<input type="text" id="allocatedAmount" maxlength="12" name="allocatedAmount" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" class="form-control">
 									 		</td>
-									 		
+									 		<td>
+															<div class="fileUploadDiv">
+																<input type="file" class="inputUpload" name="fileUpload" id="fileUpload" accept="application/pdf,application/vnd.ms-excel,.xlsx">
+																<label class="inputUploadlabel">Choose File</label> <span
+																	id="" class="inputUploadFileName">No File Chosen</span>
+															</div>
+											</td>
 										 	<td>
 												<button type="button" type="button"
 													class="btn btn-primary buttonAdd noMinWidth" value=""
