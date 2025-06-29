@@ -386,7 +386,7 @@ function saveData(action){
 		});
 }
 function callback(){
-	window.location.href = "${pageContext.servletContext.contextPath}/captureMedicine/pendingmedicineinvoiceIEC";
+	window.location.href = "${pageContext.servletContext.contextPath}/captureMedicine/pendingMiscExpenses";
 }
 function getDistrictList(){
 	console.log("${pageContext.servletContext.contextPath}/master/getAllDistrict");

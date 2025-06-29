@@ -632,7 +632,7 @@ function getFundAvailableBalance(){
 	    method: "POST",			    
 	    crossDomain:true,
 	    url: "${pageContext.servletContext.contextPath}/audit/getFundAvailableBalance",
-	    data: JSON.stringify({'upssId':upssId,'cityId':cityId,'headTypeId':"3",'phase':phaseval}),
+	    data: JSON.stringify({'upssId':upssId,'cityId':cityId,'headTypeId':"2",'phase':phaseval}),
 	    contentType: "application/json; charset=utf-8",
 	    dataType: "json",
 	    success: function(result){
