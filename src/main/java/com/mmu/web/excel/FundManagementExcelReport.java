@@ -26,7 +26,7 @@ import org.springframework.web.servlet.view.document.AbstractXlsxView;
 public class FundManagementExcelReport extends AbstractXlsxView{
 	
 	private static String[] HEADERS1 = { "SN", "UPSS","Total Fund", "Fund Allocated","","","","Fund Utilized","","","","Available Balance"};
-	private static String[] HEADERS2 ={ "MMU Operations", "IEC", "Medicine","Interest","MMU Operations", "IEC", "Medicine" ,"Total","MMU Operations", "IEC", "Medicine","Total","Utilized %","Remain %"};
+	private static String[] HEADERS2 ={ "MMU Operations", "IEC", "Medicine","Interest","MMU Operations", "IEC", "Medicine","Interest" ,"Total","MMU Operations", "IEC", "Medicine","Interest" ,"Total","Utilized %","Remain %"};
 
 	@Override
 	protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest request,
@@ -104,7 +104,7 @@ public class FundManagementExcelReport extends AbstractXlsxView{
             cell1.setCellValue(HEADERS1[i]);
             cell1.setCellStyle(style);
         }
-        sheet.setColumnWidth(12, 25*256);
+        sheet.setColumnWidth(14, 25*256);
         Cell cell1 = headerRow1.createCell(13);
         cell1.setCellValue(HEADERS1[11]);
         cell1.setCellStyle(style);
@@ -113,7 +113,7 @@ public class FundManagementExcelReport extends AbstractXlsxView{
         sheet.addMergedRegion(new CellRangeAddress(1, 2, 2, 2));
         sheet.addMergedRegion(new CellRangeAddress(1, 1, 3, 6));
         sheet.addMergedRegion(new CellRangeAddress(1, 1, 7, 10));
-        sheet.addMergedRegion(new CellRangeAddress(1, 1, 11, 14));
+        sheet.addMergedRegion(new CellRangeAddress(1, 1, 11, 16));
         //sheet.addMergedRegion(new CellRangeAddress(1, 1, 12, 1));
         //sheet.addMergedRegion(new CellRangeAddress(1, 1, 15, 17));
 
@@ -137,12 +137,14 @@ public class FundManagementExcelReport extends AbstractXlsxView{
         	Double utilizedOperation = 0.0;
         	Double utilizedAdmin = 0.0;
         	Double utilizedMedicine = 0.0;
+        	Double utilizeInterest=0.0;
         	Double interest=0.0;
         	Double available_balance=0.0;
         	Double utilized_total=0.0;
-        	Double available_operation=0.0;
+           	Double available_operation=0.0;
         	Double available_admin=0.0;
         	Double available_medicine=0.0;
+        	Double available_interest=0.0;
         	Double utilized=0.0;
         	Double remain=0.0;
     		JSONArray jsonArray=new JSONArray(js1);	
@@ -166,14 +168,16 @@ public class FundManagementExcelReport extends AbstractXlsxView{
     	            row.createCell(7).setCellValue(jsonObject1.optString("utilized_operation"));
     	            row.createCell(8).setCellValue(jsonObject1.optString("utilized_admin"));
     	            row.createCell(9).setCellValue(jsonObject1.optString("utilized_medicine"));
-    	            row.createCell(10).setCellValue(jsonObject1.optString("utilized_total"));
+    	            row.createCell(10).setCellValue(jsonObject1.optString("utilized_interest"));
+    	            row.createCell(11).setCellValue(jsonObject1.optString("utilized_total"));
     	            
-    	            row.createCell(11).setCellValue(jsonObject1.optString("available_operation"));
-    	            row.createCell(12).setCellValue(jsonObject1.optString("available_admin"));
-    	            row.createCell(13).setCellValue(jsonObject1.optString("available_medicine"));
-    	            row.createCell(14).setCellValue(jsonObject1.optString("available_balance"));
-    	            row.createCell(15).setCellValue(jsonObject1.optString("utilized"));
-    	            row.createCell(16).setCellValue(jsonObject1.optString("remain"));
+    	            row.createCell(12).setCellValue(jsonObject1.optString("available_operation"));
+    	            row.createCell(13).setCellValue(jsonObject1.optString("available_admin"));
+    	            row.createCell(14).setCellValue(jsonObject1.optString("available_medicine"));
+    	            row.createCell(15).setCellValue(jsonObject1.optString("total_interest"));
+    	            row.createCell(16).setCellValue(jsonObject1.optString("available_balance"));
+    	            row.createCell(17).setCellValue(jsonObject1.optString("utilized"));
+    	            row.createCell(18).setCellValue(jsonObject1.optString("remain"));
     	            
     	            totalFund+=Double.valueOf(jsonObject1.optString("total_fund"));
     	            fundOperation+=Double.valueOf(jsonObject1.optString("fund_operation"));
@@ -185,11 +189,13 @@ public class FundManagementExcelReport extends AbstractXlsxView{
     	            utilizedAdmin+=Double.valueOf(jsonObject1.optString("utilized_admin"));
     	            utilizedMedicine+=Double.valueOf(jsonObject1.optString("utilized_medicine"));
     	            utilized_total+=Double.valueOf(jsonObject1.optString("utilized_total"));
+    	            utilizeInterest+=Double.valueOf(jsonObject1.optString("utilized_interest"));
     	            
     	            available_operation+=Double.valueOf(jsonObject1.optString("available_operation"));
     	            available_admin+=Double.valueOf(jsonObject1.optString("available_admin"));
     	            available_medicine+=Double.valueOf(jsonObject1.optString("available_medicine"));
     	            available_balance+=Double.valueOf(jsonObject1.optString("available_balance"));
+    	            available_interest+=Double.valueOf(jsonObject1.optString("total_interest"));
     	            utilized+=Double.valueOf(jsonObject1.optString("utilized"));
     	            remain+=Double.valueOf(jsonObject1.optString("remain"));
     	        }
@@ -205,12 +211,14 @@ public class FundManagementExcelReport extends AbstractXlsxView{
     	      lastRow.createCell(7).setCellValue(""+utilizedOperation);
     	      lastRow.createCell(8).setCellValue(""+utilizedAdmin);
     	      lastRow.createCell(9).setCellValue(""+utilizedMedicine);
-    	      lastRow.createCell(10).setCellValue(""+utilized_total);
+    	      lastRow.createCell(10).setCellValue(""+utilizeInterest);
+    	      lastRow.createCell(11).setCellValue(""+utilized_total);
     	      
-    	      lastRow.createCell(11).setCellValue(""+available_operation);
-    	      lastRow.createCell(12).setCellValue(""+available_admin);
-    	      lastRow.createCell(13).setCellValue(""+available_medicine);
-    	      lastRow.createCell(14).setCellValue(""+available_balance);
+    	      lastRow.createCell(12).setCellValue(""+available_operation);
+    	      lastRow.createCell(13).setCellValue(""+available_admin);
+    	      lastRow.createCell(14).setCellValue(""+available_medicine);
+    	      lastRow.createCell(15).setCellValue(""+available_interest);
+    	      lastRow.createCell(16).setCellValue(""+available_balance);
     	      //lastRow.createCell(15).setCellValue(""+utilized);
     	      //lastRow.createCell(16).setCellValue(""+remain);
         }

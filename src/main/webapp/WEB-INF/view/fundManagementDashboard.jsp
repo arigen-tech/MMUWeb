@@ -211,12 +211,14 @@ function getInvoiceDataReport(){
 	 totalUtilizeOperation=0;
 	 totalUtilizeAdmin=0;
 	 totalUtilizeMedicine=0;
+	 totalUtilizedInterest=0;
      totalFund_interest=0;
      utilized_total=0;
      available_operation=0;
      available_medicine=0;
      available_admin=0;
      available_balance=0;
+     total_interest=0;
      utilized=0;
      remain=0;
      
@@ -278,11 +280,13 @@ function getInvoiceDataReport(){
 	    		totalUtilizeOperation=parseInt(totalUtilizeOperation) + parseInt(response[i].utilized_operation);
 	    		totalUtilizeAdmin=parseInt(totalUtilizeAdmin) + parseInt(response[i].utilized_admin);
 	    		totalUtilizeMedicine=parseInt(totalUtilizeMedicine) + parseInt(response[i].utilized_medicine);
+	    		totalUtilizedInterest=parseInt(totalUtilizedInterest) + parseInt(response[i].utilized_interest);
 	    		totalFund_interest=parseInt(totalFund_interest) + parseInt(response[i].fund_interest);
 	    		utilized_total=parseInt(utilized_total) + parseInt(response[i].utilized_total);
 	    		 available_operation=parseInt(available_operation) + parseInt(response[i].available_operation);
 	    		 available_admin=parseInt(available_admin) + parseInt(response[i].available_admin);
 	    	     available_medicine=parseInt(available_medicine) + parseInt(response[i].available_medicine);
+	    	     total_interest=parseInt(total_interest) + parseInt(response[i].total_interest);
 	    	     available_balance=parseInt(available_balance) + parseInt(response[i].available_balance);
 	    	    // utilized=parseInt(utilized) + parseInt(response[i].utilized);
 	    	    // remain=parseInt(remain) + parseInt(response[i].remain);
@@ -413,12 +417,15 @@ function genrateTable(seq,response){
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_admin+',6);">'+response.utilized_admin+'</a></td>'+
 	 	/* '<td>'+response.utilized_admin+'</td>'+ */
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_medicine+',7);">'+response.utilized_medicine+'</a></td>'+
+	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_interest+',8);">'+response.utilized_interest+'</a></td>'+
+	 	
 	 	'<td><a class="btn-link">'+response.utilized_total+'</a></td>'+
 	 	'<td><a class="btn-link">'+response.available_operation+'</a></td>'+
 	  	'<td><a class="btn-link">'+response.available_admin+'</a></td>'+
 	  	'<td><a class="btn-link">'+response.available_medicine+'</a></td>'+
+		'<td><a class="btn-link">'+response.total_interest+'</a></td>'+
 	  	'<td><a class="btn-link">'+response.available_balance+'</a></td>'+
-	  	'<td><a class="btn-link">'+response.utilized+'</a></td>'+
+	  	  	'<td><a class="btn-link">'+response.utilized+'</a></td>'+
 	 	'<td><a class="btn-link">'+response.remain+'</a></td>'+
 	 	'</tr>';
 	 $("#tbl_invoiceData").append(tableRow);
@@ -439,10 +446,12 @@ function generateFinalHtml(){
   	'<td> '+totalUtilizeOperation+' </td>'+
  	'<td> '+totalUtilizeAdmin+' </td>'+
  	'<td> '+totalUtilizeMedicine+'</td>'+
+ 	'<td> '+totalUtilizedInterest+'</td>'+
  	'<td> '+utilized_total+'</td>'+
  	'<td> '+available_operation+'</td>'+
  	'<td> '+available_admin+'</td>'+
  	'<td> '+available_medicine+'</td>'+
+ 	'<td> '+total_interest+'</td>'+
  	'<td> '+available_balance+'</td>'+
  	 '<td></td>'+
  	'<td></td>'+ 
@@ -607,8 +616,8 @@ function showDiv(upss_id,amount,index){
                                                 <th rowspan="2" >Total Fund</th> 
                                                 <th colspan="4" class="text-center">Fund Allocated </th>   
                                             
-                                                <th colspan="4" class="text-center">Fund Utilized </th> 
-                                                <th colspan="4" class="text-center">Available Balance </th>  
+                                                <th colspan="5" class="text-center">Fund Utilized </th> 
+                                                <th colspan="5" class="text-center">Available Balance </th>  
                                                 <th rowspan="2" >Utilized <br/>&nbsp;&nbsp;&nbsp; %</th>   
                                                 <th rowspan="2" >Remain<br/> &nbsp;&nbsp;&nbsp; %</th>                                        
                                             </tr>
@@ -620,10 +629,12 @@ function showDiv(upss_id,amount,index){
                                                 <th>Operations</th> 
                                                 <th>IEC</th> 
                                                 <th>Medicine</th>
+                                                <th>Interest</th>
                                                 <th>Total</th>
                                                 <th>Operations</th> 
                                                 <th>IEC</th> 
                                                 <th>Medicine</th>
+                                                <th>Interest</th>
                                                 <th>Total</th>
                                                                                   
                                             </tr>
