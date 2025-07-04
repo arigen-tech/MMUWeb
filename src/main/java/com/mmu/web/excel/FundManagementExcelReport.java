@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.view.document.AbstractXlsxView;
 
 public class FundManagementExcelReport extends AbstractXlsxView{
@@ -196,8 +197,12 @@ public class FundManagementExcelReport extends AbstractXlsxView{
     	            available_medicine+=Double.valueOf(jsonObject1.optString("available_medicine"));
     	            available_balance+=Double.valueOf(jsonObject1.optString("available_balance"));
     	            available_interest+=Double.valueOf(jsonObject1.optString("total_interest"));
+    	            if(!StringUtils.isEmpty(jsonObject1.optString("utilized"))) {
     	            utilized+=Double.valueOf(jsonObject1.optString("utilized"));
+    	            }
+    	            if(!StringUtils.isEmpty(jsonObject1.optString("remain"))) {
     	            remain+=Double.valueOf(jsonObject1.optString("remain"));
+    	            }
     	        }
     		  
     		  Row lastRow = sheet.createRow(rowNum+2);

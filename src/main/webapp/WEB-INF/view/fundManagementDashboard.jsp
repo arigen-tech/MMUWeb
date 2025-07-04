@@ -488,6 +488,9 @@ function showDiv(upss_id,amount,index){
 	 else if(index===7){
 		  url = "${pageContext.request.contextPath}/captureMedicine/fundUtilzationMedicineDashboard?flagType=MID&"
 	 }
+	 else if(index===8){
+		  url = "${pageContext.request.contextPath}/captureMedicine/fundUtilzationMedicineDashboard?flagType=INT&"
+	 }
 	 url=url+"fromDate="
 			+ fromDate
 			+ "&toDate="

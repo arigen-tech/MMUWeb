@@ -528,6 +528,9 @@ function getDgFundAllcationHdDt(data) {
 							var financialYear=data[i].finanicalId;
 							var finanicalIdText=data[i].finanicalIdText;
 							var fileName=data[i].fileName;
+							if(fileName=="null"){
+								fileName="";
+							}
 							//var phaseVal=data[i].phaseVal;
 							//$('#downloadBill').attr('data-name', data[i].fileName);
 							//$("#letterNo").val(letterNo);
@@ -601,8 +604,10 @@ function getDgFundAllcationHdDt(data) {
 							allocationGridValue +='<span id="" class="inputUploadFileName">'+fileName+'</span>';
 							
 							allocationGridValue +='</div>';
+							if(fileName=""){
 							allocationGridValue +='<button type="button" class="btn noMinWidth" name="docsUpload"  value ="'+fileName+'" onclick="downloadRow(this)">View File</button>';
 							allocationGridValue +='<input  name="existingFile" id="existingFile'+count+'" type="hidden" value="'+fileName+'" />';
+							}
 							allocationGridValue +='</td>';
 							allocationGridValue += '<td><button type="button" type="button"	class="btn btn-primary buttonAdd noMinWidth" value="" button-type="add" onclick="addHeadAmountRow()"></button><button type="button" name="delete" value="'+ data[i].captureInterestDtId+ '" id="deleteMC" class="buttonDel btn btn-danger noMinWidth" button-type="delete" onclick="removeHeadAmountRow(this,this.value)"></button></td>';
 							

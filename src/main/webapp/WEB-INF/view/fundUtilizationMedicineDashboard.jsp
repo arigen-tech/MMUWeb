@@ -162,18 +162,21 @@ function backScreen(){
 function genrateTable(seq,response){
 	var iteration = $('#my-table tr').length;
 	var flagType=modelRequest.flagType; 
-	
+	var tableRow='<tr>';
 	if(flagType!="IEC"){
 		$('#sourceOfMedicine').show();
 		$('#fundUtilization').show();
 		
 		 
 	}
-	else{
+	else if(flagType=="INT"){
+		$('#interestUtilization').show();
+		$('#fundUtilization').hide();
+	}
+	else{ 
 		$('#iecUtilization').show();
 		$('#fundUtilization').hide();
 	}
-	var tableRow='<tr>';
 	tableRow=tableRow+'<td>'+seq+'</td>';
 	 	if(flagType!='IEC')
 	 		tableRow=tableRow+'<td>'+response.soure_of_medicine+'</td>';
@@ -181,6 +184,11 @@ function genrateTable(seq,response){
 	 	'<td>'+response.upload_date+'</td>'+
 		'<td>'+response.invoice_no+'</td>'+
 	 	'<td>'+response.total_invoice+'</td>'+
+	 	'<td></td>'+
+	 	'<td></td>'+
+	 	'<td></td>'+
+	 	'<td></td>'+
+	 	'<td></td>'+
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showFile(this);">'+response.invoice_doc+'</a></td>'+
 	 '</tr>';
 	 $("#tbl_invoiceData").append(tableRow);
@@ -205,6 +213,7 @@ function showFile(fileName){
                  <div id="fundUtilization" class="internal_Htext">Fund Utilization - Medicine</div>
                   
                    <div id="iecUtilization" class="internal_Htext" style="display:none;">Fund Utilization-IEC</div>
+                   <div id="interestUtilization" class="internal_Htext" style="display:none;">Fund Utilization-Interest</div>
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
@@ -292,7 +301,12 @@ function showFile(fileName){
                                                 <th>Invoice Date</th> 
                                                 <th>Upload Date</th>
                                                 <th>Invoice No.</th>   
-                                                <th>Invoice Amount</th> 
+                                                <th>Invoice Amount</th>
+                                                <th>TDS Amount</th>
+                                                <th>Deduction Amount</th>
+                                                <th>Paid Amount</th>
+                                                <th>Utilized Amount</th>
+                                                <th>Deduction Remarks</th> 
                                                 <th>View</th>                                      
                                             </tr>
                                         </thead>
