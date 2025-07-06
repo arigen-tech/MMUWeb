@@ -47,7 +47,7 @@ $(document).ready(function(){
 		}else{
 			cityName = resp.city
 		}
-		totalAmounts+= Number(resp.total_invoice);
+		totalAmounts+= Number(resp.utilized_amount);
 		genrateTable(i+1,resp);
 	}
 	
@@ -77,7 +77,7 @@ function exportExcel(){
 	 var mmuCity =modelRequest.mmuCity;
 	var flagType= flageTypeName;
 	var phase=modelRequest.phase;
-if(flagType!="IEC"){	
+if(flagType=="MID"){	
  window.location.href =  "${pageContext.request.contextPath}/dashboard/getMedicineInvoiceExcelReport?fromDate="
 			+ fromDate
 			+ "&toDate="
@@ -128,7 +128,7 @@ function exportPDF(){
 	 var mmuCity =modelRequest.mmuCity;
 	 var url ="";
 	 var phase=modelRequest.phase;
-if(flageTypeName!="IEC"){	 
+if(flageTypeName=="MID"){	 
   url = "${pageContext.request.contextPath}/report/medicineInvoiceDashboardReport?fromDate="
 	 + fromDate
 		+ "&toDate="
@@ -163,7 +163,7 @@ function genrateTable(seq,response){
 	var iteration = $('#my-table tr').length;
 	var flagType=modelRequest.flagType; 
 	var tableRow='<tr>';
-	if(flagType!="IEC"){
+	if(flagType=="MID"){
 		$('#sourceOfMedicine').show();
 		$('#fundUtilization').show();
 		
@@ -178,17 +178,18 @@ function genrateTable(seq,response){
 		$('#fundUtilization').hide();
 	}
 	tableRow=tableRow+'<td>'+seq+'</td>';
-	 	if(flagType!='IEC')
+	 	if(flagType=='MID'){
 	 		tableRow=tableRow+'<td>'+response.soure_of_medicine+'</td>';
+	 	}
 	 		tableRow=tableRow+'<td>'+response.invoice_date+'</td>'+
 	 	'<td>'+response.upload_date+'</td>'+
 		'<td>'+response.invoice_no+'</td>'+
 	 	'<td>'+response.total_invoice+'</td>'+
-	 	'<td></td>'+
-	 	'<td></td>'+
-	 	'<td></td>'+
-	 	'<td></td>'+
-	 	'<td></td>'+
+	 	'<td>'+response.tds_amount+'</td>'+
+	 	'<td>'+response.deducation_amount+'</td>'+
+	 	'<td>'+response.paid_amount+'</td>'+
+	 	'<td>'+response.utilized_amount+'</td>'+
+	 	'<td>'+response.deducation_amount+'</td>'+
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showFile(this);">'+response.invoice_doc+'</a></td>'+
 	 '</tr>';
 	 $("#tbl_invoiceData").append(tableRow);
