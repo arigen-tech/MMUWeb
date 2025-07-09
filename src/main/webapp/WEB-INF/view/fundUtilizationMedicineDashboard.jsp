@@ -140,6 +140,18 @@ if(flageTypeName=="MID"){
 		+ "&phase="
 		+ phase;	
 }
+else if(flageTypeName=="INT"){
+	  url = "${pageContext.request.contextPath}/report/medicineInvoiceDashboardReportINTEREST?fromDate="
+		 + fromDate
+			+ "&toDate="
+			+toDate
+			+ "&upss_id="
+			+upss_id
+			+ "&mmuCity="
+			+ mmuCity
+			+ "&phase="
+			+ phase;	
+}
 else{
 	  url = "${pageContext.request.contextPath}/report/medicineInvoiceDashboardReportIEC?fromDate="
 		 + fromDate
@@ -189,7 +201,7 @@ function genrateTable(seq,response){
 	 	'<td>'+response.deducation_amount+'</td>'+
 	 	'<td>'+response.paid_amount+'</td>'+
 	 	'<td>'+response.utilized_amount+'</td>'+
-	 	'<td>'+response.deducation_amount+'</td>'+
+	 	'<td>'+response.deducation_remarks+'</td>'+
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showFile(this);">'+response.invoice_doc+'</a></td>'+
 	 '</tr>';
 	 $("#tbl_invoiceData").append(tableRow);
