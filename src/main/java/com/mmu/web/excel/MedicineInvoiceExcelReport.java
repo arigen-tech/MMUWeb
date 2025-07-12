@@ -249,7 +249,7 @@ public class MedicineInvoiceExcelReport extends AbstractXlsxView{
 					totalInvoiceAmount += Integer.valueOf(jsonObject1.optString("utilized_amount"));
 				}
 				Row lastRow = sheet.createRow(rowNum + 2);
-				lastRow.createCell(0).setCellValue("Total Invoice Amount ");
+				lastRow.createCell(0).setCellValue("Total Utilized Amount ");
 				if(flageTypeName.equalsIgnoreCase("MID")) {
 				lastRow.createCell(5).setCellValue("" + totalInvoiceAmount);
 				}

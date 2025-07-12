@@ -557,4 +557,29 @@ public class CaptureMedicineIssue {
 		return mv;
 	}
 	
+	@RequestMapping(value="/fundInterestDashboard", method = RequestMethod.GET)
+	public ModelAndView fundInterestDashboard(HttpServletRequest request, HttpServletResponse response) {
+		
+
+
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		Map<String, String> mapRequest = request.getParameterMap().entrySet().stream().collect(Collectors.toMap(
+                  entry -> entry.getKey(),
+                  entry -> entry.getValue()[0]));
+		request.getSession().setAttribute("fundmgmt_fromDate", mapRequest);
+		ModelAndView mv = new ModelAndView("fundAllocationInterestDashboard");
+		String requestParam= "";
+		try {
+			requestParam = new ObjectMapper().writeValueAsString(mapRequest);
+			String URL = HMSUtil.getProperties("urlextension.properties", "getFundInvoicDashboardData");
+			
+			String responseData = RestUtils.postWithHeaders(IpAndPortNo.trim() + URL.trim(), requestHeaders, requestParam);
+			mv.addObject("requestParam", requestParam);
+			mv.addObject("response", responseData);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return mv;
+	}
+	
 	}

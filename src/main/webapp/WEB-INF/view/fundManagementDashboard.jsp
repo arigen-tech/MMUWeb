@@ -412,8 +412,8 @@ function genrateTable(seq,response){
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.fund_operation+',2);">'+response.fund_operation+'</a></td>'+
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.fund_admin+',3);">'+response.fund_admin+'</a></td>'+
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.fund_medicine+',4);">'+response.fund_medicine+'</a></td>'+
-	 	'<td>'+response.fund_interest+'</td>'+
-	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_operation+',5);">'+response.utilized_operation+'</a></td>'+
+	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.fund_interest+',5);">'+response.fund_interest+'</a></td>'+
+		'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_operation+',5);">'+response.utilized_operation+'</a></td>'+
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_admin+',6);">'+response.utilized_admin+'</a></td>'+
 	 	/* '<td>'+response.utilized_admin+'</td>'+ */
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_medicine+',7);">'+response.utilized_medicine+'</a></td>'+
@@ -478,6 +478,9 @@ function showDiv(upss_id,amount,index){
 	 }
 	 if(index===4){
 	 	 url = "${pageContext.request.contextPath}/captureMedicine/fundOperationDashboard?flagType=FAO&fundType=M&"
+	 }
+	 if(index===5){
+	 	 url = "${pageContext.request.contextPath}/captureMedicine/fundInterestDashboard?flagType=FAO&fundType=I&"
 	 }
 	 else if(index===5){
 		  url = "${pageContext.request.contextPath}/captureMedicine/fundUtilzationDashboard?flagType=FUO&"

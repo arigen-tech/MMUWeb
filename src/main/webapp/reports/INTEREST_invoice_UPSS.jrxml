@@ -330,7 +330,7 @@ WHERE 	invoice_date ::date between $P{From_Date} AND $P{To_Date}  AND (phase = $
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<text><![CDATA[Deducation Amount]]></text>
+				<text><![CDATA[Deduction Amount]]></text>
 			</staticText>
 			<line direction="BottomUp">
 				<reportElement key="line-3" x="709" y="3" width="1" height="21"/>

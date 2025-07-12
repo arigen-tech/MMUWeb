@@ -344,7 +344,7 @@ WHERE 	invoice_date ::date between $P{From_Date} AND $P{To_Date} AND action = 'S
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<text><![CDATA[Dedcuation  Amount]]></text>
+				<text><![CDATA[Deduction  Amount]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-23" x="523" y="8" width="56" height="11"/>

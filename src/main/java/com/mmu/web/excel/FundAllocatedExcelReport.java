@@ -39,6 +39,7 @@ public class FundAllocatedExcelReport extends AbstractXlsxView{
 		String fromDate = model.get("fromDate").toString();
 		String toDate = model.get("toDate").toString();
 		String phase=model.get("phase").toString();
+		String fundType=model.get("fundType").toString();
 		dates.add(1, fromDate);
 		dates.add(3,toDate);
 		dates.add(5,phase);
@@ -52,7 +53,14 @@ public class FundAllocatedExcelReport extends AbstractXlsxView{
 		dates.add(types);
 		dates.add(model.get("upss_name").toString());
 	    /** for header **/
-	    String fileName = "FundAllocation";
+		 String fileName = "FundAllocation";
+		if(fundType.equals("A")) {
+	       fileName = "IEC_FundAllocation";
+		}else if(fundType.equals("M")) {
+			fileName = "Medicine_FundAllocation";
+		}else {
+			fileName = "Operations_FundAllocation";
+		}
 	    Sheet sheet = workbook.createSheet(fileName+"_"+types);
 	    /** for header **/
 	    fileName = fileName+"_"+types+".xlsx";
