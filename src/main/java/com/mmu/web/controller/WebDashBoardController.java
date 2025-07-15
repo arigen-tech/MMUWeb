@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.mmu.web.excel.ExportExcelMiscDashboard;
 import com.mmu.web.excel.FundAllocatedExcelReport;
+import com.mmu.web.excel.FundAllocatedInterestExcelReport;
 import com.mmu.web.excel.FundUtilizedExcelReport;
 import com.mmu.web.excel.InvoiceExcelReport;
 import com.mmu.web.excel.MMUExpenditureMedicineExcelReport;
@@ -381,6 +382,35 @@ public class WebDashBoardController {
 		map.put("flageTypeName", request.getParameter("flageTypeName"));
 		map.put("phase", request.getParameter("phase"));
 		return new ModelAndView(new ExportExcelMiscDashboard(), map);
+			
+	  }
+	
+	@RequestMapping(value = "/getFundAllocationInterestExcelReport", method = RequestMethod.GET)
+	public ModelAndView getFundAllocationInterestExcelReport(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {		
+		JSONObject payload=new JSONObject();
+		payload.put("fromDate", request.getParameter("fromDate"));
+		payload.put("toDate", request.getParameter("toDate"));
+		payload.put("mmuCity", request.getParameter("mmuCity"));
+		payload.put("upss_id", request.getParameter("upss_id"));
+		payload.put("flagType", request.getParameter("flagType"));
+		payload.put("fundType", request.getParameter("fundType"));
+		payload.put("phase", request.getParameter("phase"));
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();			
+		String Url = HMSUtil.getProperties("urlextension.properties","getFundInvoicDashboardData");
+		String OSBURL = IpAndPortNo + Url;	
+		
+		String data= RestUtils.postWithHeaders(OSBURL.trim(),requestHeaders, payload.toString());
+		Map<String,String> map = new HashMap<>();
+		map.put("data", data);
+		map.put("mmuCity", request.getParameter("mmuCity"));
+		map.put("fromDate", request.getParameter("fromDate"));
+		map.put("toDate", request.getParameter("toDate"));
+		map.put("upss_name", request.getParameter("upss_name"));
+		map.put("flagType", request.getParameter("flagType"));
+		map.put("fundType", request.getParameter("fundType"));
+		map.put("financialYear", request.getParameter("financialYear"));
+	    return new ModelAndView(new FundAllocatedInterestExcelReport(), map);
 			
 	  }
 	

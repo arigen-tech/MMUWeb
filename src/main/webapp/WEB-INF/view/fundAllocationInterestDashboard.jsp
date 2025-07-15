@@ -25,6 +25,7 @@ var totalAmounts = 0;
 var upssName = ""
 var cityName = "";
 var typeName= "";
+var financialYear="";
 $(document).ready(function(){
 	var currentDate="";
 	var fromDate="";
@@ -47,7 +48,8 @@ $(document).ready(function(){
 		}else{
 			cityName = resp.city
 		}
-		totalAmounts+= Number(resp.total_utilized_fund);
+		financialYear=resp.financial_year;
+		totalAmounts+= Number(resp.interest_amt);
 		genrateTable(i+1,resp);
 	}
 	if(modelRequest.mmuCity==="C"){
@@ -68,7 +70,7 @@ $(document).ready(function(){
 	
 	document.getElementById('fromDate').value=modelRequest.fromDate;
 	document.getElementById('toDate').value=modelRequest.toDate;
-	document.getElementById('phase').value=modelRequest.phase;
+	document.getElementById('financialYear').value=financialYear;
 });
 function exportExcel(){
  	
@@ -79,7 +81,7 @@ function exportExcel(){
 	 var flagType = modelRequest.flagType;
 	 var fundType = modelRequest.fundType;
 	 var phase = modelRequest.phase;		
- window.location.href =  "${pageContext.request.contextPath}/dashboard/getFundAllocationOpeartionExcelReport?fromDate="
+ window.location.href =  "${pageContext.request.contextPath}/dashboard/getFundAllocationInterestExcelReport?fromDate="
 			+ fromDate
 			+ "&toDate="
 			+toDate
@@ -93,8 +95,8 @@ function exportExcel(){
 			+ mmuCity
 			+"&upss_name="
 			+typeName
-			+ "&phase="
-			+ phase;	
+			+ "&financialYear="
+			+ financialYear;	
 
 }
 function exportPDF(){
@@ -133,9 +135,10 @@ function genrateTable(seq,response){
 	
 	var tableRow='<tr>'+
 	 	'<td>'+seq+'</td>'+
-	 	'<td>'+response.utilized_fund_date+'</td>'+
-	 	'<td>'+response.total_utilized_fund+'</td>'+
-	 	'<td>'+response.letter+'</td>'+
+	 	'<td>'+response.interest_amt+'</td>'+
+	 	'<td>'+response.approved_date+'</td>'+
+	 	'<td>'+response.approved_by+'</td>'+
+	 	'<td>'+response.file_name+'</td>'+
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showFile(\''+response.file_view+'\',\''+response.letter+'\');">View<a></td>'+
 	 '</tr>';
 	 $("#tbl_invoiceData").append(tableRow);
@@ -179,7 +182,7 @@ function getDownloadData()
                                        <div class="col-lg-4 col-sm-6">
 												<div class="form-group row">
 													<div class="col-md-5">
-														<label class="col-form-label" id="upssName">Financial Year</label>
+														<label class="col-form-label" id="finan">Financial Year</label>
 													</div>
 													<div class="col-md-7">
 														<input type="text" value="financialYear" class="form-control" readonly id="financialYear"/>
@@ -196,7 +199,7 @@ function getDownloadData()
 													</div>
 												</div>
 											</div>
-											<div class="col-lg-4 col-sm-6">
+											<!-- <div class="col-lg-4 col-sm-6">
 												<div class="form-group row">
 													<div class="col-md-5">
 														<label class="col-form-label" id="upssName">City</label>
@@ -205,7 +208,7 @@ function getDownloadData()
 														<input type="text" value="cityValue" class="form-control" readonly id="cityValue"/>
 													</div>
 												</div>
-											</div>
+											</div> -->
 											
 											
 											<div class="col-lg-4 col-sm-6">
@@ -264,6 +267,7 @@ function getDownloadData()
                                                 <th>Interest Amount</th> 
                                                 <th>Approved Date</th> 
                                                 <th>Approved By</th>
+                                                <th>File</th> 
                                                 <th>View</th>                                        
                                             </tr>
                                         </thead>

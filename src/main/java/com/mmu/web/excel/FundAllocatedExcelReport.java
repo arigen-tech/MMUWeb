@@ -58,6 +58,8 @@ public class FundAllocatedExcelReport extends AbstractXlsxView{
 	       fileName = "IEC_FundAllocation";
 		}else if(fundType.equals("M")) {
 			fileName = "Medicine_FundAllocation";
+		}else if(fundType.equals("I")) {
+		fileName = "Interest_FundAllocation";
 		}else {
 			fileName = "Operations_FundAllocation";
 		}

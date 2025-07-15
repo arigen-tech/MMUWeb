@@ -480,7 +480,7 @@ function showDiv(upss_id,amount,index){
 	 	 url = "${pageContext.request.contextPath}/captureMedicine/fundOperationDashboard?flagType=FAO&fundType=M&"
 	 }
 	 if(index===5){
-	 	 url = "${pageContext.request.contextPath}/captureMedicine/fundInterestDashboard?flagType=FAO&fundType=I&"
+	 	 url = "${pageContext.request.contextPath}/captureMedicine/fundInterestDashboard?flagType=FAI&fundType=I&"
 	 }
 	 else if(index===5){
 		  url = "${pageContext.request.contextPath}/captureMedicine/fundUtilzationDashboard?flagType=FUO&"
