@@ -413,11 +413,11 @@ function genrateTable(seq,response){
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.fund_admin+',3);">'+response.fund_admin+'</a></td>'+
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.fund_medicine+',4);">'+response.fund_medicine+'</a></td>'+
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.fund_interest+',5);">'+response.fund_interest+'</a></td>'+
-		'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_operation+',5);">'+response.utilized_operation+'</a></td>'+
-	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_admin+',6);">'+response.utilized_admin+'</a></td>'+
+		'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_operation+',6);">'+response.utilized_operation+'</a></td>'+
+	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_admin+',7);">'+response.utilized_admin+'</a></td>'+
 	 	/* '<td>'+response.utilized_admin+'</td>'+ */
-	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_medicine+',7);">'+response.utilized_medicine+'</a></td>'+
-	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_interest+',8);">'+response.utilized_interest+'</a></td>'+
+	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_medicine+',8);">'+response.utilized_medicine+'</a></td>'+
+	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showDiv('+upssCityId+','+response.utilized_interest+',9);">'+response.utilized_interest+'</a></td>'+
 	 	
 	 	'<td><a class="btn-link">'+response.utilized_total+'</a></td>'+
 	 	'<td><a class="btn-link">'+response.available_operation+'</a></td>'+
@@ -482,16 +482,16 @@ function showDiv(upss_id,amount,index){
 	 if(index===5){
 	 	 url = "${pageContext.request.contextPath}/captureMedicine/fundInterestDashboard?flagType=FAI&fundType=I&"
 	 }
-	 else if(index===5){
+	 else if(index===6){
 		  url = "${pageContext.request.contextPath}/captureMedicine/fundUtilzationDashboard?flagType=FUO&"
 	 }
-	 if(index===6){
+	 if(index===7){
 	 	 url = "${pageContext.request.contextPath}/captureMedicine/fundUtilzationMedicineDashboard?flagType=IEC&"
 	 }
-	 else if(index===7){
+	 else if(index===8){
 		  url = "${pageContext.request.contextPath}/captureMedicine/fundUtilzationMedicineDashboard?flagType=MID&"
 	 }
-	 else if(index===8){
+	 else if(index===9){
 		  url = "${pageContext.request.contextPath}/captureMedicine/fundUtilzationMedicineDashboard?flagType=INT&"
 	 }
 	 url=url+"fromDate="

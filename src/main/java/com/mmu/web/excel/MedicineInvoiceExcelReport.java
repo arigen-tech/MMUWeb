@@ -88,7 +88,7 @@ public class MedicineInvoiceExcelReport extends AbstractXlsxView{
 		if(flageTypeName!=null && flageTypeName.equalsIgnoreCase("IEC")) {
 			fileName = "IEC_Report";
 		}
-		if(flageTypeName!=null && flageTypeName.equalsIgnoreCase("INT")) {
+		else if(flageTypeName!=null && flageTypeName.equalsIgnoreCase("INT")) {
 			fileName = "Interest_Report";
 		}
 		else {
@@ -168,7 +168,7 @@ public class MedicineInvoiceExcelReport extends AbstractXlsxView{
 					row.createCell(10).setCellValue(jsonObject1.optString("utilized_amount"));
 					row.createCell(11).setCellValue(jsonObject1.optString("deducation_remarks"));
 					}
-					if(flageTypeName.equalsIgnoreCase("INT")) {
+					else if(flageTypeName.equalsIgnoreCase("INT")) {
 						
 						row.createCell(1).setCellValue(jsonObject1.optString("invoice_date"));
 						row.createCell(2).setCellValue(jsonObject1.optString("upload_date"));
@@ -195,12 +195,12 @@ public class MedicineInvoiceExcelReport extends AbstractXlsxView{
 					totalInvoiceAmount += Integer.valueOf(jsonObject1.optString("utilized_amount"));
 				}
 				Row lastRow = sheet.createRow(rowNum + 2);
-				lastRow.createCell(0).setCellValue("Total Invoice Amount ");
+				lastRow.createCell(0).setCellValue("Total Utilized Amount ");
 				if(flageTypeName.equalsIgnoreCase("MID")) {
-				lastRow.createCell(6).setCellValue("" + totalInvoiceAmount);
+				lastRow.createCell(10).setCellValue("" + totalInvoiceAmount);
 				}
 				else {
-					lastRow.createCell(4).setCellValue("" + totalInvoiceAmount);
+					lastRow.createCell(8).setCellValue("" + totalInvoiceAmount);
 				}
 				}
 			else {

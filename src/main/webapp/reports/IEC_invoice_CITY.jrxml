@@ -560,17 +560,6 @@ WHERE 	invoice_date ::date between $P{From_Date} AND $P{To_Date} AND action = 'S
 				</textElement>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{utilized_amount}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement key="textField-11" x="682" y="2" width="103" height="18"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{deducation_remarks}]]></textFieldExpression>
-			</textField>
 			<line direction="BottomUp">
 				<reportElement key="line-10" positionType="Float" stretchType="RelativeToTallestObject" x="677" y="-3" width="1" height="22"/>
 			</line>
@@ -580,6 +569,19 @@ WHERE 	invoice_date ::date between $P{From_Date} AND $P{To_Date} AND action = 'S
 			<line direction="BottomUp">
 				<reportElement key="line-19" x="293" y="-22" width="1" height="44"/>
 			</line>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement key="textField-12" x="678" y="0" width="107" height="18"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{deducation_remarks}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>

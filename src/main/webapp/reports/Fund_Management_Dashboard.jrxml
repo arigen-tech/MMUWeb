@@ -741,7 +741,7 @@ UNION ALL
 				<textElement textAlignment="Center">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{utilized_interest}]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{utilized_medicine}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement key="textField-18" x="100" y="2" width="60" height="15" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
