@@ -286,8 +286,8 @@ function saveData(action){
 			    everyFieldValidate = false;
 	           return false;
 		   }
-		   if(!deduction_amount || deduction_amount=="0"){
-			    alert('Deduction Amount should not be blank or 0!');
+		    if(!deduction_amount){
+			    alert('Deduction Amount should not be blank!');
 			    everyFieldValidate = false;
 	           return false;
 		   }
@@ -635,7 +635,7 @@ function editRow(itemData,isEditable){
   	'</td>'+
   	
   	'<td>'+
- 	'<input type="text" name="deduction_amount" id="deduction_amount_'+iteration+'" onChange="calculateAmountMedIEC(this)" class="form-control" placeholder="Deduction Amount" onkeypress="return isNumberKey(event)" value="'+itemData.deductionAmount+'" maxlength="10">'+
+ 	'<input type="text" name="deduction_amount" id="deduction_amount_'+iteration+'" value="0" onChange="calculateAmountMedIEC(this)" class="form-control" placeholder="Deduction Amount" onkeypress="return isNumberKey(event)" value="'+itemData.deductionAmount+'" maxlength="10">'+
   	'</td>'+
   	
   	'<td>'+
@@ -703,7 +703,7 @@ function addRow(){
   	'</td>'+
   	
   	'<td>'+
- 	'<input type="text" name="deduction_amount" id="deduction_amount_'+iteration+'" onChange="calculateAmountMedIEC(this)" class="form-control" placeholder="Deduction Amount" onkeypress="return isNumberKey(event)" maxlength="10">'+
+ 	'<input type="text" name="deduction_amount" id="deduction_amount_'+iteration+'" onChange="calculateAmountMedIEC(this)" class="form-control" value="0" placeholder="Deduction Amount" onkeypress="return isNumberKey(event)" maxlength="10">'+
   	'</td>'+
   	
   	'<td>'+

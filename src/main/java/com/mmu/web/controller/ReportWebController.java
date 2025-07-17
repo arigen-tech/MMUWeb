@@ -8228,5 +8228,111 @@ public class ReportWebController {
 
 	}
 	
+	@RequestMapping(value = "/fundManagementInterestDashboard", method = RequestMethod.GET)
+	public ModelAndView fundManagementInterestDashboard(HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> connectionMap = new HashMap<String, Object>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+
+		Box box= HMSUtil.getBox(request);
+		JSONObject json = new JSONObject(box);
+
+		String fromDate="";
+		String toDate="";
+		String fundType="";
+		String upssId="";
+		String phase="";
+		
+		JSONArray from_date= new JSONArray();
+		JSONArray to_date= new JSONArray();
+		JSONArray mmu_City =  new JSONArray();
+		JSONArray upss_id =  new JSONArray();
+		JSONArray fund_type = new JSONArray();
+		JSONArray phase_value = new JSONArray();
+		
+		
+	
+		
+		if(box.get("mmuCity") !=null && !box.getString("mmuCity").isEmpty())
+		{
+			mmu_City= json.getJSONArray("mmuCity");
+		}
+		
+		if(box.get("upss_id") !=null && !box.getString("upss_id").isEmpty())
+		{
+			upss_id= json.getJSONArray("upss_id");
+		}
+		if(box.get("fundType") !=null && !box.getString("fundType").isEmpty())
+		{
+			fund_type= json.getJSONArray("fundType");
+		}
+		if(box.get("phase") !=null && !box.getString("phase").isEmpty())
+		{
+			phase_value= json.getJSONArray("phase");
+		}
+
+		if(box.get("fromDate") !=null && !box.getString("fromDate").isEmpty())
+		{
+			from_date= json.getJSONArray("fromDate");
+		}
+
+		fromDate = from_date.getString(0);
+		if(box.get("toDate") !=null && !box.getString("toDate").isEmpty())
+		{
+			to_date= json.getJSONArray("toDate");
+		}
+		
+		String mmuCity=mmu_City.getString(0);
+
+		fundType=fund_type.getString(0);
+		toDate = to_date.getString(0);
+		
+
+		Date cd_from= new Date();
+		Date cd_to= new Date();
+		try {
+			cd_from = HMSUtil.convertStringTypeDateToDateType(fromDate);
+			cd_to = HMSUtil.convertStringTypeDateToDateType(toDate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		upssId = upss_id.getString(0);
+		if(phase_value!=null && !phase_value.isNull(0))
+		{	
+		phase=phase_value.getString(0);
+		}
+		else
+		{
+			phase="";
+		}
+		
+		parameters.put("From_Date", cd_from);
+		parameters.put("To_Date", cd_to);		
+		parameters.put("fund_type", fundType);
+		parameters.put("p_phase", phase);
+		
+		if(mmuCity.equalsIgnoreCase("C")) {
+			parameters.put("district_id", 0);
+			parameters.put("city_id", Integer.valueOf(upssId));
+		}else {
+			parameters.put("city_id", 0);
+			parameters.put("district_id", Integer.valueOf(upssId));
+		}
+
+
+		String userHome = request.getServletContext().getRealPath("/resources/images/");
+		
+		String imagePath = userHome+"/mmu-logo.png";
+	    parameters.put("path", imagePath);
+		connectionMap = reportDao.getConnectionForReportMis();
+		if(mmuCity!=null && mmuCity.equalsIgnoreCase("C")) {
+			HMSUtil.generateReportInPopUp("Fund_Allocation_Interest_City", "Fund_Allocation_City", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
+		}else {
+			HMSUtil.generateReportInPopUp("Fund_Allocation_Interest_UPSS", "Fund_Allocation_UPSS", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
+		}
+			
+		return null;
+
+	}
+	
 
 }

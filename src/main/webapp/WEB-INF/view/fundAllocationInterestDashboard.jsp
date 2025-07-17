@@ -108,7 +108,7 @@ function exportPDF(){
 	 var flagType = modelRequest.flagType;
 	 var fundType = modelRequest.fundType;
 	 var phase=modelRequest.phase;	
-var url = "${pageContext.request.contextPath}/report/fundManagementOperationlDashboard?fromDate="
+var url = "${pageContext.request.contextPath}/report/fundManagementInterestDashboard?fromDate="
 	+ fromDate
 	+ "&toDate="
 	+toDate
