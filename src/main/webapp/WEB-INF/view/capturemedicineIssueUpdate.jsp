@@ -657,7 +657,7 @@ function editRow(itemData,isEditable){
   	'</td>'+
   	
   	'<td>'+
- 	'<input type="text" name="deduction_amount" id="deduction_amount_'+iteration+'" onChange="calculateAmountMedIEC(this)" value="0" class="form-control" placeholder="Deduction Amount" onkeypress="return isNumberKey(event)" value="'+itemData.deductionAmount+'" maxlength="10">'+
+ 	'<input type="text" name="deduction_amount" id="deduction_amount_'+iteration+'" onChange="calculateAmountMedIEC(this)" class="form-control" placeholder="Deduction Amount" onkeypress="return isNumberKey(event)" value="'+itemData.deductionAmount+'" maxlength="10">'+
   	'</td>'+
   	
   	'<td>'+
