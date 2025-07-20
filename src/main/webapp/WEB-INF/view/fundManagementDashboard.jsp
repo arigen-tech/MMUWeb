@@ -635,7 +635,7 @@ function showDiv(upss_id,amount,index){
                                                 <th>Operations</th> 
                                                 <th>IEC</th> 
                                                 <th>Medicine</th>
-                                                <th>Interest</th>
+                                                <th>Miscellaneous</th>
                                                 <th>Total</th>
                                                 <th>Operations</th> 
                                                 <th>IEC</th> 

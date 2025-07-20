@@ -178,6 +178,7 @@ function genrateTable(seq,response){
 	if(flagType=="MID"){
 		$('#sourceOfMedicine').show();
 		$('#fundUtilization').show();
+		$('#showPhase').show();
 		
 		 
 	}
@@ -186,6 +187,7 @@ function genrateTable(seq,response){
 		$('#fundUtilization').hide();
 	}
 	else{ 
+		$('#showPhase').show();
 		$('#iecUtilization').show();
 		$('#fundUtilization').hide();
 	}
@@ -226,7 +228,7 @@ function showFile(fileName){
                  <div id="fundUtilization" class="internal_Htext">Fund Utilization - Medicine</div>
                   
                    <div id="iecUtilization" class="internal_Htext" style="display:none;">Fund Utilization-IEC</div>
-                   <div id="interestUtilization" class="internal_Htext" style="display:none;">Fund Utilization-Interest</div>
+                   <div id="interestUtilization" class="internal_Htext" style="display:none;">Fund Utilization-Miscellaneous</div>
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
@@ -266,7 +268,7 @@ function showFile(fileName){
 												</div>
 											</div>
 											
-											<div class="col-lg-4 col-sm-6">
+											<div class="col-lg-4 col-sm-6" id="showPhase" style="display:none;">
 												<div class="form-group row">
 													<div class="col-md-5">
 														<label class="col-form-label">Phase</label>

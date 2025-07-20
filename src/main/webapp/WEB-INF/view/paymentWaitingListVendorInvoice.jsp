@@ -24,6 +24,12 @@
 	if (session.getAttribute("userTypeDesignation") != null) {
 		userTypeDesignation = session.getAttribute("userTypeDesignation") + "";
 	}
+	
+	String distIdUsers = "0";
+	if (session.getAttribute("distIdUsers") != null) {
+		distIdUsers = session.getAttribute("distIdUsers").toString();
+		//distIdUsers = distIdUsers.replace(",","");
+	}
   
 %>
 <%@include file="..//view/commonJavaScript.jsp" %>
@@ -149,16 +155,21 @@
 	 	var authorityId=$j('#authorityId').val();
 	 	var statusSearch = $j('#statusSearch').val();
 	 	
+	 	var districtId="";
+		if(null!=$j('#districtId').val()&&$j('#districtId').val!=""){
+			districtId=$j('#districtId').val();
+		}
+		
 		 if(MODE == 'ALL'){
-				var data = {"PN": nPageNo, "invoiceNo": "","fromDate":"","toDate":"","paymentstatus":"C"};
+				var data = {"PN": nPageNo, "invoiceNo": "","fromDate":"","toDate":"","paymentstatus":"C","district":districtId};
 		 }
 		 else if(district != "" || fromDate != ""||toDate != "" || statusSearch != "")
 		 {
-		    var data = {"PN":nPageNo,"district":district,"fromDate":fromDate,"toDate":toDate,"statusSearch":statusSearch,"paymentstatus":"C"};
+		    var data = {"PN":nPageNo,"district":district,"fromDate":fromDate,"toDate":toDate,"statusSearch":statusSearch,"paymentstatus":"C","district":districtId};
 		 } 
 	    else
 	    { 
-			var data = {"PN":nPageNo,"paymentstatus":"C"};
+			var data = {"PN":nPageNo,"paymentstatus":"C","district":districtId};
 		} 
 		var url = "getCapturedVendorBillDetail";
 		var bClickable = true;
@@ -289,6 +300,7 @@
                      <input  name="authorityId" id="authorityId" type="hidden" value=""/>
 		                <input  name="authorityOrderNo" id="authorityOrderNo" type="hidden" value=""/>
 		                <input  name="authorityRoleName" id="authorityRoleName" type="hidden" value=""/>
+		                <input  name="districtId" id="districtId" type="hidden" value="<%=session.getAttribute("distIdUsers")%>"/>
 		                
                         <div class="col-12">
                             <div class="card">

@@ -23,7 +23,13 @@
 	if (session.getAttribute("user_id") != null) {
 		userId = session.getAttribute("user_id") + "";
 	}
-	
+	String distIdUsers = "0";
+	if (session.getAttribute("distIdUsers") != null) {
+		distIdUsers = session.getAttribute("distIdUsers").toString();
+		//distIdUsers = distIdUsers.replace(",","");
+	}else{
+		distIdUsers="";
+	}
 	
 %>
     <meta charset="utf-8">
@@ -81,22 +87,26 @@
 	function GetAllVendorInvoice(MODE){
 		var vendorId=<%=userId%>;
 		var district = $j('#district').val();
+		var districtId="";
+		if(null!=$j('#districtId').val()&&$j('#districtId').val!=""){
+			districtId=$j('#districtId').val();
+		}
 	 	var fromDate = $j('#fromDate').val();
 	 	var toDate = $j('#toDate').val();
 	 	var statusSearch = $j('#statusSearch').val();
 	 	
 		 if(MODE == 'ALL'){
 			
-				var data = {"PN": nPageNo, "invoiceNo": "","fromDate":"","toDate":"","type":"All","status":'C'};
+				var data = {"PN": nPageNo, "invoiceNo": "","fromDate":"","toDate":"","type":"All","status":'C',"districtId":districtId};
 		 }
 		 else if(district != "" || fromDate != ""||toDate != "" || statusSearch != "")
 		 {
 			 nPageNo = 1;
-		    var data = {"PN":nPageNo,"district":district,"fromDate":fromDate,"toDate":toDate,"statusSearch":statusSearch,"type":"All","status":'C'};
+		    var data = {"PN":nPageNo,"district":district,"fromDate":fromDate,"toDate":toDate,"statusSearch":statusSearch,"type":"All","status":'C',"districtId":districtId};
 		 } 
 	    else
 	    { 
-	    	 var data = {"PN":nPageNo,"district":district,"fromDate":fromDate,"toDate":toDate,"statusSearch":statusSearch,"type":"All","status":'C'};
+	    	 var data = {"PN":nPageNo,"district":district,"fromDate":fromDate,"toDate":toDate,"statusSearch":statusSearch,"type":"All","status":'C',"districtId":districtId};
 		} 
 		var url = "getFundAllocationDetails";
 		var bClickable = true;
@@ -284,7 +294,7 @@
 							<div class="card-body">
 								<p align="center" id="messageId"
 									style="color: green; font-weight: bold;"></p>
-
+								<input  name="districtId" id="districtId" type="hidden" value="<%=session.getAttribute("distIdUsers")%>"/>
 								<div class="row">
 								<!-- 	<div class="col-md-4">
 										<div class="form-group row">

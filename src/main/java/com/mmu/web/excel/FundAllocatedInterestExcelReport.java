@@ -123,7 +123,7 @@ public class FundAllocatedInterestExcelReport extends AbstractXlsxView{
     	        }
     		  Row lastRow = sheet.createRow(rowNum+2);
     		  lastRow.createCell(0).setCellValue("Total Fund Interest Allocated ");
-    	      lastRow.createCell(2).setCellValue(""+totalInvoiceAmount);
+    	      lastRow.createCell(1).setCellValue(""+totalInvoiceAmount);
 
     	        
         }

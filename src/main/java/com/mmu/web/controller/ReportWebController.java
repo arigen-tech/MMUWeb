@@ -8307,14 +8307,14 @@ public class ReportWebController {
 		
 		parameters.put("From_Date", cd_from);
 		parameters.put("To_Date", cd_to);		
-		parameters.put("fund_type", fundType);
-		parameters.put("p_phase", phase);
+		parameters.put("p_fundtype", fundType);
+		//parameters.put("p_phase", phase);
 		
 		if(mmuCity.equalsIgnoreCase("C")) {
-			parameters.put("district_id", 0);
+			//parameters.put("district_id", 0);
 			parameters.put("city_id", Integer.valueOf(upssId));
 		}else {
-			parameters.put("city_id", 0);
+			//parameters.put("city_id", 0);
 			parameters.put("district_id", Integer.valueOf(upssId));
 		}
 

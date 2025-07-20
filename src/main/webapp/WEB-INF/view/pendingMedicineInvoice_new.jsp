@@ -118,11 +118,15 @@ function getPendingInvoice(MODE){
 	 var fromDate=$('#fromDate').val();
 	 var toDate=$('#toDate').val();
 	 var phaseVal=$('#phase').val();
+	 var districtId="";
+		if(null!=$j('#districtId').val()&&$j('#districtId').val!=""){
+			districtId=$j('#districtId').val();
+		}
 	 
 	 if(MODE == 'ALL'){
-		var data = {"PN":nPageNo, "vendorName":"","headTypeId":"3"};			
+		var data = {"PN":nPageNo, "vendorName":"","headTypeId":"3","districtId":districtId};			
 	 }else{
-			var data = {"PN":nPageNo, "vendorName":vendorName,"fromDate":fromDate,"toDate":toDate,"headTypeId":"3","phase":phaseVal};
+			var data = {"PN":nPageNo, "vendorName":vendorName,"fromDate":fromDate,"toDate":toDate,"headTypeId":"3","phase":phaseVal,"districtId":districtId};
 	  } 
 	var url = "searchMedicineInvoice";		
 	var bClickable = true;
@@ -298,6 +302,7 @@ function executeClickEvent(id,jsonData)
 
 				<div class="internal_Htext">View/Update Medicine Invoice</div>
 				<div class="row">
+				<input  name="districtId" id="districtId" type="hidden" value="<%=session.getAttribute("distIdUsers")%>"/>
 					<div class="col-12">
 						<div class="card">
 							<div class="card-body">
