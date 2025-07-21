@@ -110,6 +110,7 @@ UNION ALL
 				MI.Phase
 	from 	    medicine_invoice MI left outer join  MAS_district MD on MD.district_id=MI.district_id
 	WHERE 		invoice_date ::date between $P{From_Date} AND $P{To_Date}  AND action = 'S' AND Head_type_id=4
+				and  (cast(MI.district_id as character varying) in  ($P{p_distidval}) or $P{p_distidval}='')
     union all
 	SELECT 		MD.district_id ,
 				MD.UPSS,0,0,0,0,

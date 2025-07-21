@@ -24,6 +24,12 @@
 		userId = session.getAttribute("user_id") + "";
 	}
 	
+	String distIdUsers = "0";
+	if (session.getAttribute("distIdUsers") != null) {
+		distIdUsers = session.getAttribute("distIdUsers").toString();
+		//distIdUsers = distIdUsers.replace(",","");
+	}
+	
 	
 %>
     <meta charset="utf-8">
@@ -84,10 +90,12 @@
 	 	var fromDate = $j('#fromDate').val();
 	 	var toDate = $j('#toDate').val();
 	 	var statusSearch = $j('#statusSearch').val();
-	 	
+	 	if(null!=$j('#districtId').val()&&$j('#districtId').val!=""){
+			districtId=$j('#districtId').val();
+		}
 		 if(MODE == 'ALL'){
 			
-				var data = {"PN": nPageNo, "invoiceNo": "","fromDate":"","toDate":"","type":"All","status":'C'};
+				var data = {"PN": nPageNo, "invoiceNo": "","fromDate":"","toDate":"","type":"All","status":'C',"districtId":districtId};
 		 }
 		 /*else if(district != "" || fromDate != ""||toDate != "" || statusSearch != "")
 		 {
@@ -96,7 +104,7 @@
 		 } */
 	    else
 	    { 
-	    	 var data = {"PN":nPageNo,"district":district,"fromDate":fromDate,"toDate":toDate,"statusSearch":statusSearch,"type":"All","status":'C'};
+	    	 var data = {"PN":nPageNo,"district":district,"fromDate":fromDate,"toDate":toDate,"statusSearch":statusSearch,"type":"All","status":'C',"districtId":districtId};
 		} 
 		var url = "getAllCaptureInterestDetails";
 		var bClickable = true;
@@ -283,6 +291,7 @@
 				<div class="internal_Htext">Pending Approval list of Bank Interest</div>
 
 				<div class="row">
+				<input  name="districtId" id="districtId" type="hidden" value="<%=session.getAttribute("distIdUsers")%>"/>
 					<div class="col-12">
 						<div class="card">
 							<div class="card-body">

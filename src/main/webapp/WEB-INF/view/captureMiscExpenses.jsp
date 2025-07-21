@@ -599,7 +599,7 @@ function addRow(){
 		'<input type="text" name="invoice_number" id="invoice_number_'+iteration+'" class="form-control" placeholder="Invoice Number">'+
 	'</td>'+
  	'<td>'+
- 	'<input type="text" name="invoice_amount" id="invoice_amount_'+iteration+'" class="form-control" placeholder="Invoice Amount" onkeypress="return isNumberKey(event)" maxlength="10">'+
+ 	'<input type="text" name="invoice_amount" id="invoice_amount_'+iteration+'" onChange="calculateAmountMedIEC(this)" class="form-control" placeholder="Invoice Amount" onkeypress="return isNumberKey(event)" maxlength="10">'+
   	'</td>'+
   	
   	'<td>'+
@@ -795,7 +795,7 @@ function isNumberKey(evt) {
 															></td>
 														<td><input type="text" name="invoice_amount"
 															id="invoice_amount_<%=inc%>" class="form-control"
-															placeholder="Invoice Amount"
+															placeholder="Invoice Amount" onChange="calculateAmountMedIEC(this)"
 															onkeypress="return isNumberKey(event)"
 															maxlength="10"></td>
 														<td><input type="text" name="tds_amount"

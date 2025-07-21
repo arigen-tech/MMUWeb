@@ -649,7 +649,7 @@ function editRow(itemData,isEditable){
 		'<input type="text" name="invoice_number" id="invoice_number_'+iteration+'" class="form-control" placeholder="Invoice Number" value="'+itemData.invoiceNum+'" '+disabled+'>'+
 	'</td>'+
  	'<td>'+
- 	'<input type="text" name="invoice_amount" id="invoice_amount_'+iteration+'" class="form-control" placeholder="Invoice Amount" onkeypress="return isNumberKey(event)" maxlength="10" value="'+itemData.inoviceAmount+'" '+disabled+'>'+
+ 	'<input type="text" name="invoice_amount" id="invoice_amount_'+iteration+'" onChange="calculateAmountMedIEC(this)" class="form-control" placeholder="Invoice Amount" onkeypress="return isNumberKey(event)" maxlength="10" value="'+itemData.inoviceAmount+'" '+disabled+'>'+
   	'</td>'+
   	
   	'<td>'+
@@ -717,7 +717,7 @@ function addRow(){
 		'<input type="text" name="invoice_number" id="invoice_number_'+iteration+'" class="form-control" placeholder="Invoice Number">'+
 	'</td>'+
  	'<td>'+
- 	'<input type="text" name="invoice_amount" id="invoice_amount_'+iteration+'" class="form-control" placeholder="Invoice Amount" onkeypress="return isNumberKey(event)" maxlength="10">'+
+ 	'<input type="text" name="invoice_amount" id="invoice_amount_'+iteration+'" onChange="calculateAmountMedIEC(this)" class="form-control" placeholder="Invoice Amount" onkeypress="return isNumberKey(event)" maxlength="10">'+
   	'</td>'+
   	
   	'<td>'+

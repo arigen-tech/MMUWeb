@@ -44,19 +44,21 @@ $(document).ready(function(){
     	window.history.back();
     });
 
-    $('#downloadBill').on('click', function(){
+    $('#downloadBill').on('click', function(event){
     	//<a href="download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val() target="_blank">
        // window.location = "download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val();
-    
+     event.preventDefault(); // <-- Prevent form submission/page refresh
     	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val(), '_blank').focus();
     }); 
-     $('#downloadAuditorReport').on('click', function(){
+     $('#downloadAuditorReport').on('click', function(event){
         //window.location = "download?name="+$(this).data('name')+"&type=audit_report&keys="+$('#invoiceNo').val();
+         event.preventDefault(); // <-- Prevent form submission/page refresh
         window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=audit_report&keys="+$('#invoiceNo').val(), '_blank').focus();
     }); 
      
-     $('#downloadRecepitBill').on('click', function(){
-         window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_payment_Recepit&keys="+$('#invoiceNo').val(), '_blank').focus();
+     $('#downloadRecepitBill').on('click', function(event){
+    	 event.preventDefault(); // <-- Prevent form submission/page refresh
+    	 window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_payment_Recepit&keys="+$('#invoiceNo').val(), '_blank').focus();
      });
 });
 

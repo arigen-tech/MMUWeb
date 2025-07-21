@@ -24,6 +24,11 @@
 		userId = session.getAttribute("user_id") + "";
 	}
 	
+	String distIdUsers = "0";
+	if (session.getAttribute("distIdUsers") != null) {
+		distIdUsers = session.getAttribute("distIdUsers").toString();
+		//distIdUsers = distIdUsers.replace(",","");
+	}
 	
 %>
     <meta charset="utf-8">
@@ -84,10 +89,13 @@
 	 	var fromDate = $j('#fromDate').val();
 	 	var toDate = $j('#toDate').val();
 	 	var statusSearch = $j('#statusSearch').val();
-	 	
+	 	var districtId="";
+		if(null!=$j('#districtId').val()&&$j('#districtId').val!=""){
+			districtId=$j('#districtId').val();
+		}
 		 if(MODE == 'ALL'){
 				
-				var data = {"PN": nPageNo, "statusPending":"S","fromDate":"","toDate":"","type":"All","creatdBy":vendorId};
+				var data = {"PN": nPageNo, "statusPending":"S","fromDate":"","toDate":"","type":"All","creatdBy":vendorId,"districtId":districtId};
 		 }
 		/*  else if(financialYear != "")
 		 {
@@ -96,7 +104,7 @@
 		 } */ 
 	    else
 	    { 
-	    	 var data = {"PN":nPageNo,"statusPending":"S", "type":"All","creatdBy":vendorId };
+	    	 var data = {"PN":nPageNo,"statusPending":"S", "type":"All","creatdBy":vendorId,"districtId":districtId };
 		} 
 		 
 		var url = "getAllCaptureInterestDetails";
@@ -286,6 +294,7 @@
 				<div class="internal_Htext"> View/Update Bank Interest</div>
 
 				<div class="row">
+				<input  name="districtId" id="districtId" type="hidden" value="<%=session.getAttribute("distIdUsers")%>"/>
 					<div class="col-12">
 						<div class="card">
 							<div class="card-body">

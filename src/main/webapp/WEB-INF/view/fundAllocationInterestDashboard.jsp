@@ -135,6 +135,7 @@ function genrateTable(seq,response){
 	
 	var tableRow='<tr>'+
 	 	'<td>'+seq+'</td>'+
+	 	'<td>'+response.created_on+'</td>'+
 	 	'<td>'+response.interest_amt+'</td>'+
 	 	'<td>'+response.approved_date+'</td>'+
 	 	'<td>'+response.approved_by+'</td>'+
@@ -263,7 +264,8 @@ function getDownloadData()
                                         <thead class="bg-success" style="color:#fff;">
                                            
                                             <tr>                                                  
-                                                <th>S.No.</th> 
+                                                <th>S.No.</th>
+                                                <th>Entry Date</th> 
                                                 <th>Interest Amount</th> 
                                                 <th>Approved Date</th> 
                                                 <th>Approved By</th>

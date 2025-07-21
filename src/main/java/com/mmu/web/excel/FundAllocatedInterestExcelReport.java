@@ -24,7 +24,7 @@ import org.springframework.web.servlet.view.document.AbstractXlsxView;
 
 public class FundAllocatedInterestExcelReport extends AbstractXlsxView{
 
-	private static String[] HEADERS2 ={ "SN","Amount","Approved Date", "Approved By"};
+	private static String[] HEADERS2 ={ "SN","Entry Date","Interest Amount","Approved Date", "Approved By"};
 
 	@Override
 	protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest request,
@@ -115,15 +115,16 @@ public class FundAllocatedInterestExcelReport extends AbstractXlsxView{
     	        {
     			  	JSONObject jsonObject1 = jsonArray.getJSONObject(i);
     	            Row row = sheet.createRow(rowNum++);
-    	            row.createCell(0).setCellValue(i+1);   	            
-    	            row.createCell(1).setCellValue(jsonObject1.optString("interest_amt"));
-    	            row.createCell(2).setCellValue(jsonObject1.optString("approved_date"));
-    	            row.createCell(3).setCellValue(jsonObject1.optString("approved_by"));
+    	            row.createCell(0).setCellValue(i+1);
+    	            row.createCell(1).setCellValue(jsonObject1.optString("created_on"));
+    	            row.createCell(2).setCellValue(jsonObject1.optString("interest_amt"));
+    	            row.createCell(3).setCellValue(jsonObject1.optString("approved_date"));
+    	            row.createCell(4).setCellValue(jsonObject1.optString("approved_by"));
     	            totalInvoiceAmount+=Integer.valueOf(jsonObject1.optString("interest_amt"));
     	        }
     		  Row lastRow = sheet.createRow(rowNum+2);
     		  lastRow.createCell(0).setCellValue("Total Fund Interest Allocated ");
-    	      lastRow.createCell(1).setCellValue(""+totalInvoiceAmount);
+    	      lastRow.createCell(2).setCellValue(""+totalInvoiceAmount);
 
     	        
         }
