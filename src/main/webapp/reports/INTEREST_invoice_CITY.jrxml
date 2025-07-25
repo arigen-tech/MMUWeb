@@ -19,7 +19,7 @@
 	</parameter>
 	<parameter name="p_phase" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT 	'INTEREST invoice (City Wise)- ' || CITY.City_name UPSS,
+		<![CDATA[SELECT 	'Miscellaneous invoice (City Wise)- ' || CITY.City_name UPSS,
 		CITY.CITY_name CITY,
 		MSST.SUPPLIER_TYPE_NAME Soure_of_medicine,
 		MI.invoice_date invoice_date,

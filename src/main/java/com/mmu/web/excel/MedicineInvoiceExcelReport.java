@@ -89,7 +89,7 @@ public class MedicineInvoiceExcelReport extends AbstractXlsxView{
 			fileName = "IEC_Report";
 		}
 		else if(flageTypeName!=null && flageTypeName.equalsIgnoreCase("INT")) {
-			fileName = "Interest_Report";
+			fileName = "Miscellaneous_Report";
 		}
 		else {
 	    fileName = "MedicineInvoice_Report";

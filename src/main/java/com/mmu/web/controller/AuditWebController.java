@@ -561,6 +561,14 @@ public class AuditWebController {
 				auditPath += "/equipment/"+detailId+"/"+captureId+"/"+checklistId+"/";
 			} 
 			else if("A".equals(uploadFlag)){
+				 it = multipartHttpServletRequest.getFileNames();
+				while (it.hasNext()) {
+				    String paramName = it.next(); // This is the request parameter name
+				    file = multipartHttpServletRequest.getFile(paramName);
+				    originalFileName=file.getOriginalFilename();
+				    System.out.println("Parameter Name: " + paramName);
+				    System.out.println("Original File Name: " + file.getOriginalFilename());
+				}
 				auditPath += "/audit_report/";
 			}
 			else if("F".equals(uploadFlag)){

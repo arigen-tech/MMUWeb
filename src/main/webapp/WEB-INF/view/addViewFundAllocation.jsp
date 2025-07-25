@@ -31,6 +31,12 @@
 		userName = session.getAttribute("firstName") + "";
 	}
 	
+	String distIdUsers = "0";
+	if (session.getAttribute("distIdUsers") != null) {
+		distIdUsers = session.getAttribute("distIdUsers").toString();
+		//distIdUsers = distIdUsers.replace(",","");
+	}
+	
 %>
 </head>
 <script type="text/javascript">
@@ -128,12 +134,16 @@ function getMasHeadType(){
 
 function GetDistrictList(phaseVal){
 	//var phaseValue=$('#phase').val();
+	 var districtId="";
+		if(null!=$j('#districtId').val()&&$j('#districtId').val!=""){
+			districtId=$j('#districtId').val();
+		}
 	jQuery.ajax({
 	 	crossOrigin: true,
 	    method: "POST",			    
 	    crossDomain:true,
 	     url:"${pageContext.servletContext.contextPath}/master/getAllUpssPhaseMapping",
-	    data: JSON.stringify({"PN" : "0","phaseValue":phaseVal}),
+	    data: JSON.stringify({"PN" : "0","phaseValue":phaseVal,"districtId":districtId}),
 	    contentType: "application/json; charset=utf-8",
 	    dataType: "json",
 	    success: function(result){
@@ -547,6 +557,7 @@ function saveSubmitFundAllocationFunction(val) {
 				<input  name="financialYear" id="financialYear" type="hidden" value="" />
 				<input  name="financialYearStartDate" id="financialYearStartDate" type="hidden" value="" />
 				<input  name="financialYearEndDate" id="financialYearEndDate" type="hidden" value="" />
+				<input  name="districtId" id="districtId" type="hidden" value="<%=session.getAttribute("distIdUsers")%>"/>
 					<div class="col-12">
 						<div class="card">
 							<div class="card-body">

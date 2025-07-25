@@ -19,7 +19,7 @@
 	</parameter>
 	<parameter name="p_phase" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT 	  'INTEREST invoice (UPSS Wise)- ' || MD.UPSS UPSS,
+		<![CDATA[SELECT 	  'Miscellaneous invoice (UPSS Wise)- ' || MD.UPSS UPSS,
 		MSST.SUPPLIER_TYPE_NAME Soure_of_medicine,
 		MI.invoice_date invoice_date,
 		MI.last_chg_date upload_date,

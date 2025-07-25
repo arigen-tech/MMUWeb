@@ -27,7 +27,7 @@ import org.springframework.web.servlet.view.document.AbstractXlsxView;
 public class FundManagementExcelReport extends AbstractXlsxView{
 	
 	private static String[] HEADERS1 = { "SN", "UPSS","Total Fund", "Fund Allocated","","","","Fund Utilized","","","","Available Balance"};
-	private static String[] HEADERS2 ={ "MMU Operations", "IEC", "Medicine","Interest","MMU Operations", "IEC", "Medicine","Interest" ,"Total","MMU Operations", "IEC", "Medicine","Interest" ,"Total","Utilized %","Remain %"};
+	private static String[] HEADERS2 ={ "MMU Operations", "IEC", "Medicine","Interest","MMU Operations", "IEC", "Medicine","Miscellaneous" ,"Total","MMU Operations", "IEC", "Medicine","Interest" ,"Total","Utilized %","Remain %"};
 
 	@Override
 	protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest request,

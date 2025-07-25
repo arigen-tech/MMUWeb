@@ -505,7 +505,7 @@ function getStoreFinancialYearUpss(){
 	    method: "POST",			    
 	    crossDomain:true,
 	    url: "${pageContext.servletContext.contextPath}/master/getStoreFinancialYear",
-	    data: JSON.stringify({"PN" : "0","startDate":startDateDist,"fyFilter":"Y"}),
+	    data: JSON.stringify({"PN" : "0","startDate":startDateDist}), //"fyFilter":"Y" need to check
 	    contentType: "application/json; charset=utf-8",
 	    dataType: "json",
 	    success: function(result){
