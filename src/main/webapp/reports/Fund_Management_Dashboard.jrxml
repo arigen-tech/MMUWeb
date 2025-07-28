@@ -41,7 +41,7 @@
 			(SUM(COALESCE(AKS.A,0)) - SUM(COALESCE(AKS.U_A,0)))Available_Admin,
 			(SUM(COALESCE(AKS.M,0)) - SUM(COALESCE(AKS.U_M,0)))Available_Medicine,
 			(SUM(COALESCE(AKS.I,0)) - SUM(COALESCE(AKS.U_I,0)))Total_Interest,
-			(SUM(COALESCE(AKS.allocated_amount,0)) + sum(COALESCE(AKS.I,0)) - (SUM(COALESCE(AKS.U_O,0)) + SUM(COALESCE(AKS.U_A,0)) + SUM(COALESCE(AKS.U_M,0)) + SUM(COALESCE(AKS.U_I,0)))) Available_Balance,
+			(SUM(COALESCE(AKS.allocated_amount,0)) - (SUM(COALESCE(AKS.U_O,0)) + SUM(COALESCE(AKS.U_A,0)) + SUM(COALESCE(AKS.U_M,0)) + SUM(COALESCE(AKS.U_I,0)))) Available_Balance,
 			(case when
 			 SUM(COALESCE(AKS.O,0)) + SUM(COALESCE(AKS.A,0)) + SUM(COALESCE(AKS.M,0))+ SUM(COALESCE(AKS.I,0)) > 0
 			 then

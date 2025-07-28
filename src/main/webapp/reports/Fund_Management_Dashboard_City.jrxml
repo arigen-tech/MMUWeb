@@ -40,7 +40,7 @@
 			(SUM(COALESCE(AKS.A,0)) - SUM(COALESCE(AKS.U_A,0)))Available_Admin,
 			(SUM(COALESCE(AKS.M,0)) - SUM(COALESCE(AKS.U_M,0)))Available_Medicine,
 			(SUM(COALESCE(AKS.I,0)) - SUM(COALESCE(AKS.U_I,0)))Total_Interest,
-			(SUM(COALESCE(AKS.allocated_amount,0)) + sum(COALESCE(AKS.I,0)) - (SUM(COALESCE(AKS.U_O,0))+ SUM(COALESCE(AKS.U_A,0)) +SUM(COALESCE(AKS.U_M,0))+ SUM(COALESCE(AKS.U_I,0)))) Available_Balance,
+			(SUM(COALESCE(AKS.allocated_amount,0)) - (SUM(COALESCE(AKS.U_O,0))+ SUM(COALESCE(AKS.U_A,0)) +SUM(COALESCE(AKS.U_M,0))+ SUM(COALESCE(AKS.U_I,0)))) Available_Balance,
 			(case when
 			 SUM(COALESCE(AKS.O,0)) + SUM(COALESCE(AKS.A,0)) + SUM(COALESCE(AKS.M,0)) + SUM(COALESCE(AKS.I,0)) > 0
 			 then
@@ -116,7 +116,7 @@ UNION ALL
 				0 U_I, ci.phase
 	from 	    capture_interest_hd ci left outer JOIN capture_interest_dt cidt ON cidt.capture_interest_hd_id=ci.capture_interest_hd_id
 	 							        left outer JOIN MAS_city MD on MD.city_id=cidt.city_id
-	WHERE   ci.created_on  BETWEEN $P{From_Date} AND $P{To_Date} AND (CI.phase = $P{p_phase} OR $P{p_phase}='')
+	WHERE   ci.created_on  BETWEEN $P{From_Date} AND $P{To_Date}
 	 		and ci.status ='A' and (cast(cidt.district_id as character varying) in  ($P{p_distidval}) or $P{p_distidval}='')
 	)AKS
 	GROUP By AKS.city_name ,
