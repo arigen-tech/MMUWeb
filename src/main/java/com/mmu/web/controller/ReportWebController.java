@@ -8153,7 +8153,7 @@ public class ReportWebController {
 		JSONArray to_date= new JSONArray();
 		JSONArray mmu_City =  new JSONArray();
 		JSONArray upss_id =  new JSONArray();
-		JSONArray phase_value =  new JSONArray();
+		//JSONArray phase_value =  new JSONArray();
 		
 	
 		
@@ -8177,20 +8177,20 @@ public class ReportWebController {
 		{
 			to_date= json.getJSONArray("toDate");
 		}
-		if(box.get("phase") !=null && !box.getString("phase").isEmpty())
+		/*if(box.get("phase") !=null && !box.getString("phase").isEmpty())
 		{
 			phase_value= json.getJSONArray("phase");
-		}
+		}*/
 		String mmuCity=mmu_City.getString(0);
 		String upssId=upss_id.getString(0);
-		if(phase_value!=null && !phase_value.isNull(0))
+		/*if(phase_value!=null && !phase_value.isNull(0))
 		{	
 		phase=phase_value.getString(0);
 		}
 		else
 		{
 			phase="";
-		}
+		}*/
 		toDate = to_date.getString(0);
 		
 

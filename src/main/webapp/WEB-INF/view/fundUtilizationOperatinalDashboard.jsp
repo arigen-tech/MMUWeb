@@ -150,6 +150,7 @@ function exportPDF(){
 	 var upss_id = modelRequest.upss_id;
 	 var mmuCity =modelRequest.mmuCity;
 	 var flagType = modelRequest.flagType;
+	 var		phase=modelRequest.phase;
 	 		
 var url = "${pageContext.request.contextPath}/report/medicineInvoiceDashboardTCUReport?fromDate="
 	+ fromDate
@@ -158,6 +159,8 @@ var url = "${pageContext.request.contextPath}/report/medicineInvoiceDashboardTCU
 	+ "&upss_id="
 	+upss_id
 	+ "&flagType=C"
+	+ "&phase="
+	+ phase
 	+ "&mmuCity="
 	+ mmuCity;
 openPdfModel(url);
@@ -265,7 +268,7 @@ function showFileMisc(fileName,invoice_no){
 												<label class="col-form-label">Phase</label>
 											</div>
 											<div class="col-md-7">
-												<select class="form-control" id="phase"  >
+												<select class="form-control" id="phase" disabled  >
 													<option value="">Select</option>
 													<option value="Phase1">Phase1</option>
 													<option value="Phase2">Phase2</option>
