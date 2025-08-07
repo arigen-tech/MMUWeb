@@ -616,6 +616,7 @@ function checkDuplicateRecord(item)
 	{
 		alert("Record already exists")
 		$(item).closest('tr').remove()
+		window.location.reload();
 		return false;
 	}
 	

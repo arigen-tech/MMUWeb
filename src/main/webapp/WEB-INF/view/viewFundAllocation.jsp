@@ -647,7 +647,7 @@ function checkDuplicateRecord(item)
 	 var currentHeadTypeVal=$(item).closest('tr').find("td:eq(2)").find(":input").val(); 
 	 var currentRowId= $(item).closest('tr').find("td:eq(0)").find(":input").attr("id");
 	 var recordValue=$(item).closest('tr').find("td:eq(3)").find("input:eq(1)").val();
-	 if(recordValue!=""&&recordValue!=null&&recordValue!=undefined){
+	/*  if(recordValue!=""&&recordValue!=null&&recordValue!=undefined){
 		if(recordValue!="")
 		{	
 		var pathname = window.location.pathname;
@@ -675,7 +675,7 @@ function checkDuplicateRecord(item)
 		
 	  
 	 }
-	}
+	} */
 	//////////////Treatment JSON ///////////////////
 		var tableDataHd = [];  
 		var dataDt='';
@@ -697,6 +697,7 @@ function checkDuplicateRecord(item)
 	{
 		alert("Record already exists")
 		$(item).closest('tr').remove()
+		window.location.reload();
 		return false;
 	}
 	

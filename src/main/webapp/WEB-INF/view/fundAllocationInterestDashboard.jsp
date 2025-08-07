@@ -140,14 +140,12 @@ function genrateTable(seq,response){
 	 	'<td>'+response.approved_date+'</td>'+
 	 	'<td>'+response.approved_by+'</td>'+
 	 	'<td>'+response.file_name+'</td>'+
-	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showFile(\''+response.file_view+'\',\''+response.letter+'\');">View<a></td>'+
+	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showFile(\''+response.file_name+'\');">View<a></td>'+
 	 '</tr>';
 	 $("#tbl_invoiceData").append(tableRow);
 }
-function showFile(fileName,letterNo){
-	if(fileName==='')
-		return;
-	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+fileName+"&type=fund_letter&keys="+letterNo, '_blank').focus();
+function showFile(fileName){
+	window.open("${pageContext.servletContext.contextPath}/captureMedicine/download?fileName="+fileName, '_blank').focus();
 }
 
 function getDownloadData()
