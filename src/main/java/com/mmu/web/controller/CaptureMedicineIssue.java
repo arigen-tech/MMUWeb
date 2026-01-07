@@ -525,4 +525,61 @@ public class CaptureMedicineIssue {
 		
 		return mv;
 	}
+	
+	@RequestMapping(value="/captureMiscExpenses", method = RequestMethod.GET)
+	public ModelAndView captureMiscExpenses() {
+		return new ModelAndView("captureMiscExpenses");
+	}
+	
+	@RequestMapping(value="/pendingMiscExpenses", method = RequestMethod.GET)
+	public ModelAndView pendingMiscExpenses(HttpServletRequest request, HttpServletResponse response) {
+		//return new ModelAndView("pendingMedicineInvoice");
+		return new ModelAndView("pendingMisExpenses");
+	}
+	
+	@RequestMapping(value="/updateMisExpenses", method = RequestMethod.GET)
+	public ModelAndView updateMisExpenses(HttpServletRequest request, HttpServletResponse response) {
+		String Id = request.getParameter("id");
+		
+		
+		String jsp = "captureMiscExpensesUpdate";
+		ModelAndView mv = new ModelAndView();
+		
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		
+		String payload = "{\"Id\":\"" + Id + "\"}";
+		String URL = HMSUtil.getProperties("urlextension.properties", "getInvoiceList");
+		String responseData = RestUtils.postWithHeaders(IpAndPortNo.trim() + URL.trim(), requestHeaders, payload);
+		mv.addObject("response", responseData);
+		mv.setViewName(jsp);
+		
+		
+		return mv;
+	}
+	
+	@RequestMapping(value="/fundInterestDashboard", method = RequestMethod.GET)
+	public ModelAndView fundInterestDashboard(HttpServletRequest request, HttpServletResponse response) {
+		
+
+
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		Map<String, String> mapRequest = request.getParameterMap().entrySet().stream().collect(Collectors.toMap(
+                  entry -> entry.getKey(),
+                  entry -> entry.getValue()[0]));
+		request.getSession().setAttribute("fundmgmt_fromDate", mapRequest);
+		ModelAndView mv = new ModelAndView("fundAllocationInterestDashboard");
+		String requestParam= "";
+		try {
+			requestParam = new ObjectMapper().writeValueAsString(mapRequest);
+			String URL = HMSUtil.getProperties("urlextension.properties", "getFundInvoicDashboardData");
+			
+			String responseData = RestUtils.postWithHeaders(IpAndPortNo.trim() + URL.trim(), requestHeaders, requestParam);
+			mv.addObject("requestParam", requestParam);
+			mv.addObject("response", responseData);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return mv;
+	}
+	
 	}

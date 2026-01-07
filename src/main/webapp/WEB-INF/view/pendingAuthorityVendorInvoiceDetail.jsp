@@ -91,16 +91,37 @@ $(document).ready(function(){
     	//window.history.back();
     }); */
 
-    $('#downloadBill').on('click', function(){
+   /*  $('#downloadBill').on('click', function(){
     	//<a href="download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val() target="_blank">
        // window.location = "download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val();
     
     	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val(), '_blank').focus();
-    }); 
-    $('#downloadAuditorReport').on('click', function(){
-        //window.location = "download?name="+$(this).data('name')+"&type=audit_report&keys="+$('#invoiceNo').val();
+    });  */
+    $('#downloadBill').on('click', function(event) {
+        event.preventDefault(); // <-- Prevent form submission/page refresh
+
+        window.open(
+            "${pageContext.servletContext.contextPath}/audit/download?name=" + $(this).data('name') +
+            "&type=vendor_bill&keys=" + $('#invoiceNo').val(), 
+            '_blank'
+        ).focus();
+    });
+    $('#downloadAuditorReport').on('click', function(event) {
+        event.preventDefault(); // <-- Prevent form submission/page refresh
+
         window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=audit_report&keys="+$('#invoiceNo').val(), '_blank').focus();
     });
+    
+    
+    var today = new Date();
+	var dd = String(today.getDate()).padStart(2, '0');
+	var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+	var yyyy = today.getFullYear();
+	
+	//today =  yyyy + '-' + mm + '-' +dd;
+	 today = dd + '/' + mm + '/' +yyyy;
+    $('#actionDate').val(today);
+ 
 });
 
 function backFunction(){
@@ -149,7 +170,7 @@ function loadBillDetails(){
  	              		var combo = "" ;
 	 	                $j("#actionId").empty();
 	 	          	    combo += '<option value="">Select</option>';
-	 	          	    combo += '<option value="A">Penalty suggested as per auditor</option>';
+	 	          	    combo += '<option value="A">Approve</option>';
 	 	          	    jQuery('#actionId').append(combo);
                 }else{
 	                $('#penaltyAmountImposed').val(rowData.calculatedPenaltyAmount);
@@ -226,7 +247,7 @@ function loadBillDetails(){
                          penaltyFileName:list[i].penaltyFileName,
                  		 auditorsRemarks:list[i].auditorsRemarks,
                         // Add other properties from list[i] if needed
-                        penaltySum: mmuPenaltySumMap[mmuId] // Default to 0 if no penalty sum is found
+                         penaltySum: mmuPenaltySumMap[mmuId] !== undefined ? mmuPenaltySumMap[mmuId] : 0// Default to 0 if no penalty sum is found
                     };
                     combinedList.push(combinedData);
                 }
@@ -459,7 +480,24 @@ function getAuthorityList(){
 }
 
 function submitAuditorForm(){
-	
+	var actionDate = $('#actionDate').val();
+	   if(!actionDate){
+	       alert('Please Select Approval Date!');
+	       return false;
+	   }else{
+	        var dts = actionDate.split('/');
+	        var insDts = new Date(dts[2], dts[1]-1, dts[0]);
+	        var invDate = $('#invoiceDate').val();
+	        var actualInv=invDate.split('/');
+	        var invoiceDate=new Date(actualInv[2], actualInv[1]-1, actualInv[0]);
+	        //var currDate = new Date(todaysDate.getFullYear(), todaysDate.getMonth(), todaysDate.getDate());
+	        if(insDts.getTime() < invoiceDate.getTime()){
+	            alert('Approval Date should not be earlier than the Invoice date!');
+	            return false;
+	        }
+	        
+	   }
+	   
 	const noteSheets = document.querySelectorAll('textarea[name="caseSheet"]');
     const fileInputs = document.querySelectorAll('input[name="caseSheetUpload"]');
     const notes = [];
@@ -600,6 +638,7 @@ function submitAuditorForm(){
           'vendorInvoiceApprovalId':$('#vendorInvoiceApprovalId').val(),
           'lastApprovalMsg':lastApprovalMsg,
           'penaltyAmountImposedAuth':$('#penaltyAmountImposedAuth').val(),
+          'actionDate':$('#actionDate').val(),
           'userId':$('#userId').val()
     }
      
@@ -737,13 +776,13 @@ function getPenaltyAuthorityDetailsByUpss(){
 function getSupportingDownloadData(button)
 {
 	var namVal= button.getAttribute('data-name');
-	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=vendor_bill\\supporting_document&keys="+$('#invoiceNo').val(), '_blank').focus();	
+	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=vendor_supporting_document&keys="+$('#invoiceNo').val(), '_blank').focus();	
 }
 
 function getMaualPenaltyDownloadData(button)
 {
 	var namVal= button.getAttribute('data-name');
-	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=audit_report\\manual_penalty&keys="+$('#invoiceNo').val(), '_blank').focus();	
+	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=audit_manual_penalty&keys="+$('#invoiceNo').val(), '_blank').focus();	
 }
 
 function disbaledAuditorForwardTo(){
@@ -756,8 +795,11 @@ function disbaledAuditorForwardTo(){
 	  }else if($('#noteSheetFlag').val()=="yes"){
 		  $('#penaltyAmount').prop('readonly', true);
 		 
+		 
 	  }else{
 		  $('#penaltyAmount').prop('readonly', true);
+		  var amountPrevious=$('#penaltyAmountImposed').val();
+		  $('#penaltyAmount').val(amountPrevious);
 		  $('#caseSheet1').hide()
 		  $('#caseSheet2').hide() 
 	  }
@@ -1322,7 +1364,9 @@ function isNumberKey(evt) {
 												</select>
 											</div>
 										</div>
+										
 										</div></div>
+										
 										<div class="row" id="penaltyA" style="display:none">
 										<div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
@@ -1343,6 +1387,17 @@ function isNumberKey(evt) {
 											</div>
 
 										</div>
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">Date</label>
+											</div>
+											<div class="col-md-7">
+											<div class="dateHolder">
+											<input type="text" name="actionDate" class="calDate form-control" id="actionDate" value="" readonly placeholder="DD/MM/YYYY" />
+											
+										</div></div>
+										</div>
+										
 									</div>
 								
                                   </div>
@@ -1363,6 +1418,7 @@ function isNumberKey(evt) {
 											</div>
 										</div>
 									</div>
+									
                                   </div>
                                   
                                   <div class="col-12" id="caseSheet1" style="display:none">

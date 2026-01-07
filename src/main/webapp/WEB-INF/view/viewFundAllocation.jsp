@@ -29,6 +29,11 @@
 	if (session.getAttribute("firstName") != null) {
 		userName = session.getAttribute("firstName") + "";
 	}
+	String distIdUsers = "0";
+	if (session.getAttribute("distIdUsers") != null) {
+		distIdUsers = session.getAttribute("distIdUsers").toString();
+		//distIdUsers = distIdUsers.replace(",","");
+	}
 	
 %>
 </head>
@@ -108,6 +113,7 @@ function getMasHeadType(){
 	    	var combo = "" ;
 	    	masHeadType= result.masHeadTypeData;
 	    	for(var i=0;i<result.masHeadTypeData.length;i++){
+	    		if(result.masHeadTypeData[i].headTypeId !=4)
 	    		combo += '<option value='+result.masHeadTypeData[i].headTypeId+'>' +result.masHeadTypeData[i].headTypeName+ '</option>';
 	    		
 	    	}
@@ -122,13 +128,16 @@ function getMasHeadType(){
 var masCity="";
 var masUpss="";
 function GetDistrictList(phaseVal,data){
-	
+	 var districtId="";
+		if(null!=$j('#districtId').val()&&$j('#districtId').val!=""){
+			districtId=$j('#districtId').val();
+		}
 	jQuery.ajax({
 	 	crossOrigin: true,
 	    method: "POST",			    
 	    crossDomain:true,
 	    url:"${pageContext.servletContext.contextPath}/master/getAllUpssPhaseMapping",
-	    data: JSON.stringify({"PN" : "0","phaseValue":phaseVal}),
+	    data: JSON.stringify({"PN" : "0","phaseValue":phaseVal,"districtId":districtId}),
 	    contentType: "application/json; charset=utf-8",
 	    dataType: "json",
 	    success: function(result){
@@ -594,6 +603,11 @@ function getDgFundAllcationHdDt(data) {
 	
 							var selectFre = "";
 							$.each(masHeadType, function(ijk, item1) {
+								
+								 if (item1.headTypeId == 4) {
+								        return; // Skip this iteration
+								    }
+								
 	
 								if (headTypeId == item1.headTypeId) {
 									selectFre = "selected";
@@ -639,7 +653,7 @@ function checkDuplicateRecord(item)
 	 var currentHeadTypeVal=$(item).closest('tr').find("td:eq(2)").find(":input").val(); 
 	 var currentRowId= $(item).closest('tr').find("td:eq(0)").find(":input").attr("id");
 	 var recordValue=$(item).closest('tr').find("td:eq(3)").find("input:eq(1)").val();
-	 if(recordValue!=""&&recordValue!=null&&recordValue!=undefined){
+	/*  if(recordValue!=""&&recordValue!=null&&recordValue!=undefined){
 		if(recordValue!="")
 		{	
 		var pathname = window.location.pathname;
@@ -667,7 +681,7 @@ function checkDuplicateRecord(item)
 		
 	  
 	 }
-	}
+	} */
 	//////////////Treatment JSON ///////////////////
 		var tableDataHd = [];  
 		var dataDt='';
@@ -689,6 +703,7 @@ function checkDuplicateRecord(item)
 	{
 		alert("Record already exists")
 		$(item).closest('tr').remove()
+		window.location.reload();
 		return false;
 	}
 	
@@ -780,6 +795,7 @@ function checkFutureDate()
 				<input  name="financialYear" id="financialYear" type="hidden" value="" />
 				<input  name="financialYearStartDate" id="financialYearStartDate" type="hidden" value="" />
 				<input  name="financialYearEndDate" id="financialYearEndDate" type="hidden" value="" />
+				<input  name="districtId" id="districtId" type="hidden" value="<%=session.getAttribute("distIdUsers")%>"/>
 					<div class="col-12">
 						<div class="card">
 							<div class="card-body">

@@ -48,7 +48,7 @@ $(document).ready(function(){
 	
 	//getStoreFinancialYear();
 	getMasHeadType();
-	getMasPhase();
+	//getMasPhase();
 	GetDistrictList();
 	var data = ${
         data
@@ -92,28 +92,7 @@ function getStoreFinancialYear(data){
 	});
 }
 
-function getMasPhase(){
-	jQuery.ajax({
-	 	crossOrigin: true,
-	    method: "POST",			    
-	    crossDomain:true,
-	    url: "${pageContext.servletContext.contextPath}/master/getAllUpssPhaseMapping",
-	    data: JSON.stringify({'PN' :"0",
-			'mmuSearch':'<%=distIdUsers%>'}),
-	    contentType: "application/json; charset=utf-8",
-	    dataType: "json",
-	    success: function(result){
-	    	var combo = "<option value='0'>Select</option>" ;
-	    	
-	    	for(var i=0;i<result.data.length;i++){
-	    		combo += '<option value='+result.data[i].phaseValue+'>' +result.data[i].phaseName+ '</option>';
-	    		
-	    	}
-	    	jQuery('#phase').append(combo);
-	    }
-	    
-	});
-}
+
 
 var masHeadType="";
 function getMasHeadType(){
@@ -131,7 +110,9 @@ function getMasHeadType(){
 	    	var combo = "" ;
 	    	masHeadType= result.masHeadTypeData;
 	    	for(var i=0;i<result.masHeadTypeData.length;i++){
+	    		if(result.masHeadTypeData[i].headTypeName.startsWith("Int")){
 	    		combo += '<option value='+result.masHeadTypeData[i].headTypeId+'>' +result.masHeadTypeData[i].headTypeName+ '</option>';
+	    		}
 	    		
 	    	}
 	    	
@@ -213,13 +194,31 @@ function addHeadAmountRow() {
 		  });
 		  $trNew.find("td:eq(0)").find('select').prop('id', 'upss'+countRecall+'');
 		  $trNew.find("td:eq(1)").find('select').prop('id', 'cityId'+countRecall+'');
-		  $trNew.find("td:eq(2)").find(":input").val("");
+		  $trNew.find("td:eq(0)").find(":input").val("");
+		  $trNew.find("td:eq(1)").find(":input").val("");
+		  //$trNew.find("td:eq(2)").find(":input").val("");
 		  $trNew.find("td:eq(3)").find(":input").val("");
 		  $trNew.find("td:eq(4)").find("button:eq(1)").val("");
-		  //$trLast.find('select').eq(0).prop('id', 'upss'+countRecall+'');
-		 // $trLast.find('select').eq(1).prop('id', 'cityId'+countRecall+'');
-		  //$trLast.find("option[selected]").prop('id', 'upss'+countRecall+'');
-		  //$trLast.find("option[selected]").prop('id', 'cityId'+countRecall+'');
+		// Remove the old file input and replace with a fresh one in the new row
+		    var $fileDiv = $trNew.find("td:eq(4)").find('.fileUploadDiv');
+		 // Remove old file input, label, and filename span
+		    $fileDiv.find('input[type="file"]').remove();
+		    $fileDiv.find('label.inputUploadlabel').remove();
+		    $fileDiv.find('span.inputUploadFileName').remove();
+
+		    // Remove the "View File" button in the same cell (td), if present
+		    $fileDiv.closest('td').find('button').remove(); // Or target it more specifically if there are multiple buttons
+
+		    // Create new file input, label, and span
+		    var fileInputId = 'fileUpload' + countRecall;
+		    var $newFileInput = $('<input type="file" class="inputUpload" name="fileUpload" id="fileUpload'+countRecall+'" accept="application/pdf,application/vnd.ms-excel,.xlsx">');
+		    var $newLabel = $('<label class="inputUploadlabel" for="'+fileInputId+'">Choose File</label>');
+		    var $newSpan = $('<span class="inputUploadFileName">No File Chosen</span>');
+
+		    // Add them to the file div
+		    $fileDiv.empty().append($newFileInput, $newLabel, $newSpan);
+			  $trNew.find("td:eq(3)").find(":input").val("");
+			  $trNew.find("td:eq(5)").find(":button").val("");
 		  $trLast.after($trNew);
 	
 }
@@ -276,7 +275,6 @@ function saveSubmitFundAllocationFunction(val) {
     //var totalAllocatedAmount = $('#totalAllocatedAmount').val();
     //var letterNo = $('#letterNo').val();
     var financialYear = $('#financialYearVal').val();
-    var phaseVal=$("#phase").val();
    // var phaseVal=$("#phase").val();
     /* if(dateOfUpload=="")
     {
@@ -298,11 +296,7 @@ function saveSubmitFundAllocationFunction(val) {
     	alert("Please select financial year");
  		return false;
     }
-    if(phaseVal=="")
-    {
-    	alert("Please select Phase");
- 		return false;
-    }
+   
      
 //////////////////////////////table validation part ////////////////	
     var  idforTable='';
@@ -434,7 +428,7 @@ function saveSubmitFundAllocationFunction(val) {
             //'fundLetterName':$('#fundLetterName').val(),
             //'fundLetterNameDuplicate':$('#fundLetterName').val(),
             "listofHeader" : tableDataHd,
-            'phaseVal':phaseVal,
+            //'phaseVal':phaseVal,
             "listofHeaderFundHcb" : tableDataHdFundHcb
     }
     
@@ -530,7 +524,11 @@ function getDgFundAllcationHdDt(data) {
 							var cityName=data[i].cityName;
 							var financialYear=data[i].finanicalId;
 							var finanicalIdText=data[i].finanicalIdText;
-							var phaseVal=data[i].phaseVal;
+							var fileName=data[i].fileName;
+							if(fileName=="null"){
+								fileName="";
+							}
+							//var phaseVal=data[i].phaseVal;
 							//$('#downloadBill').attr('data-name', data[i].fileName);
 							//$("#letterNo").val(letterNo);
 							$("#captureInterestHdId").val(captureInterestHdId);
@@ -544,7 +542,7 @@ function getDgFundAllcationHdDt(data) {
 							//$("#financialYearText").val(finanicalIdText);
 							//$("#financialYearStartDate").val(data[i].finanicalYearStartDate);
 							//$("#financialYearEndDate").val(data[i].finanicalYearEndDate);
-							$("#phase").val(phaseVal);
+							//$("#phase").val(phaseVal);
 							allocationGridValue += '<tr>';
 							//allocationGridValue += '<td><select class="form-control" id="upss" name="upss"><option value="'+districtId+'">Select</option></select></td>';
 							allocationGridValue += '<td ><select name="upss" class="form-control" onchange="checkDuplicateRecord(this);getCityList(this);" id="upss'+ count + '" ';
@@ -575,10 +573,10 @@ function getDgFundAllcationHdDt(data) {
 	                		allocationGridValue += '</select>';
 							allocationGridValue += '</td>';
 							//allocationGridValue += '<td><select class="form-control" id="headType" name="headType"><option value="'+headTypeId+'">Select</option></select></td>';
-							allocationGridValue += '<td ><select name="headType" class="form-control" onchange="checkDuplicateRecord(this);" id="headType'+ count + '" ';
+							allocationGridValue += '<td ><select name="headType" class="form-control" readonly onchange="checkDuplicateRecord(this);" id="headType'+ count + '" ';
 							allocationGridValue += 'class="medium">';
 							var dispStock = data[i].dispUnitId;
-							allocationGridValue += '<option value=""><strong>Select</strong></option>';
+							//allocationGridValue += '<option value=""><strong>Select</strong></option>';
 	
 							var selectFre = "";
 							$.each(masHeadType, function(ijk, item1) {
@@ -588,23 +586,46 @@ function getDgFundAllcationHdDt(data) {
 								} else {
 									selectFre = "";
 								}
+								if(item1.headTypeName.startsWith("Int")){
 								allocationGridValue += '<option ' + selectFre
 										+ ' value="' + item1.headTypeId + '">'
 										+ item1.headTypeName + '</option>';
+								}
 							});
 							allocationGridValue += '</select>';
 							allocationGridValue += '</td>';
 							allocationGridValue += '<td><input type="text" id="interest'+count+'" maxlength="12" value="'+interest+'" onkeypress="if ( isNaN( String.fromCharCode(event.keyCode) )) return false;" name="allocatedAmount" class="form-control"/><input type="hidden"  name="captureInterestDtId" value="'+ data[i].captureInterestDtId+ '" id="fundAllocationDtId'+data[i].captureInterestDtId+ '"/></td>';
+							
+
+							allocationGridValue +='<td>';
+							allocationGridValue +='<div class="fileUploadDiv hasFile"><input type="file" class="inputUpload" name="fileUpload" id="fileUpload'+count+'"  accept="application/pdf,application/vnd.ms-excel,.xlsx">';
+							allocationGridValue +='<label class="inputUploadlabel">Remove File</label>';
+							allocationGridValue +='<span id="" class="inputUploadFileName">'+fileName+'</span>';
+							allocationGridValue +='</div>';
+							if(fileName=""){
+							allocationGridValue +='<button type="button" class="btn noMinWidth" name="docsUpload"  value ="'+fileName+'" onclick="downloadRow(this)">View File</button>';
+							allocationGridValue +='<input  name="existingFile" id="existingFile'+count+'" type="hidden" value="'+fileName+'" />';
+							}
+							allocationGridValue +='</td>';
+							
 							allocationGridValue += '<td><button type="button" type="button"	class="btn btn-primary buttonAdd noMinWidth" value="" button-type="add" onclick="addHeadAmountRow()"></button><button type="button" name="delete" value="'+ data[i].captureInterestDtId+ '" id="deleteMC" class="buttonDel btn btn-danger noMinWidth" button-type="delete" onclick="removeHeadAmountRow(this,this.value)"></button></td>';
 							
 							count++;
 						}
 						$("#headAmountGrid").html(allocationGridValue);
 						$("#financialYearVal").attr("disabled", true);
-						$("#phase").attr("disabled", true);
+						//$("#phase").attr("disabled", true);
 				}
 		       
 }
+
+function downloadRow(objButton){
+	console.log("executed "+objButton.value);
+	//window.location = "download?fileName="+objButton.value;
+	window.open("${pageContext.servletContext.contextPath}/captureMedicine/download?fileName="+objButton.value, '_blank').focus();
+	//window.open(window.location = "download?fileName="+objButton.value)
+}
+
 
 function getDownloadData()
 {
@@ -903,20 +924,7 @@ function checkFutureDate()
 											</div>
 										</div>
 									</div>
-									<div class="col-md-4">
-										<div class="form-group row">
-											<div class="col-md-5">
-												<label class="col-form-label">Phase</label>
-											</div>
-											<div class="col-md-7">
-												<select class="form-control" id="phase"  >
-													<!--<option value="">Select</option>
-													 <option value="Phase1">Phase1</option>
-													<option value="Phase2">Phase2</option> -->
-												</select>
-											</div>
-										</div>
-									</div>
+								
 									
 							 </div>
                                 
@@ -928,6 +936,7 @@ function checkFutureDate()
                                                 <th>City</th>
                                                 <th>Head Type</th>
                                                 <th>Interest</th>
+                                                <th>File Upload</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>

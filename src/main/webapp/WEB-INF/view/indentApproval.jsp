@@ -252,7 +252,56 @@
 											
 										</table>
 									</div>
-									<c:if test="${status=='Y'}">
+									
+									<div class="row">
+										<div class="col-md-4">
+											<div class="form-group row">
+												<div class="col-md-5">
+													<label for="service" class="col-form-label">Date</label>
+												</div>
+												<div class="col-md-7">
+													<input type="text" class="form-control" id="doctorDate" name="doctorDate" readonly="readonly"/>
+												</div>
+											</div>
+										</div>
+
+										<div class="col-md-4">
+											<div class="form-group row">
+												<div class="col-md-5">
+													<label for="service" class="col-form-label">Doctor Name</label>
+												</div>
+												<div class="col-md-7">
+													<input type="text" class="form-control" id="doctorName" name="doctorName" readonly="readonly" />
+												</div>
+											</div>
+										</div>
+
+										<div class="col-md-4">
+											<div class="form-group row">
+												<div class="col-md-5">
+													<label for="service" class="col-form-label">Action</label>
+												</div>
+												<div class="col-md-7">
+													<input type="text" class="form-control" id="doctorAction" name="doctorAction" readonly="readonly"/>
+												</div>
+											</div>
+										</div>
+										
+										<div class="col-md-4">
+											<div class="form-group row">
+												<div class="col-md-5">
+													<label for="service" class="col-form-label">Remarks</label>
+												</div>
+												<div class="col-md-7">
+													<textarea class="form-control" id="doctorRemarks" name="doctorRemarks" rows="2" readonly="readonly"></textarea>
+												</div>
+											</div>
+										</div>
+										
+										</div>
+									
+									
+									<c:if test="${status=='A'}">
 									<div class="row m-t-20 ">
 											<div class="col-md-4">
 												<div class="form-group row">
@@ -283,7 +332,7 @@
 										
 									<div class="row">
 										<div class="col-md-12 text-right">
-											<c:if test="${status=='Y'}">
+											<c:if test="${status=='A'}">
 													<input type="submit" class="btn  btn-primary"
 														name="approve" 
 														value="Submit" id="saveForm1" tabindex="1" onclick="return submitForm();"/>
@@ -373,6 +422,11 @@ $j(document).ready(
     		  	   $j('#indentDate').val(resultList[item].indentdate);
     		  	   $j('#createdBy').val(resultList[item].createdBy+" ("+resultList[item].createdByDsg+")");
     		  	   $j('#toDeptName').val(resultList[item].toDeptId);
+    		  	   
+    		  	  $j('#doctorDate').val(resultList[item].auditorDate);
+      		  	 $j('#doctorName').val(resultList[item].auditorName);
+      		  	 $j('#doctorAction').val(resultList[item].auditorAction);
+      		  	 $j('#doctorRemarks').val(resultList[item].auditorRemarks); 
     		 }
     		 $('#nomenclature'+j).val(resultList[item].NomPvmsNo);
     		 $('#dispensingUnit'+j).val(resultList[item].accountingUnit);

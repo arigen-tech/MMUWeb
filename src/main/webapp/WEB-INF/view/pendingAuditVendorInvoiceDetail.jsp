@@ -71,6 +71,15 @@ $(document).ready(function(){
     
     	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val(), '_blank').focus();
     });  */
+    
+    var today = new Date();
+	var dd = String(today.getDate()).padStart(2, '0');
+	var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+	var yyyy = today.getFullYear();
+	
+	//today =  yyyy + '-' + mm + '-' +dd;
+	 today = dd + '/' + mm + '/' +yyyy;
+    $('#actionDate').val(today);
   
 });
 
@@ -145,87 +154,63 @@ function loadBillDetails(){
 			
             }
 
-            if(result && result.penaltyDetailData && result.penaltyDetailData.data && result.penaltyDetailData.data.mmuPenaltySum){
-            	var mmuPenaltySum=[];
-            	mmuPenaltySum = result.penaltyDetailData.data.mmuPenaltySum;
-                
-                for(key in mmuPenaltySum){
-                	var splitMmu="";
-                	splitMmu = key.split("@@");
-            		var mmuNameVal = splitMmu[0];
-            		var mmuIdVal = splitMmu[1];
-            		var mmuIdValss=splitMmu[1];
-            		
-                    var $tr = $('<tr/>')
-                    .append($('<td id="'+mmuIdVal+'" name='+mmuIdValss+'/>').text(mmuNameVal))
-                    .append($('<td/>').append('<a class="text-theme font-weight-bold text-underline" name="autoPenaltyAmount" id="'+mmuIdVal+'" onClick="penaltySectionData('+mmuIdVal+')" data-background="static" "href="javascript:void(0)">'+ mmuPenaltySum[key]+'</a>'))
-                    //.append($('<td style="display: none";/>').append('<input name="autoPenaltyAmount" value="'+mmuPenaltySum[key]+'" id="'+mmuIdVal+'" />'))
-                    .append($('<td/>').append('<input type="text" id="manualPenalty'+mmuIdValss+'" onkeypress="return isNumberKey(event)" name="manualPenaltyAmount" class="form-control" />'))
-                    .append($('<td/>').append('<div class="fileUploadDiv"><input type="file" class="inputUpload" id="fileNameManualPenalty" name="fileNameManualPenalty"><label class="inputUploadlabel">Choose File</label><span id="" class="inputUploadFileName">No File Chosen</span></div>'))
-                    .append($('<td/>').append('<textarea name="auditorRemarksMMU"   style="width:600px; height:100px;"  class="form-control border-input validate="referralNote,string,no" id="auditorRemarksMMU" cols="0" rows="0" maxlength="1000" tabindex="5"></textarea>'))
-                    .append($('<td/>').append('<button name="data" type="button" class="btn btn-primary" onClick="generateReport('+mmuIdVal+')">View</button>'))
-                    .append($('<td style="display: none";/>').append('<input name="itemId" value="'+mmuIdVal+'" id="nomenclatureId" />'))
-                    .append($('<td style="display: none";/>').append('<input name="autoPenaltyAmount" value="'+mmuPenaltySum[key]+'" id="autoPenaltyAmount" />'))
-                    .append($('<td style="display: none";/>').append(('<input name="itemId" value="'+mmuPenaltySum[key]+'" id="nomenclatureId" />')));
-                    $('#mmuPenaltyList').append($tr);
-                }
-            }
-            else
-            {
-            	 var mmuIdssssVal=$j('#mmuIdsValuePenalty').val();	
-            	 $.each(mmuIdssssVal, function(i, item){
-                 	var splitMmuss="";
-                 	splitMmuss = item.split("@@");
-             		var mmuNameValss = splitMmuss[1];
-             		var mmuIdValss = splitMmuss[0];
-             		
-                     var $tr = $('<tr/>')
-                     .append($('<td id='+mmuIdValss+' name='+mmuIdValss+'/>').text(mmuNameValss))
-                     .append($('<td/>').append('<a class="text-theme font-weight-bold text-underline" name="autoPenaltyAmount" id="'+mmuIdValss+'" data-background="static" "href="javascript:void(0)">0</a>'))
-                     .append($('<td/>').append('<input type="text" id="manualPenalty'+mmuIdValss+'" onkeypress="return isNumberKey(event)" name="manualPenaltyAmount" class="form-control" />'))
-                     .append($('<td/>').append('<div class="fileUploadDiv"><input type="file" class="inputUpload" id="fileNameManualPenalty" name="fileNameManualPenalty"><label class="inputUploadlabel">Choose File</label><span id="" class="inputUploadFileName">No File Chosen</span></div>'))
-                     .append($('<td/>').append('<textarea name="auditorRemarksMMU"   style="width:600px; height:100px;"  class="form-control border-input validate="referralNote,string,no" id="auditorRemarksMMU" cols="0" rows="0" maxlength="1000" tabindex="5"></textarea>'))
-                     .append($('<td/>').append($('<button name="data" type="button" class="btn btn-primary" onClick="generateReport('+mmuIdValss+')">View</button>'))
-                     .append($('<td style="display: none";/>').append('<input name="autoPenaltyAmount" value="0" id="autoPenaltyAmount" />'))
-                      .append($('<td style="display: none";/>').append('<input name="itemId" value="'+mmuIdValss+'" id="nomenclatureId" />'))
-                      .append($('<td style="display: none";/>').append('<input name="itemId" value="0" id="nomenclatureId" />')));
-                     $('#mmuPenaltyList').append($tr);
-            	 });
-            }
-           /* if(result && result.penaltyDetailData && result.penaltyDetailData.data && result.penaltyDetailData.data.mmuPenaltySum){
-           var mmuIdssssVal=$j('#mmuIdsValuePenalty').val();
-           $.each(mmuIdssssVal, function(i, item){
+            if (result && result.penaltyDetailData && result.penaltyDetailData.data) {
+                var mmuPenaltySum = result.penaltyDetailData.data.mmuPenaltySum || {};
+                var mmuIdssssVal = $j('#mmuIdsValuePenalty').val();	
+                console.log("mmuIdssssVal = " + mmuIdssssVal);
 
-          	var splitMmuss="";
-          	splitMmuss = item.split("@@");
-      		var mmuNameValss = splitMmuss[1];
-      		var mmuIdValss = splitMmuss[0];
-      		var checkForExist=true;
-        	   $('#mmuPenaltyList tr').each(function(i, el) {
-     		        var $tds = $(this).find('td');
-     				var itemId=$($tds).closest('tr').find("td:eq(4)").find("input:eq(0)").val();
-     				if(itemId==mmuIdValss){
-     					  checkForExist=false;
-						  return false;
-					    }
-        	       });
-        	   if(checkForExist==true){
-                		{	
-                        var $tr = $('<tr/>')
-                        .append($('<td id='+mmuIdValss+'/>').text(mmuNameValss))
-                        .append($('<td/>').append('<a class="text-theme font-weight-bold text-underline" id="'+mmuIdValss+'" data-background="static" "href="javascript:void(0)">0</a>'))
-                        .append($('<td/>').append('<textarea name="auditorRemarksMMU"   style="width:600px; height:100px;"  class="form-control border-input validate="referralNote,string,no" id="auditorRemarksMMU" cols="0" rows="0" maxlength="1000" tabindex="5"></textarea>'))
-                        .append($('<td/>').append($('<button name="data" type="button" class="btn btn-primary" onClick="generateReport('+mmuIdValss+')">View</button>'))
-                        .append($('<td style="display: none";/>').append('<input name="itemId" value="'+mmuIdValss+'" id="nomenclatureId" />')));
-                        $('#mmuPenaltyList').append($tr);
-                		}
-        	        }
-     			});	
-             } */
+                $.each(mmuIdssssVal, function(i, item) {
+                    var splitMmuss = item.split("@@");
+                    var mmuIdVal   = splitMmuss[0];
+                    var mmuNameVal = splitMmuss[1];
+
+                    var key = mmuNameVal + "@@" + mmuIdVal;
+                    var penaltyAmt = mmuPenaltySum[key] ? mmuPenaltySum[key] : 0;
+
+                    // Skip if row already exists
+                    if ($('#mmuPenaltyList td').filter(function(){
+                        return $(this).text().trim() === mmuNameVal.trim();
+                    }).length > 0) {
+                        return; 
+                    }
+
+                    var $tr = $('<tr/>')
+                        .append($('<td id="'+mmuIdVal+'" name="'+mmuIdVal+'"/>').text(mmuNameVal))
+                        .append($('<td/>').append('<a class="text-theme font-weight-bold text-underline" name="autoPenaltyAmount" id="'+mmuIdVal+'" onClick="penaltySectionData('+mmuIdVal+')" data-background="static" href="javascript:void(0)">'+ penaltyAmt +'</a>'))
+                        .append($('<td/>').append('<input type="text" id="manualPenalty'+mmuIdVal+'" onkeypress="return isNumberKey(event)" name="manualPenaltyAmount" class="form-control" />'))
+                        .append($('<td/>').append('<div class="fileUploadDiv"><input type="file" class="inputUpload" id="fileNameManualPenalty" name="fileNameManualPenalty"><label class="inputUploadlabel">Choose File</label><span class="inputUploadFileName">No File Chosen</span></div>'))
+                        .append($('<td/>').append('<textarea name="auditorRemarksMMU" style="width:600px; height:100px;" class="form-control border-input validate="referralNote,string,no" id="auditorRemarksMMU" maxlength="1000"></textarea>'))
+                        .append($('<td/>').append('<button name="data" type="button" class="btn btn-primary" onClick="generateReport('+mmuIdVal+')">View</button>'))
+                        .append($('<td style="display: none";/>').append('<input name="autoPenaltyAmount" value="'+penaltyAmt+'" id="autoPenaltyAmount" />'))
+                        .append($('<td style="display: none";/>').append('<input name="itemId" value="'+mmuIdVal+'" id="nomenclatureId" />'));
+
+                    $('#mmuPenaltyList').append($tr);
+                });
+            } else {
+                var mmuIdssssVal = $j('#mmuIdsValuePenalty').val();	
+                $.each(mmuIdssssVal, function(i, item) {
+                    var splitMmuss = item.split("@@");
+                    var mmuIdVal   = splitMmuss[0];
+                    var mmuNameVal = splitMmuss[1];
+
+                    var $tr = $('<tr/>')
+                        .append($('<td id="'+mmuIdVal+'" name="'+mmuIdVal+'"/>').text(mmuNameVal))
+                        .append($('<td/>').append('<a class="text-theme font-weight-bold text-underline" name="autoPenaltyAmount" id="'+mmuIdVal+'" data-background="static" href="javascript:void(0)">0</a>'))
+                        .append($('<td/>').append('<input type="text" id="manualPenalty'+mmuIdVal+'" onkeypress="return isNumberKey(event)" name="manualPenaltyAmount" class="form-control" />'))
+                        .append($('<td/>').append('<div class="fileUploadDiv"><input type="file" class="inputUpload" id="fileNameManualPenalty" name="fileNameManualPenalty"><label class="inputUploadlabel">Choose File</label><span class="inputUploadFileName">No File Chosen</span></div>'))
+                        .append($('<td/>').append('<textarea name="auditorRemarksMMU" style="width:600px; height:100px;" class="form-control border-input validate="referralNote,string,no" id="auditorRemarksMMU" maxlength="1000"></textarea>'))
+                        .append($('<td/>').append('<button name="data" type="button" class="btn btn-primary" onClick="generateReport('+mmuIdVal+')">View</button>'))
+                        .append($('<td style="display: none";/>').append('<input name="autoPenaltyAmount" value="0" id="autoPenaltyAmount" />'))
+                        .append($('<td style="display: none";/>').append('<input name="itemId" value="'+mmuIdVal+'" id="nomenclatureId" />'));
+
+                    $('#mmuPenaltyList').append($tr);
+                });
+            }
+
             getVendorInvoiceApprovalDetails($('#captureVendorBillDetailId').val());
             getPenaltyAuthorityDetailsByUpss();
-
         }
+
     });
 }
 
@@ -338,10 +323,29 @@ function getDownloadData()
 function getSupportingDownloadData(button)
 {
 	var namVal= button.getAttribute('data-name');
-	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=vendor_bill\\supporting_document&keys="+$('#invoiceNo').val(), '_blank').focus();	
+	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=vendor_supporting_document&keys="+$('#invoiceNo').val(), '_blank').focus();	
 }
 
 function submitAuditorForm(val){
+	
+
+	var actionDate = $('#actionDate').val();
+	   if(!actionDate){
+	       alert('Please Select Approval Date!');
+	       return false;
+	   }else{
+	        var dts = actionDate.split('/');
+	        var insDts = new Date(dts[2], dts[1]-1, dts[0]);
+	        var invDate = $('#invoiceDate').val();
+	        var actualInv=invDate.split('/');
+	        var invoiceDate=new Date(actualInv[2], actualInv[1]-1, actualInv[0]);
+	        //var currDate = new Date(todaysDate.getFullYear(), todaysDate.getMonth(), todaysDate.getDate());
+	        if(insDts.getTime() < invoiceDate.getTime()){
+	            alert('Approval Date should not be earlier than the Invoice date!');
+	            return false;
+	        }
+	        
+	   }
 	
 	  var penaltyMMUId=[];
 	   var penaltyData='';
@@ -1075,7 +1079,19 @@ function isNumberKey(evt) {
 												</select>
 											</div>
 										</div>
+										
 									</div>
+									<div class="col-md-4">
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">Date</label>
+											</div>
+											<div class="col-md-7">
+											<div class="dateHolder">
+											<input type="text" name="actionDate" class="calDate form-control" id="actionDate" value="" readonly placeholder="DD/MM/YYYY" />
+											</div>
+											</div>
+										</div></div>
                                   
                                     </div>
 									</form>

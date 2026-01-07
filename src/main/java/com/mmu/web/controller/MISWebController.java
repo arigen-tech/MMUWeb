@@ -454,4 +454,26 @@ public class MISWebController {
 
 	}
 	
+	@RequestMapping(value = "/exportPenaltyExcel", method = RequestMethod.GET)
+	public ModelAndView exportPenaltyExcel(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {		
+		JSONObject payload=new JSONObject();
+		payload.put("mmuId", request.getParameter("mmu_id"));
+		payload.put("fromDate", request.getParameter("fromDate"));
+		payload.put("toDate", request.getParameter("toDate"));
+		payload.put("userId", request.getParameter("User_id"));
+		payload.put("levelOfUser", request.getParameter("Level_of_user"));
+		payload.put("vendorId", request.getParameter("vendor_id"));
+		
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();			
+		String Url = HMSUtil.getProperties("urlextension.properties","getPenaltyRegister");
+		String OSBURL = IpAndPortNo + Url;	
+		
+		String data= RestUtils.postWithHeaders(OSBURL.trim(),requestHeaders, payload.toString());
+				
+	    return new ModelAndView(new ExportExcelPenaltyRegister(), "data", data);
+		
+	
+	  }
+	
 }

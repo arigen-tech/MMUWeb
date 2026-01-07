@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +28,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mmu.web.excel.ExportExcelAuditType;
+import com.mmu.web.excel.ExportExcelDiaDidi;
 import com.mmu.web.service.EmployeeRegistrationService;
 import com.mmu.web.utils.HMSUtil;
 import com.mmu.web.utils.RestUtils;
@@ -393,4 +396,25 @@ public class EmployeeRegistrationWebController {
 		String OSBURL = HMSUtil.getProperties("urlextension.properties", "updateEmployee");
 		return RestUtils.postWithHeaders(ipAndPort.trim() + OSBURL.trim(), requestHeaders, inputJson);
 	}
+	
+	@RequestMapping(value = "/exportExcel", method = RequestMethod.GET)
+	public ModelAndView exportExcelDiaDidi(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {		
+		JSONObject requestData=new JSONObject();
+		requestData.put("attnYear", request.getParameter("attnYear"));
+		requestData.put("attnMonth", request.getParameter("attnMonth"));
+		requestData.put("pageNo", request.getParameter("pageNo"));
+		requestData.put("searchType", request.getParameter("searchType"));
+		requestData.put("mmuId", request.getParameter("mmuId"));
+		
+		 // Convert payload to string
+	    String payload = requestData.toString();
+		String data= es.getPenaltyList(payload, request, response);
+		JSONObject compositeResponse = new JSONObject();
+		   compositeResponse.put("requestData", requestData); // Add requestData
+		   compositeResponse.put("responseData", data); // Add the response data
+				
+	    return new ModelAndView(new ExportExcelAuditType(), "data", compositeResponse.toString());
+			
+	  }
 }

@@ -339,7 +339,7 @@ function getDownloadData()
 function getSupportingDownloadData(button)
 {
 	var namVal= button.getAttribute('data-name');
-	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=vendor_bill\\supporting_document&keys="+$('#invoiceNo').val(), '_blank').focus();	
+	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=vendor_supporting_document&keys="+$('#invoiceNo').val(), '_blank').focus();	
 }
 
 function getMMUList(item){

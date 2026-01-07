@@ -140,6 +140,49 @@ var $j = jQuery.noConflict();
 
 		
 	}
+        
+        function exportExcel(){
+         	
+        	//$('#loadingStatus').empty().append('<i class="fa fa-spinner fa-spin"></i>  Refreshing...').css('color', 'green');
+        	 if($j("#mmuId").val() == ""){
+       		  	alert("Please select MMU");
+       		  	retun ;
+       	  }
+     	  if($j("#fromdate").val() == ""){
+     		  	alert("Please select From Date");
+     		  	retun ;
+     	  }
+     	  
+     	  if($j("#todate").val() == ""){
+     		  	alert("Please select To Date");
+     		  	retun ;
+     	  }
+     	  
+     	 
+     	  var fromDate = $('#fromdate').val();
+           var toDate = $('#todate').val();
+           var mmu_id = $('#mmuId').val();
+          
+           var vendor_id = $('#vendor').val();
+           
+           
+           var User_id = <%=userId%>;
+           var Level_of_user = '<%=levelOfUser%>';
+             		
+           window.location.href =  "${pageContext.request.contextPath}/mis/exportPenaltyExcel?mmu_id="
+				+ mmu_id			
+				+ "&fromDate="
+				+ fromDate
+				+ "&toDate="
+				+ toDate
+				+ "&User_id="
+				+ User_id
+				+ "&Level_of_user="
+				+ Level_of_user				
+				+ "&vendor_id="
+				+ vendor_id;
+         
+         }     
 
 	 function compareToFromDate() {
 		var fromDate = $('#fromdate').val();
@@ -203,6 +246,7 @@ var $j = jQuery.noConflict();
 											</div>
 										</div>
 									</div>
+									
 								<div class="col-md-4">
 												<div class="form-group row">
 													<div class="col-md-5">
@@ -247,9 +291,11 @@ var $j = jQuery.noConflict();
 
                                              <div class="col-md-12 text-right">
 
-                                                 <button type="button" class="btn btn-primary reception_mi_reports"  onclick="generateReport();"> Generate Report</button>
+                                               <button type="button" class="btn btn-primary reception_mi_reports" style="margin-right: 25px;" onclick="generateReport();"> Generate Report</button>
+   												<button type="button" class="btn btn-primary reception_mi_reports" onclick="exportExcel();"> Export Excel</button>
 
                                              </div>
+                                           
 
                                          </form>
 

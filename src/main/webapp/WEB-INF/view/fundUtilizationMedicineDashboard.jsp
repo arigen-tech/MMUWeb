@@ -47,7 +47,7 @@ $(document).ready(function(){
 		}else{
 			cityName = resp.city
 		}
-		totalAmounts+= Number(resp.total_invoice);
+		totalAmounts+= Number(resp.utilized_amount);
 		genrateTable(i+1,resp);
 	}
 	
@@ -77,7 +77,7 @@ function exportExcel(){
 	 var mmuCity =modelRequest.mmuCity;
 	var flagType= flageTypeName;
 	var phase=modelRequest.phase;
-if(flagType!="IEC"){	
+if(flagType=="MID"){	
  window.location.href =  "${pageContext.request.contextPath}/dashboard/getMedicineInvoiceExcelReport?fromDate="
 			+ fromDate
 			+ "&toDate="
@@ -128,7 +128,7 @@ function exportPDF(){
 	 var mmuCity =modelRequest.mmuCity;
 	 var url ="";
 	 var phase=modelRequest.phase;
-if(flageTypeName!="IEC"){	 
+if(flageTypeName=="MID"){	 
   url = "${pageContext.request.contextPath}/report/medicineInvoiceDashboardReport?fromDate="
 	 + fromDate
 		+ "&toDate="
@@ -139,6 +139,18 @@ if(flageTypeName!="IEC"){
 		+ mmuCity
 		+ "&phase="
 		+ phase;	
+}
+else if(flageTypeName=="INT"){
+	  url = "${pageContext.request.contextPath}/report/medicineInvoiceDashboardReportINTEREST?fromDate="
+		 + fromDate
+			+ "&toDate="
+			+toDate
+			+ "&upss_id="
+			+upss_id
+			+ "&mmuCity="
+			+ mmuCity
+			+ "&phase="
+			+ phase;	
 }
 else{
 	  url = "${pageContext.request.contextPath}/report/medicineInvoiceDashboardReportIEC?fromDate="
@@ -162,25 +174,36 @@ function backScreen(){
 function genrateTable(seq,response){
 	var iteration = $('#my-table tr').length;
 	var flagType=modelRequest.flagType; 
-	
-	if(flagType!="IEC"){
+	var tableRow='<tr>';
+	if(flagType=="MID"){
 		$('#sourceOfMedicine').show();
 		$('#fundUtilization').show();
+		$('#showPhase').show();
 		
 		 
 	}
-	else{
+	else if(flagType=="INT"){
+		$('#interestUtilization').show();
+		$('#fundUtilization').hide();
+	}
+	else{ 
+		$('#showPhase').show();
 		$('#iecUtilization').show();
 		$('#fundUtilization').hide();
 	}
-	var tableRow='<tr>';
 	tableRow=tableRow+'<td>'+seq+'</td>';
-	 	if(flagType!='IEC')
+	 	if(flagType=='MID'){
 	 		tableRow=tableRow+'<td>'+response.soure_of_medicine+'</td>';
+	 	}
 	 		tableRow=tableRow+'<td>'+response.invoice_date+'</td>'+
 	 	'<td>'+response.upload_date+'</td>'+
 		'<td>'+response.invoice_no+'</td>'+
 	 	'<td>'+response.total_invoice+'</td>'+
+	 	'<td>'+response.tds_amount+'</td>'+
+	 	'<td>'+response.deducation_amount+'</td>'+
+	 	'<td>'+response.paid_amount+'</td>'+
+	 	'<td>'+response.utilized_amount+'</td>'+
+	 	'<td>'+response.deducation_remarks+'</td>'+
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showFile(this);">'+response.invoice_doc+'</a></td>'+
 	 '</tr>';
 	 $("#tbl_invoiceData").append(tableRow);
@@ -205,6 +228,7 @@ function showFile(fileName){
                  <div id="fundUtilization" class="internal_Htext">Fund Utilization - Medicine</div>
                   
                    <div id="iecUtilization" class="internal_Htext" style="display:none;">Fund Utilization-IEC</div>
+                   <div id="interestUtilization" class="internal_Htext" style="display:none;">Fund Utilization-Miscellaneous</div>
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
@@ -244,7 +268,7 @@ function showFile(fileName){
 												</div>
 											</div>
 											
-											<div class="col-lg-4 col-sm-6">
+											<div class="col-lg-4 col-sm-6" id="showPhase" style="display:none;">
 												<div class="form-group row">
 													<div class="col-md-5">
 														<label class="col-form-label">Phase</label>
@@ -292,7 +316,12 @@ function showFile(fileName){
                                                 <th>Invoice Date</th> 
                                                 <th>Upload Date</th>
                                                 <th>Invoice No.</th>   
-                                                <th>Invoice Amount</th> 
+                                                <th>Invoice Amount</th>
+                                                <th>TDS Amount</th>
+                                                <th>Deduction Amount</th>
+                                                <th>Paid Amount</th>
+                                                <th>Utilized Amount</th>
+                                                <th>Deduction Remarks</th> 
                                                 <th>View</th>                                      
                                             </tr>
                                         </thead>

@@ -1,6 +1,7 @@
 package com.mmu.web.controller;
 
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -5977,7 +5978,7 @@ public class ReportWebController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//System.out.println("TO_DATE "+td);
+		System.out.println("TO_DATE and FROM_DATE "+fd+"::"+td);
 		parameters.put("To_Date", td);
 		
 		String userHome = request.getServletContext().getRealPath("/resources/images/");
@@ -8043,6 +8044,292 @@ public class ReportWebController {
 		}else {
 			HMSUtil.generateReportInPopUp("IEC_invoice_UPSS", "IEC_invoice_UPSS", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
 		}
+		return null;
+
+	}
+	
+	@RequestMapping(value = "/printPenaltyRegisterList", method = RequestMethod.GET)
+	public ModelAndView printPenaltyRegisterList(HttpServletRequest request, HttpServletResponse response) {
+		
+		Map<String, Object> connectionMap = new HashMap<String, Object>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		
+		Box box= HMSUtil.getBox(request);
+		JSONObject json = new JSONObject(box);
+		
+		
+		String fromdate="";
+		String todate="";
+		Date startDate = null;
+		Date endDate=null;
+		JSONArray mmu_id= new JSONArray();
+		
+		JSONArray User_id= new JSONArray();
+		JSONArray Level_of_user= new JSONArray();
+		JSONArray Search_Type= new JSONArray();
+		
+		
+		JSONArray month= new JSONArray();
+		JSONArray year= new JSONArray();
+		if(json.get("attnMonth") !=null)
+		{
+			month = json.getJSONArray(("attnMonth"));
+			year= json.getJSONArray(("attnYear"));
+			
+			int int_month=Integer.parseInt(month.getString(0));
+			int int_year=Integer.parseInt(year.getString(0));
+			 startDate = HMSUtil.getStartDate(int_year, int_month);
+			 endDate = HMSUtil.getEndDate(int_year, int_month);
+		}
+		
+		
+		if(json.get("User_id") !=null)
+		{
+			User_id = json.getJSONArray(("User_id"));
+		}
+		int int_User_id= Integer.parseInt(User_id.getString(0));
+		
+		if(json.get("Level_of_user") !=null)
+		{
+			Level_of_user = json.getJSONArray("Level_of_user");
+		}
+		String str_Level_of_user= Level_of_user.getString(0);
+		
+		if(json.get("mmu_id") !=null)
+		{
+			mmu_id = json.getJSONArray(("mmu_id"));
+		}
+		int int_mmu_id= Integer.parseInt(mmu_id.getString(0));
+		String searchType = null;	
+		if(json.get("searchType") !=null)
+		{
+			Search_Type = json.getJSONArray(("searchType"));
+			searchType=Search_Type.getString(0);
+		}
+		
+		
+		parameters.put("From_Date", startDate);
+		   System.out.println("TO_DATE and from_date :"+startDate+"::"+endDate);
+		parameters.put("To_Date", endDate);
+		
+		String userHome = request.getServletContext().getRealPath("/resources/images/");
+		String imagePath = userHome+"/mmu-logo.png";
+	    parameters.put("path", imagePath);
+	    parameters.put("User_id", int_User_id);
+		parameters.put("Level_of_user", str_Level_of_user);
+		parameters.put("MMU_ID", int_mmu_id);
+		
+		parameters.put("SUBREPORT_DIR", request.getServletContext().getRealPath("/reports/"));
+		
+		//System.out.println(request.getServletContext().getRealPath("/reports/"));
+
+		connectionMap = reportDao.getConnectionForReportMis();
+		if(searchType.equals("E")) {
+		HMSUtil.generateReportInPopUp("Penalty_Register_Equipment", "Equipment Penalty Register", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
+		}else if(searchType.equals("I")){
+			HMSUtil.generateReportInPopUp("Penalty_Register_Inspection", "Inspection Penalty Register", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
+		}else {
+			HMSUtil.generateReportInPopUp("Penalty_Register_Attendance", "Attendance Penalty Register", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
+		}
+		return null;
+	
+	}
+	
+	@RequestMapping(value = "/medicineInvoiceDashboardReportINTEREST", method = RequestMethod.GET)
+	public ModelAndView medicineInvoiceDashboardReportINTEREST(HttpServletRequest request, HttpServletResponse response) {
+
+		Map<String, Object> connectionMap = new HashMap<String, Object>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+
+		Box box= HMSUtil.getBox(request);
+		JSONObject json = new JSONObject(box);
+
+		String fromDate="";
+		String toDate="";
+		String phase="";
+	
+		
+		JSONArray from_date= new JSONArray();
+		JSONArray to_date= new JSONArray();
+		JSONArray mmu_City =  new JSONArray();
+		JSONArray upss_id =  new JSONArray();
+		//JSONArray phase_value =  new JSONArray();
+		
+	
+		
+		if(box.get("mmuCity") !=null && !box.getString("mmuCity").isEmpty())
+		{
+			mmu_City= json.getJSONArray("mmuCity");
+		}
+		
+		if(box.get("upss_id") !=null && !box.getString("upss_id").isEmpty())
+		{
+			upss_id= json.getJSONArray("upss_id");
+		}
+
+		if(box.get("fromDate") !=null && !box.getString("fromDate").isEmpty())
+		{
+			from_date= json.getJSONArray("fromDate");
+		}
+
+		fromDate = from_date.getString(0);
+		if(box.get("toDate") !=null && !box.getString("toDate").isEmpty())
+		{
+			to_date= json.getJSONArray("toDate");
+		}
+		/*if(box.get("phase") !=null && !box.getString("phase").isEmpty())
+		{
+			phase_value= json.getJSONArray("phase");
+		}*/
+		String mmuCity=mmu_City.getString(0);
+		String upssId=upss_id.getString(0);
+		/*if(phase_value!=null && !phase_value.isNull(0))
+		{	
+		phase=phase_value.getString(0);
+		}
+		else
+		{
+			phase="";
+		}*/
+		toDate = to_date.getString(0);
+		
+
+		Date cd_from= new Date();
+		Date cd_to= new Date();
+		try {
+			cd_from = HMSUtil.convertStringTypeDateToDateType(fromDate);
+			cd_to = HMSUtil.convertStringTypeDateToDateType(toDate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+		parameters.put("From_Date", cd_from);
+		parameters.put("To_Date", cd_to);
+		if(mmuCity!=null && mmuCity.equalsIgnoreCase("C")) {
+			parameters.put("city_id", Integer.valueOf(upssId));
+			//parameters.put("district_id", 0);
+		}else {
+			parameters.put("district_id", Integer.valueOf(upssId));
+		}
+		parameters.put("p_phase", phase);
+
+
+		String userHome = request.getServletContext().getRealPath("/resources/images/");
+		
+		String imagePath = userHome+"/mmu-logo.png";
+	    parameters.put("path", imagePath);
+		connectionMap = reportDao.getConnectionForReportMis();
+		if(mmuCity!=null && mmuCity.equalsIgnoreCase("C")) {
+			HMSUtil.generateReportInPopUp("INTEREST_invoice_CITY", "IEC_invoice_CITY", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
+		}else {
+			HMSUtil.generateReportInPopUp("INTEREST_invoice_UPSS", "IEC_invoice_UPSS", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
+		}
+		return null;
+
+	}
+	
+	@RequestMapping(value = "/fundManagementInterestDashboard", method = RequestMethod.GET)
+	public ModelAndView fundManagementInterestDashboard(HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> connectionMap = new HashMap<String, Object>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+
+		Box box= HMSUtil.getBox(request);
+		JSONObject json = new JSONObject(box);
+
+		String fromDate="";
+		String toDate="";
+		String fundType="";
+		String upssId="";
+		String phase="";
+		
+		JSONArray from_date= new JSONArray();
+		JSONArray to_date= new JSONArray();
+		JSONArray mmu_City =  new JSONArray();
+		JSONArray upss_id =  new JSONArray();
+		JSONArray fund_type = new JSONArray();
+		JSONArray phase_value = new JSONArray();
+		
+		
+	
+		
+		if(box.get("mmuCity") !=null && !box.getString("mmuCity").isEmpty())
+		{
+			mmu_City= json.getJSONArray("mmuCity");
+		}
+		
+		if(box.get("upss_id") !=null && !box.getString("upss_id").isEmpty())
+		{
+			upss_id= json.getJSONArray("upss_id");
+		}
+		if(box.get("fundType") !=null && !box.getString("fundType").isEmpty())
+		{
+			fund_type= json.getJSONArray("fundType");
+		}
+		if(box.get("phase") !=null && !box.getString("phase").isEmpty())
+		{
+			phase_value= json.getJSONArray("phase");
+		}
+
+		if(box.get("fromDate") !=null && !box.getString("fromDate").isEmpty())
+		{
+			from_date= json.getJSONArray("fromDate");
+		}
+
+		fromDate = from_date.getString(0);
+		if(box.get("toDate") !=null && !box.getString("toDate").isEmpty())
+		{
+			to_date= json.getJSONArray("toDate");
+		}
+		
+		String mmuCity=mmu_City.getString(0);
+
+		fundType=fund_type.getString(0);
+		toDate = to_date.getString(0);
+		
+
+		Date cd_from= new Date();
+		Date cd_to= new Date();
+		try {
+			cd_from = HMSUtil.convertStringTypeDateToDateType(fromDate);
+			cd_to = HMSUtil.convertStringTypeDateToDateType(toDate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		upssId = upss_id.getString(0);
+		if(phase_value!=null && !phase_value.isNull(0))
+		{	
+		phase=phase_value.getString(0);
+		}
+		else
+		{
+			phase="";
+		}
+		
+		parameters.put("From_Date", cd_from);
+		parameters.put("To_Date", cd_to);		
+		parameters.put("p_fundtype", fundType);
+		//parameters.put("p_phase", phase);
+		
+		if(mmuCity.equalsIgnoreCase("C")) {
+			//parameters.put("district_id", 0);
+			parameters.put("city_id", Integer.valueOf(upssId));
+		}else {
+			//parameters.put("city_id", 0);
+			parameters.put("district_id", Integer.valueOf(upssId));
+		}
+
+
+		String userHome = request.getServletContext().getRealPath("/resources/images/");
+		
+		String imagePath = userHome+"/mmu-logo.png";
+	    parameters.put("path", imagePath);
+		connectionMap = reportDao.getConnectionForReportMis();
+		if(mmuCity!=null && mmuCity.equalsIgnoreCase("C")) {
+			HMSUtil.generateReportInPopUp("Fund_Allocation_Interest_City", "Fund_Allocation_City", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
+		}else {
+			HMSUtil.generateReportInPopUp("Fund_Allocation_Interest_UPSS", "Fund_Allocation_UPSS", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
+		}
+			
 		return null;
 
 	}

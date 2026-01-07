@@ -75,16 +75,21 @@ $(document).ready(function(){
         window.location = 'paymentWaitingListVendorInvoice';
     }); */
 
-    $('#downloadBill').on('click', function(){
-    	//<a href="download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val() target="_blank">
-       // window.location = "download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val();
-    
-    	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val(), '_blank').focus();
-    }); 
-    $('#downloadAuditorReport').on('click', function(){
-        //window.location = "download?name="+$(this).data('name')+"&type=audit_report&keys="+$('#invoiceNo').val();
+    $('#downloadBill').on('click', function(event) {
+        event.preventDefault(); // <-- Prevent form submission/page refresh
+
+        window.open(
+            "${pageContext.servletContext.contextPath}/audit/download?name=" + $(this).data('name') +
+            "&type=vendor_bill&keys=" + $('#invoiceNo').val(), 
+            '_blank'
+        ).focus();
+    });
+    $('#downloadAuditorReport').on('click', function(event) {
+        event.preventDefault(); // <-- Prevent form submission/page refresh
+
         window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=audit_report&keys="+$('#invoiceNo').val(), '_blank').focus();
     });
+    
     
    var today = new Date();
 	var dd = String(today.getDate()).padStart(2, '0');
@@ -178,6 +183,7 @@ function calculateFinalAmount() {
     var invoiceAmount = parseInt($('#finalInvoiceAmont').val());
     var penaltyAmount = parseInt($('#paymentPenaltyAmont').val());
     var tdsDeduction = parseInt($('#tdsDeduction').val());
+    var advancedAmount = parseInt($('#advancedAmount').val());
 
     if(invoiceAmount && invoiceAmount < tdsDeduction) {
         alert('Deduction amount can not be greater than invoice amount!');
@@ -186,10 +192,10 @@ function calculateFinalAmount() {
         return false;
     }
 
-    var totalDed = penaltyAmount + tdsDeduction;
+    var totalDed = penaltyAmount + tdsDeduction+advancedAmount;
     
     if(invoiceAmount && invoiceAmount < totalDed) {
-        alert('Sum of penalty and deduction can not be greater than invoice amount!');
+        alert('Sum of Advanced Amt, penalty and deduction can not be greater than invoice amount!');
         $('#tdsDeduction').val('');
         $('#finalAmount').val('');
         return false;
@@ -502,7 +508,7 @@ function submitAuditorForm(){
 	   
 	var phase=$('#phase').val();
 	var phaseGetVal=$('#phaseValId').val();
-	  if(phase=="" || phase==undefined ||phase=="0")
+	  if(phase=="" || phase==undefined ||phase==="0")
 	  {
 		  alert("Please select Phase.");
 		  return false;
@@ -515,10 +521,10 @@ function submitAuditorForm(){
 		 
 	  }
 	  
-	 if($('#availableAmount').val() && parseInt($('#availableAmount').val()) < parseInt($('#finalAmount').val())){
-	       alert('Payment cannot be done as final amount is greater than Available balance!');
+	/*  if($('#availableAmount').val() && parseInt($('#availableAmount').val()) < parseInt($('#finalAmount').val())){
+	       alert('Payment cannot be done as paid amount is greater than Available balance!');
 	       return false;
-	   }
+	   } */
 	 
    if(!$('#tdsDeduction').val()){
 	      alert('Please Enter Total Deductions(TDS & Others)!');
@@ -539,6 +545,15 @@ function submitAuditorForm(){
    var currentdate = getTodayDate(new Date());
    lastApprovalMsg='Payment completed on ('+$('#finalPaymentDate').val()+')';
 
+   var invoiceAmount = parseInt($('#finalInvoiceAmont').val());
+   var penaltyAmount = parseInt($('#paymentPenaltyAmont').val());
+   var calculateUtilzedAmount = invoiceAmount - penaltyAmount ;
+   
+   if ($('#availableAmount').val() && parseInt($('#availableAmount').val()) < parseInt(calculateUtilzedAmount)) {
+	    alert('Payment cannot be done as Total Utilized amount (' + calculateUtilzedAmount + ')= Advance + Deduction + Paid Amount is greater than Available balance (' + $('#availableAmount').val() + ')');
+	    return false;
+	}
+   
   var dataJSON = {
 
           'actionId': $('#actionId').val(),
@@ -561,7 +576,9 @@ function submitAuditorForm(){
           'cityId':$('#cityId').val(),
           'phase':phase,
           'paymentRemarks':$('#paymentRemarks').val(),
-          'userId':$('#userId').val()
+          'userId':$('#userId').val(),
+          'advancedAmount':$('#advancedAmount').val(),
+          'calculateUtilzedAmount':calculateUtilzedAmount
     }
   var noteSheetData = $('#captureNodalOfficerForm')[0];
 	 var formData = new FormData(noteSheetData);
@@ -998,7 +1015,20 @@ function isNumberKey(evt) {
 											</div>
 										</div>
 									</div>
-                                   <div class="col-lg-4 col-sm-6">
+									 <div class="col-lg-4 col-sm-6">
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">Advance Payment Deduction</label>
+											</div>
+											<div class="col-md-7">
+												<input type="text" id="advancedAmount" onblur="calculateFinalAmount()" onkeypress="return isNumberKey(event)" class="form-control" value="0"/>
+											</div>
+										</div>
+									</div>
+                                  
+								</div>
+								<div class="row">
+									 <div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
 												<label class="col-form-label">Penalty Amount Deducted</label>
@@ -1008,9 +1038,6 @@ function isNumberKey(evt) {
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									
                                     <div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
@@ -1024,7 +1051,7 @@ function isNumberKey(evt) {
 									<div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
-												<label class="col-form-label">Final Amount</label>
+												<label class="col-form-label">Paid /Cleared Amount</label>
 											</div>
 											<div class="col-md-7">
 												<input type="text" id="finalAmount" maxlength="13" onkeypress="return isNumberKey(event)"  class="form-control" readonly/>

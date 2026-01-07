@@ -193,6 +193,14 @@ input:checked + .slider:before {
 												<input type="text" id="userName" class="form-control">
 											</div>
 										</div>
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">Mobile No</label>
+											</div>
+											<div class="col-md-7">
+												<input type="text" id="mobileNo" class="form-control">
+											</div>
+										</div>
 									</div>
 									<div class="col-md-4">
 										<div class="form-group row">
@@ -534,6 +542,7 @@ function getuserDetailsList(MODE) {
  	
     var cmdId=0;
  	var user_name = $j('#userName').val();
+ 	var mobile_No = $j('#mobileNo').val();
 	var mmuId = $j('#mmuId').val();
 	var userTypeVal=$('#userTypeName').val();
 	var mmuIdMultiple=$('#mmuIdMultiple').val();
@@ -553,15 +562,12 @@ function getuserDetailsList(MODE) {
 		if(MODE == 'ALL'){
 		      var data = {"mmuId": actulaMmuId,"employeeId": 1,"pageNo":nPageNo,"userTypeName":userTypeVal,'statusVal':statusVal};
 			}
-		  else if(user_name!="")
-			{
-				
-				var data = {"mmuId": actulaMmuId,"employeeId":'1',"pageNo":nPageNo,"userName":user_name,"userTypeName":userTypeVal,'statusVal':statusVal};
-			} 
 		  else
 			{
-				var data = {"mmuId": actulaMmuId,"employeeId": '1',"pageNo":nPageNo,"userTypeName":userTypeVal,'statusVal':statusVal};
+				
+				var data = {"mmuId": actulaMmuId,"employeeId":'1',"pageNo":nPageNo,"userName":user_name,"mobileNo":mobile_No,"userTypeName":userTypeVal,'statusVal':statusVal};
 			} 
+		 
 
 	var url = "getUsersDetailsList";		
 	var bClickable = true;
@@ -573,10 +579,11 @@ function searchUserList()
 		
 	var nPageNo=1;	
 	var user_name = $j('#userName').val();
+	var mobile_No = $j('#mobileNo').val();
 	
-	if((user_name == undefined || user_name == '')){	
-		alert("Please enter name of user");
-		return;
+	if ((user_name === undefined || user_name === '') && (mobile_No === undefined || mobile_No === '')) {
+	    alert("Please enter name of user or Mobile No");
+	    return;
 	}
 	getuserDetailsList('FILTER');
 	//ResetForm();
@@ -594,6 +601,7 @@ function searchUserListByStatus(val)
 function ResetForm()
 {	
 	$j('#userName').val('');
+	$j('#mobileNo').val('');
 }
 
 function showAll()

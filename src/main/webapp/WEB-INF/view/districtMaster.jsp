@@ -35,6 +35,7 @@
 		$j('#updateBtn').hide();	  
 		$j('#districtCode').attr('readonly', false);		
 		GetAllDistrict('ALL');
+		loadVendors();
 			});
 			
 	function GetAllDistrict(MODE){
@@ -102,6 +103,7 @@
 	var longitude;
 	var latitude;
 	var startDate;
+	var vendorIdds;
 	function executeClickEvent(districtId,data)
 	{
 		
@@ -113,6 +115,7 @@
 				districtName = data.data[j].districtName;
 				stateId = data.data[j].stateId;
 				Status = data.data[j].status;
+				vendorIdds=data.data[j].vendorId;
 				population = data.data[j].population;
 				if(data.data[j]!=null && data.data[j].upss!=null && data.data[j].upss!=undefined)
 				upss = data.data[j].upss;
@@ -125,15 +128,16 @@
 				
 			}
 		}
-		rowClick(districtId,sequenceNo,districtCode,districtName,stateId,Status,population,upss,longitude,latitude,startDate);
+		rowClick(districtId,sequenceNo,districtCode,districtName,stateId,Status,population,upss,longitude,latitude,startDate,vendorIdds);
 	}
 	
-	function rowClick(districtId,sequenceNo,districtCode,districtName,stateId,Status,population,upss,longitude,latitude,startDate){	
+	function rowClick(districtId,sequenceNo,districtCode,districtName,stateId,Status,population,upss,longitude,latitude,startDate,vendorIdds){	
 		districtid=districtId;
 		document.getElementById("sequenceNo").value = sequenceNo;
 		document.getElementById("districtCode").value = districtCode;
 		document.getElementById("districtName").value = districtName;
 		document.getElementById("state").value = stateId;
+		document.getElementById("vendorId").value = vendorIdds;
 		document.getElementById("population").value = population;
 		document.getElementById("UPSS").value = upss;
 		 if(Status == 'Y' || Status == 'y'){		
@@ -267,7 +271,8 @@
 					 'UPSS':jQuery('#UPSS').val(),
 					 'longitude':jQuery('#longitude').val(),
 					 'startDate':jQuery('#startDate').val(),
-					 'latitude':jQuery('#latitude').val()
+					 'latitude':jQuery('#latitude').val(),
+					 'vendorId':jQuery('#vendorId').val()
 			 }
 			//alert(JSON.stringify(params));
 				    var url = "updateDistrict";
@@ -377,6 +382,38 @@
 			    }
 			    return true;
 			}
+		 
+		 function loadVendors(){
+				//var vendorId=1;
+			    var params = {"PN":0,"status":"y"}
+			    var pathname = window.location.pathname;
+			    var accessGroup = "MMUWeb";
+			    var url = window.location.protocol + "//" + window.location.host + "/" + accessGroup + "/audit/getVendors";
+			    $.ajax({
+			        type : "POST",
+			        contentType : "application/json",
+			        url : url,
+			        data : JSON.stringify(params),
+			        dataType : "json",
+			        cache : false,
+			        success : function(result) {
+			            if(result.data.length > 0){
+			                $('#vendorId').empty().append('<option value="">--Select--</option>');
+			                for(var i=0;i<result.data.length;i++){
+			                    var rowData = result.data[i];
+			                   	
+			                    $('#vendorId').append($('<option/>').val(rowData.mmuVendorId).text(rowData.mmuVendorName));
+			                    
+			                }
+			            }
+			        },
+			        error : function(data) {
+			            alert("An error has occurred while contacting the server");
+			        }
+			    });
+			}
+
+		 
 </script> 
 </head>
 
@@ -568,7 +605,18 @@
 														</div>
 													</div>
 												</div>
-                                                 
+                                                  <div class="col-lg-4 col-sm-6">
+                                            <div class="form-group row">
+                                                <div class="col-md-5">
+                                                    <label class="col-form-label">Vendor</label>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <select class="form-control" name="vendorId" id="vendorId">
+                                                        <option value="">--Select--</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
                                                   <div class="col-md-4">
 										<input type="hidden"  id="rowId" name="rowId">
 																											

@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mmu.web.dto.CaptureInvoice;
+import com.mmu.web.dto.CaptureInvoices;
 import com.mmu.web.utils.Box;
 import com.mmu.web.utils.HMSUtil;
 import com.mmu.web.utils.ProjectUtils;
@@ -390,12 +392,12 @@ public class AuditWebController {
 				name = keys[0] + "_" + request.getParameter("name");
 				file = Paths.get(path, name);
 			}
-			else if("vendor_bill\\supporting_document".equals(type)) {
+			else if("vendor_supporting_document".equals(type)) {
 				path += type;
 				name = keys[0] + "_" + request.getParameter("name");
 				file = Paths.get(path, name);
 			}
-			else if("vendor_bill\\payment_Recepit".equals(type)) {
+			else if("vendor_payment_Recepit".equals(type)) {
 				path += type;
 				name = keys[0] + "_" + request.getParameter("name");
 				file = Paths.get(path, name);
@@ -410,7 +412,7 @@ public class AuditWebController {
 				name = keys[0] + "_" + request.getParameter("name");
 				file = Paths.get(path, name);
 			}
-			else if ("audit_report\\manual_penalty".equals(type)) {
+			else if ("audit_manual_penalty".equals(type)) {
 				path += type;
 				name = keys[0] + "_" + request.getParameter("name");
 				file = Paths.get(path, name);
@@ -467,11 +469,13 @@ public class AuditWebController {
     	String originalFileName = "";
         if (fileData != null && !fileData.isEmpty()) {
                 originalFileName = fileData.getOriginalFilename();
+                //originalFileName = originalFileName.replaceAll("[^a-zA-Z0-9._-]", "_");
                 // Define the directory to save the file (you can customize this path)
                  String auditPath = environment.getProperty("mmu.web.audit.basePath");
         		if (originalFileName!=null) {
         			MultipartFile file = fileData;
         			originalFileName = file.getOriginalFilename();
+        			originalFileName = originalFileName.replaceAll("[^a-zA-Z0-9._-]", "_");
         			String detailId, captureId, checklistId;
         			if("I".equals(uploadFlag)){
         				detailId = multipartHttpServletRequest.getParameter("inspectionDetailId");
@@ -485,7 +489,7 @@ public class AuditWebController {
         				auditPath += "/equipment/"+detailId+"/"+captureId+"/"+checklistId+"/";
         			} 
         			else if("A".equals(uploadFlag)){
-        				auditPath += "/audit_report/manual_penalty/";
+        				auditPath += "/audit_manual_penalty/";
         				
         			}
         			else if("N".equals(uploadFlag)){
@@ -499,7 +503,7 @@ public class AuditWebController {
         				auditPath += "/UC_Upload_Document/";
         			}
         			else {
-        				auditPath += "/vendor_bill/supporting_document/";
+        				auditPath += "/vendor_supporting_document/";
         			}
         			try {
 
@@ -543,6 +547,7 @@ public class AuditWebController {
 		if (it.hasNext()) {
 			MultipartFile file = multipartHttpServletRequest.getFile(it.next());
 			originalFileName = file.getOriginalFilename();
+			originalFileName = originalFileName.replaceAll("[^a-zA-Z0-9._-]", "_");
 			String detailId, captureId, checklistId;
 			if("I".equals(uploadFlag)){
 				detailId = multipartHttpServletRequest.getParameter("inspectionDetailId");
@@ -556,6 +561,14 @@ public class AuditWebController {
 				auditPath += "/equipment/"+detailId+"/"+captureId+"/"+checklistId+"/";
 			} 
 			else if("A".equals(uploadFlag)){
+				 it = multipartHttpServletRequest.getFileNames();
+				while (it.hasNext()) {
+				    String paramName = it.next(); // This is the request parameter name
+				    file = multipartHttpServletRequest.getFile(paramName);
+				    originalFileName=file.getOriginalFilename();
+				    System.out.println("Parameter Name: " + paramName);
+				    System.out.println("Original File Name: " + file.getOriginalFilename());
+				}
 				auditPath += "/audit_report/";
 			}
 			else if("F".equals(uploadFlag)){
@@ -565,7 +578,7 @@ public class AuditWebController {
 				auditPath += "/UC_Upload_Document/";
 			}
 			else if("P".equals(uploadFlag)){
-				auditPath += "/vendor_bill/payment_Recepit/";
+				auditPath += "/vendor_payment_Recepit/";
 			}else {
 				auditPath += "/vendor_bill/";
 			}
@@ -610,6 +623,7 @@ public class AuditWebController {
 		String basePath = environment.getProperty("mmu.web.audit.basePath");
 		String inspectionDate = multipartHttpServletRequest.getParameter("inspectionDate");
 		String mmuLocation = multipartHttpServletRequest.getParameter("mmuLocation");
+		String mmuId = multipartHttpServletRequest.getParameter("mmuId");
 		String []checklistIds = multipartHttpServletRequest.getParameter("checklistIds").split(",");
 
 		String folderName = "capture_inspection";
@@ -620,11 +634,15 @@ public class AuditWebController {
 		for(Map.Entry<String, MultipartFile> entry: multipartHttpServletRequest.getFileMap().entrySet()){
 			MultipartFile file = entry.getValue();
 			String originFileName = file.getOriginalFilename();
+			originFileName = originFileName.replaceAll("[^a-zA-Z0-9._-]", "_");
 			if(originFileName != null && !originFileName.isEmpty()) {
 				originalFileNames.add(originFileName);
 				String auditPath = basePath + "/"+folderName+"/";
 				String fileType = originFileName.substring(originFileName.lastIndexOf(".") + 1);
-				String fileName = mmuLocation + inspectionDate + checklistIds[count];
+				/* Commented this code as facing issue when locaction nmame have invalid chars like hindi font like  ऑफिस */
+				//String fileName = mmuLocation + inspectionDate + checklistIds[count];
+				String fileName = mmuId + inspectionDate + checklistIds[count];				
+				
 				String encodedFileName = Base64.getEncoder().encodeToString(fileName.getBytes());
 
 				try {
@@ -1331,6 +1349,7 @@ public class AuditWebController {
 		payloadJSON.put("mmuPenaltyListData", multipartHttpServletRequest.getParameter("mmuPenaltyListData"));
 		payloadJSON.put("penaltyAmountImposed", multipartHttpServletRequest.getParameter("penaltyAmountImposed"));
 		payloadJSON.put("userId", multipartHttpServletRequest.getParameter("userId"));
+		payloadJSON.put("actionDate", multipartHttpServletRequest.getParameter("actionDate"));
 		
 		// Handle the data from <tbody id="mmuPenaltyDetails">
         JSONArray penaltyDetailsMMUArray = new JSONArray();
@@ -1828,11 +1847,54 @@ public class AuditWebController {
 
 	
 	@RequestMapping(value="/saveCaptureInterestDetails", method = RequestMethod.POST)
-	 public String saveCaptureInterestDetails(HttpServletRequest request, HttpServletResponse response) {	
+	 public String saveCaptureInterestDetails(MultipartHttpServletRequest multipartHttpServletRequest,HttpServletRequest request, HttpServletResponse response) {	
 	Box box = HMSUtil.getBox(request);
 	JSONObject obj = new JSONObject(box);
   
- 
+	 JSONArray fileUploaDocsArray = new JSONArray();
+	 List<String> fileNameList = new ArrayList<>();
+	 List<MultipartFile> docsUploads = multipartHttpServletRequest.getFiles("fileUpload");
+	 String[] cityId = multipartHttpServletRequest.getParameterValues("cityId");
+	 String[] existingFile=multipartHttpServletRequest.getParameterValues("existingFile");
+	 for (int i = 0; i < docsUploads.size(); i++) {
+		 String cityIdVal=cityId[i];
+		 JSONObject docObject = new JSONObject();
+		 MultipartFile fileUploadDocs = docsUploads.get(i);
+		 if (fileUploadDocs != null && !fileUploadDocs.isEmpty()) {
+			 String uploadedDocFileName = save(fileUploadDocs);//this.uploadFileData(uploadedDocFileName,multipartHttpServletRequest, "V");
+			 fileNameList.add(uploadedDocFileName);
+             docObject.put(cityIdVal, uploadedDocFileName);
+         }else {
+         	if(existingFile!=null) {
+            fileNameList.add(existingFile[i]);
+         	docObject.put(cityIdVal, existingFile[i]);
+         	}
+         }
+
+         fileUploaDocsArray.put(docObject);
+     }
+	 obj.put("fileUploaDocsArray", fileUploaDocsArray);
+	// Assuming you get headTypeMain from request or previously built object
+	
+	 String[] fileNames = fileNameList.toArray(new String[0]);
+	// Step 1: Get the string from headMainData array
+	 JSONArray headMainDataArray = obj.getJSONArray("headMainData");
+	 String headMainDataStr = headMainDataArray.getString(0);
+
+	 // Step 2: Parse this string as a JSONObject
+	 JSONObject headMainDataObj = new JSONObject(headMainDataStr);
+
+	 // Step 3: Now you can access listofHeader
+	 JSONArray listofHeader = headMainDataObj.getJSONArray("listofHeader");
+	 for (int i = 0; i < listofHeader.length(); i++) {
+	     JSONObject header = listofHeader.getJSONObject(i);
+	     header.put("fileName", (fileNames.length > i) ? fileNames[i] : JSONObject.NULL);
+	 }
+	 headMainDataArray.put(0, headMainDataObj.toString());
+
+	 // If you want to print and check:
+	  System.out.println(headMainDataArray.getString(0));
+	 //obj.put("headTypeMain", obj.toString());
 	String URL = HMSUtil.getProperties("urlextension.properties", "saveCaptureInterestDetails");
 	return RestUtils.postWithHeaders(
 			(IpAndPortNo + URL).trim(),
@@ -2028,5 +2090,38 @@ public class AuditWebController {
 		String responseObject = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
 		return responseObject;
 	}
+	
+	@RequestMapping(value="/getFundAvailableBalanceWithoutPhase", method=RequestMethod.POST)
+	public String getFundAvailableBalanceWithoutPhase(@RequestBody Map<String, Object> requestObject) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "getFundAvailableBalanceWithoutPhase");
+		String OSBURL = IpAndPortNo+Url;
+		String responseObject = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObject;
+	}
+	
+	public String save(MultipartFile multipartFile) 
+	{
+		String fileName;
+		 try {
+		String basePath = environment.getProperty("mmu.web.invoicedetails.basePath");
+		File dir = new File(basePath);
+	    if (!dir.exists()) {
+	    	dir.mkdirs();
+	    }
+		 fileName= multipartFile.getOriginalFilename();
+		File file = new File(basePath+"/"+fileName);
+		if(file.exists()) {
+			file.delete();
+		}
+		Path root = Paths.get(basePath);
+	   
+	      Files.copy(multipartFile.getInputStream(), root.resolve(fileName));
+	    } catch (Exception e) {
+	      throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+	    }
+		return fileName;
+	  }
 
 }

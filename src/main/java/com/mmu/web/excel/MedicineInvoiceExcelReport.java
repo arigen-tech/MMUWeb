@@ -25,8 +25,8 @@ import org.springframework.web.servlet.view.document.AbstractXlsxView;
 
 public class MedicineInvoiceExcelReport extends AbstractXlsxView{
 
-	public static String[] UPSS ={ "SN","City","Source of Medicine","Invoice Date", "Upload Date", "Invoice No.","Invoice Amount"};
-	public static String[] CITY ={ "SN","Source of Medicine","Invoice Date", "Upload Date", "Invoice No.","Invoice Amount"};
+	public static String[] UPSS ={ "SN","City","Source of Medicine","Invoice Date", "Upload Date", "Invoice No.","Invoice Amount","TDS Amount","Deduction Amount","Paid Amount","Utilized Amount","Deduction Remarks"};
+	public static String[] CITY ={ "SN","Source of Medicine","Invoice Date", "Upload Date", "Invoice No.","Invoice Amount","TDS Amount","Deduction Amount","Paid Amount","Utilized Amount","Deduction Remarks"};
 
 	@Override
 	protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest request,
@@ -56,6 +56,10 @@ public class MedicineInvoiceExcelReport extends AbstractXlsxView{
 				
 				js1=js.get("fundInvoiceDataInfo").toString();
 			}
+			else if(flageTypeName!=null && flageTypeName.equalsIgnoreCase("INT")) {
+				
+				js1=js.get("fundInvoiceDataInfo").toString();
+			}
 			else {
 		  js1=js.get("invoiceDataInfo").toString();
 			}
@@ -68,7 +72,7 @@ public class MedicineInvoiceExcelReport extends AbstractXlsxView{
 			isUPSS= true;
 			headers.addAll(Arrays.asList(UPSS));
 		}
-		if(flageTypeName!=null && flageTypeName.equalsIgnoreCase("IEC")) {
+		if(flageTypeName!=null && !flageTypeName.equalsIgnoreCase("MID")) {
 			//List<String>  headers1 = new ArrayList<>();
 			//headers1.add("Source of Medicine");
 			headers.remove("Source of Medicine");
@@ -83,6 +87,9 @@ public class MedicineInvoiceExcelReport extends AbstractXlsxView{
 		String fileName ="";
 		if(flageTypeName!=null && flageTypeName.equalsIgnoreCase("IEC")) {
 			fileName = "IEC_Report";
+		}
+		else if(flageTypeName!=null && flageTypeName.equalsIgnoreCase("INT")) {
+			fileName = "Miscellaneous_Report";
 		}
 		else {
 	    fileName = "MedicineInvoice_Report";
@@ -144,7 +151,7 @@ public class MedicineInvoiceExcelReport extends AbstractXlsxView{
 					JSONObject jsonObject1 = jsonArray.getJSONObject(i);
 					Row row = sheet.createRow(rowNum++);
 					row.createCell(0).setCellValue(i + 1);
-					if(!flageTypeName.equalsIgnoreCase("IEC")) {
+					if(flageTypeName.equalsIgnoreCase("MID")) {
 						
 						String city = jsonObject1.has("city")?jsonObject1.optString("city"):"";
 						row.createCell(1).setCellValue(city);
@@ -155,23 +162,45 @@ public class MedicineInvoiceExcelReport extends AbstractXlsxView{
 					row.createCell(4).setCellValue(jsonObject1.optString("upload_date"));
 					row.createCell(5).setCellValue(jsonObject1.optString("invoice_no"));
 					row.createCell(6).setCellValue(jsonObject1.optString("total_invoice"));
+					row.createCell(7).setCellValue(jsonObject1.optString("tds_amount"));
+					row.createCell(8).setCellValue(jsonObject1.optString("deducation_amount"));
+					row.createCell(9).setCellValue(jsonObject1.optString("paid_amount"));
+					row.createCell(10).setCellValue(jsonObject1.optString("utilized_amount"));
+					row.createCell(11).setCellValue(jsonObject1.optString("deducation_remarks"));
+					}
+					else if(flageTypeName.equalsIgnoreCase("INT")) {
+						
+						row.createCell(1).setCellValue(jsonObject1.optString("invoice_date"));
+						row.createCell(2).setCellValue(jsonObject1.optString("upload_date"));
+						row.createCell(3).setCellValue(jsonObject1.optString("invoice_no"));
+						row.createCell(4).setCellValue(jsonObject1.optString("total_invoice"));
+						row.createCell(5).setCellValue(jsonObject1.optString("tds_amount"));
+						row.createCell(6).setCellValue(jsonObject1.optString("deducation_amount"));
+						row.createCell(7).setCellValue(jsonObject1.optString("paid_amount"));
+						row.createCell(8).setCellValue(jsonObject1.optString("utilized_amount"));
+						row.createCell(9).setCellValue(jsonObject1.optString("deducation_remarks"));
 					}
 					else {
 					 	row.createCell(1).setCellValue(jsonObject1.optString("invoice_date"));
 						row.createCell(2).setCellValue(jsonObject1.optString("upload_date"));
 						row.createCell(3).setCellValue(jsonObject1.optString("invoice_no"));
 						row.createCell(4).setCellValue(jsonObject1.optString("total_invoice"));
+						row.createCell(5).setCellValue(jsonObject1.optString("tds_amount"));
+						row.createCell(6).setCellValue(jsonObject1.optString("deducation_amount"));
+						row.createCell(7).setCellValue(jsonObject1.optString("paid_amount"));
+						row.createCell(8).setCellValue(jsonObject1.optString("utilized_amount"));
+						row.createCell(9).setCellValue(jsonObject1.optString("deducation_remarks"));
 					
 					}
-					totalInvoiceAmount += Integer.valueOf(jsonObject1.optString("total_invoice"));
+					totalInvoiceAmount += Integer.valueOf(jsonObject1.optString("utilized_amount"));
 				}
 				Row lastRow = sheet.createRow(rowNum + 2);
-				lastRow.createCell(0).setCellValue("Total Invoice Amount ");
-				if(!flageTypeName.equalsIgnoreCase("IEC")) {
-				lastRow.createCell(6).setCellValue("" + totalInvoiceAmount);
+				lastRow.createCell(0).setCellValue("Total Utilized Amount ");
+				if(flageTypeName.equalsIgnoreCase("MID")) {
+				lastRow.createCell(10).setCellValue("" + totalInvoiceAmount);
 				}
 				else {
-					lastRow.createCell(4).setCellValue("" + totalInvoiceAmount);
+					lastRow.createCell(8).setCellValue("" + totalInvoiceAmount);
 				}
 				}
 			else {
@@ -179,27 +208,49 @@ public class MedicineInvoiceExcelReport extends AbstractXlsxView{
 					JSONObject jsonObject1 = jsonArray.getJSONObject(i);
 					Row row = sheet.createRow(rowNum++);
 					row.createCell(0).setCellValue(i + 1);
-					if(!flageTypeName.equalsIgnoreCase("IEC")) {
+					if(flageTypeName.equalsIgnoreCase("MID")) {
 					row.createCell(1).setCellValue(jsonObject1.optString("soure_of_medicine"));
 					row.createCell(2).setCellValue(jsonObject1.optString("invoice_date"));
 					row.createCell(3).setCellValue(jsonObject1.optString("upload_date"));
 					row.createCell(4).setCellValue(jsonObject1.optString("invoice_no"));
 					row.createCell(5).setCellValue(jsonObject1.optString("total_invoice"));
+					row.createCell(6).setCellValue(jsonObject1.optString("tds_amount"));
+					row.createCell(7).setCellValue(jsonObject1.optString("deducation_amount"));
+					row.createCell(8).setCellValue(jsonObject1.optString("paid_amount"));
+					row.createCell(9).setCellValue(jsonObject1.optString("utilized_amount"));
+					row.createCell(10).setCellValue(jsonObject1.optString("deducation_remarks"));
 					
 					}
+					else if(flageTypeName.equalsIgnoreCase("INT")) {
+						row.createCell(1).setCellValue(jsonObject1.optString("invoice_date"));
+						row.createCell(2).setCellValue(jsonObject1.optString("upload_date"));
+						row.createCell(3).setCellValue(jsonObject1.optString("invoice_no"));
+						row.createCell(4).setCellValue(jsonObject1.optString("total_invoice"));
+						row.createCell(5).setCellValue(jsonObject1.optString("tds_amount"));
+						row.createCell(6).setCellValue(jsonObject1.optString("deducation_amount"));
+						row.createCell(7).setCellValue(jsonObject1.optString("paid_amount"));
+						row.createCell(8).setCellValue(jsonObject1.optString("utilized_amount"));
+						row.createCell(9).setCellValue(jsonObject1.optString("deducation_remarks"));
+						
+						}
 					else {
 						row.createCell(1).setCellValue(jsonObject1.optString("invoice_date"));
 						row.createCell(2).setCellValue(jsonObject1.optString("upload_date"));
 						row.createCell(3).setCellValue(jsonObject1.optString("invoice_no"));
 						row.createCell(4).setCellValue(jsonObject1.optString("total_invoice"));
+						row.createCell(5).setCellValue(jsonObject1.optString("tds_amount"));
+						row.createCell(6).setCellValue(jsonObject1.optString("deducation_amount"));
+						row.createCell(7).setCellValue(jsonObject1.optString("paid_amount"));
+						row.createCell(8).setCellValue(jsonObject1.optString("utilized_amount"));
+						row.createCell(9).setCellValue(jsonObject1.optString("deducation_remarks"));
 						
 							
 					}
-					totalInvoiceAmount += Integer.valueOf(jsonObject1.optString("total_invoice"));
+					totalInvoiceAmount += Integer.valueOf(jsonObject1.optString("utilized_amount"));
 				}
 				Row lastRow = sheet.createRow(rowNum + 2);
-				lastRow.createCell(0).setCellValue("Total Invoice Amount ");
-				if(!flageTypeName.equalsIgnoreCase("IEC")) {
+				lastRow.createCell(0).setCellValue("Total Utilized Amount ");
+				if(flageTypeName.equalsIgnoreCase("MID")) {
 				lastRow.createCell(5).setCellValue("" + totalInvoiceAmount);
 				}
 				else {

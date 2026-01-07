@@ -44,19 +44,21 @@ $(document).ready(function(){
     	window.history.back();
     });
 
-    $('#downloadBill').on('click', function(){
+    $('#downloadBill').on('click', function(event){
     	//<a href="download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val() target="_blank">
        // window.location = "download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val();
-    
+     event.preventDefault(); // <-- Prevent form submission/page refresh
     	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val(), '_blank').focus();
     }); 
-     $('#downloadAuditorReport').on('click', function(){
+     $('#downloadAuditorReport').on('click', function(event){
         //window.location = "download?name="+$(this).data('name')+"&type=audit_report&keys="+$('#invoiceNo').val();
+         event.preventDefault(); // <-- Prevent form submission/page refresh
         window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=audit_report&keys="+$('#invoiceNo').val(), '_blank').focus();
     }); 
      
-     $('#downloadRecepitBill').on('click', function(){
-         window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_bill\\payment_Recepit&keys="+$('#invoiceNo').val(), '_blank').focus();
+     $('#downloadRecepitBill').on('click', function(event){
+    	 event.preventDefault(); // <-- Prevent form submission/page refresh
+    	 window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_payment_Recepit&keys="+$('#invoiceNo').val(), '_blank').focus();
      });
 });
 
@@ -163,7 +165,7 @@ function loadBillDetails(){
                          penaltyFileName:list[i].penaltyFileName,
                  		 auditorsRemarks:list[i].auditorsRemarks,
                         // Add other properties from list[i] if needed
-                        penaltySum: mmuPenaltySumMap[mmuId] // Default to 0 if no penalty sum is found
+                         penaltySum: mmuPenaltySumMap[mmuId] !== undefined ? mmuPenaltySumMap[mmuId] : 0// Default to 0 if no penalty sum is found
                     };
                     combinedList.push(combinedData);
                 }
@@ -307,9 +309,10 @@ function getVendorInvoicePaymentDetails(val) {
 						var vendorInvoicePaymentId=item.vendorInvoicePaymentId;
 						var penaltyAmount=item.penaltyAmount;
 						var paymentDate=item.paymentDate;
-						
+						var advancedPayment=item.advancedPayment;
 							$('#finalPaymentDate').val(paymentDate);
 							$('#finalInvoiceAmont').val(invoiceAmount);
+							$('#advancedAmount').val(advancedPayment);
 							$('#paymentPenaltyAmont').val(penaltyAmount);
 							$('#tdsDeduction').val(tdsDeduction);
 							$('#finalAmount').val(amountPaid);
@@ -353,14 +356,14 @@ function get(name){
 function getSupportingDownloadData(button)
 {
 	var namVal= button.getAttribute('data-name');
-	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=vendor_bill\\supporting_document&keys="+$('#invoiceNo').val(), '_blank').focus();	
+	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=vendor_supporting_document&keys="+$('#invoiceNo').val(), '_blank').focus();	
 }
 
 
 function getMaualPenaltyDownloadData(button)
 {
 	var namVal= button.getAttribute('data-name');
-	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=audit_report\\manual_penalty&keys="+$('#invoiceNo').val(), '_blank').focus();	
+	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=audit_manual_penalty&keys="+$('#invoiceNo').val(), '_blank').focus();	
 }
 
 function getNoteShetDownloadData(button)
@@ -518,6 +521,8 @@ function getPenaltyAuthorityDetailsByUpss(){
 	    contentType: "application/json; charset=utf-8",
 	    dataType: "json",
 	    success: function(result){
+	    	console.log("result="+result);
+	    
 	    	
 	    	$('#penaltyAmountImposedId').val(result);
 	    	if(result==<%=session.getAttribute("authorityId")%>)
@@ -841,7 +846,20 @@ function getPenaltyAuthorityDetailsByUpss(){
 											</div>
 										</div>
 									</div>
-                                   <div class="col-lg-4 col-sm-6">
+									 <div class="col-lg-4 col-sm-6">
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">Advance Payment Deduction</label>
+											</div>
+											<div class="col-md-7">
+												<input type="text" id="advancedAmount"  onkeypress="return isNumberKey(event)" class="form-control" readonly/>
+											</div>
+										</div>
+									</div>
+                                  
+								</div>
+								<div class="row">
+									 <div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
 												<label class="col-form-label">Penalty Amount</label>
@@ -851,9 +869,6 @@ function getPenaltyAuthorityDetailsByUpss(){
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									
                                     <div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
@@ -867,7 +882,7 @@ function getPenaltyAuthorityDetailsByUpss(){
 									<div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
-												<label class="col-form-label">Final Amount</label>
+												<label class="col-form-label">Paid /Cleared Amount</label>
 											</div>
 											<div class="col-md-7">
 												<input type="text" id="finalAmount" class="form-control" readonly/>

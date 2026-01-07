@@ -398,7 +398,8 @@ function GetJsonData(tableId,data,url,bClickable,waitingImgId)
 							  
 							  makeTable(jsonData);
 							  //alert(bClickable)
-							  if(totalRecordsForPagination != 0 && bClickable )
+							  //if(totalRecordsForPagination != 0 && bClickable )
+								  if(bClickable)
 								  {
 									  $j("#"+tableId+" tr[id!='0']").hover(
 										      function () {										          
@@ -592,7 +593,8 @@ function GetOpdJsonData(tableId,data,url,bClickable,waitingImgId)
 							  
 							  makeTable(jsonData);
 							  //alert(bClickable)
-							  if(totalRecordsForPagination != 0 && bClickable )
+							 // if(totalRecordsForPagination != 0 && bClickable )
+							  if(bClickable )
 								  {
 									  $j("#"+tableId+" tr[id!='0']").hover(
 										      function () {										          

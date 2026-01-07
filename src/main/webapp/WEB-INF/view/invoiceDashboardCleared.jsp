@@ -109,6 +109,7 @@ function genrateClearTable(seq,response){
 	 	'<td>'+response.cleared_amount+'</td>'+
 	 	'<td>'+response.penalty_amount+'</td>'+
 	 	'<td>'+response.tds_deduction+'</td>'+
+	 	'<td>'+response.advanced_payment+'</td>'+
 	 	'<td>'+response.upload_date+'</td>'+
 	 	'<td>'+response.last_approval_status+'</td>'+
 	 	'<td><a class="btn-link" href="javascript:void(0);" onClick="showFile(\''+response.file_view+'\',\''+response.invoice_no+'\');">'+response.file_view+'</a></td>'+
@@ -329,9 +330,10 @@ openPdfModel(url);
                                                 <th>Invoice Date</th>                                                     
                                                 <th>Invoice No.</th>
                                                 <th>Invoice Amount</th>
-                                                <th>Cleared Amount</th>
+                                                <th>Cleared /Paid Amount</th>
                                                 <th>Penalty Amount</th>
-                                                <th>Total Deductions</th>
+                                                <th>TDS Deductions</th>
+                                                <th>Advanced Payment</th>
                                                 <th>Upload Date</th>
                                                 <th>Last Approved Status</th>
                                                 <th>View</th>

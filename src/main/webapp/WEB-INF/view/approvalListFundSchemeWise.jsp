@@ -24,6 +24,13 @@
 		userId = session.getAttribute("user_id") + "";
 	}
 	
+	String distIdUsers = "0";
+	if (session.getAttribute("distIdUsers") != null) {
+		distIdUsers = session.getAttribute("distIdUsers").toString();
+		//distIdUsers = distIdUsers.replace(",","");
+	}else{
+		distIdUsers="";
+	}
 	
 %>
     <meta charset="utf-8">
@@ -73,21 +80,25 @@
 
 	function GetAllVendorInvoice(MODE){
 		var vendorId=<%=userId%>;
+		var districtId="";
+		if(null!=$j('#districtId').val()&&$j('#districtId').val!=""){
+			districtId=$j('#districtId').val();
+		}
 		var financialYear = $j('#financialYear').val();
 	 	var phaseVal=$j('#phase').val();
 	 	
 		 if(MODE == 'ALL'){
 			
-				var data = {"PN": nPageNo, "statusPending":"S","fromDate":"","toDate":"","type":"All","creatdBy":vendorId};
+				var data = {"PN": nPageNo, "statusPending":"S","fromDate":"","toDate":"","type":"All","creatdBy":vendorId,"districtId":districtId};
 		 }
 		 else if(financialYear != "")
 		 {
 			 //nPageNo=1;
-		    var data = {"PN":nPageNo,"statusPending":"S","financialYear":financialYear,"type":"All","creatdBy":vendorId,"phaseVal":phaseVal};
+		    var data = {"PN":nPageNo,"statusPending":"S","financialYear":financialYear,"type":"All","creatdBy":vendorId,"phaseVal":phaseVal,"districtId":districtId};
 		 } 
 	    else
 	    { 
-	    	 var data = {"PN":nPageNo,"statusPending":"S","financialYear":financialYear,"type":"All","creatdBy":vendorId,"phaseVal":phaseVal};
+	    	 var data = {"PN":nPageNo,"statusPending":"S","financialYear":financialYear,"type":"All","creatdBy":vendorId,"phaseVal":phaseVal,"districtId":districtId};
 		} 
 		var url = "getFundAllocationDetails";
 		var bClickable = true;
@@ -305,7 +316,7 @@
 			<div class="container-fluid">
 
 				<div class="internal_Htext">View and Update Fund Allocation</div>
-
+				<input  name="districtId" id="districtId" type="hidden" value="<%=session.getAttribute("distIdUsers")%>"/>
 				<div class="row">
 					<div class="col-12">
 						<div class="card">

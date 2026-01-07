@@ -22,6 +22,25 @@
 <%@include file="..//view/commonJavaScript.jsp"%>
 
 <script type="text/javascript">
+
+
+<% 
+String userId = "1";
+if (session.getAttribute("user_id") != null) {
+	userId = session.getAttribute("user_id") + "";
+}
+
+String levelOfUser = "1";
+if (session.getAttribute("levelOfUser") != null) {
+	levelOfUser = session.getAttribute("levelOfUser") + "";
+}
+
+String mmuId = "1";
+if (session.getAttribute("mmuId") != null) {
+	mmuId = session.getAttribute("mmuId") + "";
+}
+%>
+
     var nPageNo=1;
 	var $j = jQuery.noConflict();
 	
@@ -176,8 +195,78 @@ function getPenaltyList(MODE) {
             }
             $('#loadingStatus').empty().text(count+' matches').css('color', 'green');
             $('#totalPenaltyAmt').val(penaltyAmount);
+           
         }
     });
+}
+
+function exportExcel(){
+ 	
+	//$('#loadingStatus').empty().append('<i class="fa fa-spinner fa-spin"></i>  Refreshing...').css('color', 'green');
+	var mmuId = $j('#mmuId').val();
+ 	var attnMonth = $j('#attnMonth').val();
+ 	var attnYear = $j('#attnYear').val();
+ 	var searchType = $j('#searchType').val();
+    var data = {"pageNo": 0,"mmuId":mmuId,"attnMonth":attnMonth,"attnYear":attnYear,"searchType":searchType};
+    if(!searchType){
+	    alert('Please select Search Type!');
+	    return false;
+	}
+	if((mmuId == undefined || mmuId == '') && (attnMonth == undefined || attnMonth == '') && (attnYear == undefined || attnYear == '') ){	
+		alert("At least one option must be entered");
+		return;
+	}
+     		
+   window.location.href =  "${pageContext.request.contextPath}/empRegistration/exportExcel?pageNo="
+			+ 0
+			+ "&mmuId="
+			+ mmuId
+			+ "&attnMonth="
+			+ attnMonth
+			+ "&attnYear="
+			+ attnYear
+			+ "&searchType="
+			+ searchType;	
+ 
+ }
+ 
+function generateReport(){
+	
+	var mmuId = $j('#mmuId').val();
+ 	var attnMonth = $j('#attnMonth').val();
+ 	var attnYear = $j('#attnYear').val();
+ 	var searchType = $j('#searchType').val();
+    var data = {"pageNo": 0,"mmuId":mmuId,"attnMonth":attnMonth,"attnYear":attnYear,"searchType":searchType};
+    if(!searchType){
+	    alert('Please select Search Type!');
+	    return false;
+	}
+	if((mmuId == undefined || mmuId == '') && (attnMonth == undefined || attnMonth == '') && (attnYear == undefined || attnYear == '') ){	
+		alert("At least one option must be entered");
+		return;
+	}
+	  
+	 
+    
+    var User_id = <%=userId%>;
+    var Level_of_user = '<%=levelOfUser%>';
+    	  
+var url = "${pageContext.request.contextPath}/report/printPenaltyRegisterList?mmu_id="
+		+ mmuId			
+		+ "&attnMonth="
+		+ attnMonth
+		+ "&attnYear="
+		+ attnYear
+		+ "&User_id="
+		+ User_id
+		+ "&Level_of_user="
+		+ Level_of_user				
+		+ "&searchType="
+		+ searchType;
+
+    openPdfModel(url)
+
+
 }
 
 </script>
@@ -204,7 +293,7 @@ function getPenaltyList(MODE) {
 									<div class="col-lg-4 col-sm-6">
                                         <div class="form-group row">
                                             <div class="col-md-5">
-                                                <label class="col-form-label">Search Type</label>
+                                                <label class="col-form-label">Audit Type</label>
                                             </div>
                                             <div class="col-md-7">
                                                 <select class="form-control" id="searchType" >
@@ -253,6 +342,12 @@ function getPenaltyList(MODE) {
 												</select>
 											</div>
 										</div>
+									</div>
+									<div class="col-lg-3 col-sm-6">
+										
+										<button type="button"  id="exportExcel" class="btn btn-primary m-t-3" onclick="exportExcel();">Excel</button>
+										<button type="button"  id="exportPdf" class="btn btn-primary m-t-3" onclick="generateReport();">PDF</button>
+										
 									</div>
 									
 									<div class="col-12 text-right">										

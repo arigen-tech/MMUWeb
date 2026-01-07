@@ -27,13 +27,21 @@ from 	mas_camp camp
 		left outer join mas_mmu mmu on mmu.mmu_id= camp.mmu_id
 		left outer join mas_city city on city.city_id= camp.city_id
 where 	(camp.city_id=$P{City_id} OR $P{City_id} =0)and
-		camp.camp_date=$P{Camp_date}
+		camp.camp_date=$P{Camp_date} and camp.weekly_off='Camp'
 group by camp_date,city_name,city.city_id]]>
 	</queryString>
-	<field name="camp_date" class="java.sql.Date"/>
-	<field name="city_name" class="java.lang.String"/>
-	<field name="tot" class="java.lang.Integer"/>
-	<field name="city_id" class="java.lang.Integer"/>
+	<field name="camp_date" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="city_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="tot" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="city_id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<variable name="Srno" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[new java.lang.Integer(1)]]></variableExpression>
 	</variable>

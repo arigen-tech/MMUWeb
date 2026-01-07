@@ -156,10 +156,10 @@ if (session.getAttribute("userId") != null) {
 	 params = {
 			 'mmuId':mmuId,
 			 "PN":nPageNo,
-			 'flag':'Y'
+			 'flag':'A'
 		}
 	 
-	 var url = "getAllListOfIndentList";
+	 var url = "getPendingListForAuditor";
 		
 		var bClickable = true;
 		GetJsonData('tblListOfIndent',params,url,bClickable);
@@ -173,13 +173,13 @@ function GetListOfIndent(MODE)
 	  var toDate = $j('#toDate').val(); */
 	  var mmuId = "<%= mmuId %>";
 	 if(MODE == 'ALL'){
-		 var data = {"PN":nPageNo,"flag":"Y","mmuId":mmuId};		
+		 var data = {"PN":nPageNo,"flag":"A","mmuId":mmuId};		
 		}
 	else
 		{
-		var data = {"PN":nPageNo,"flag":"Y","mmuId":mmuId};
+		var data = {"PN":nPageNo,"flag":"A","mmuId":mmuId};
 		} 
-	var url = "getAllListOfIndentList";
+	var url = "getPendingListForAuditor";
 		
 	var bClickable = true;
 	GetJsonData('tblListOfIndent',data,url,bClickable);

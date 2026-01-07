@@ -790,5 +790,15 @@ public class UserManagementWebController {
 		return responseObject;
 	}
 	
+	@RequestMapping(value="/getUsersList", method=RequestMethod.POST)
+	public String getUsersList(@RequestBody Map<String, Object> requestObject) {
+		JSONObject jsonObject = new JSONObject(requestObject);
+		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		String Url = HMSUtil.getProperties("urlextension.properties", "getUsersList");
+		String OSBURL = IpAndPortNo+Url;
+		String responseObject = RestUtils.postWithHeaders(OSBURL.trim(), requestHeaders, jsonObject.toString());
+		return responseObject;
+	}
+	
 
 }

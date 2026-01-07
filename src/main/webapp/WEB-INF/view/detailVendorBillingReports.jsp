@@ -66,19 +66,25 @@ $(document).ready(function(){
         window.location = 'detailedVendorsBillingList';
     });
 
-    $('#downloadBill').on('click', function(){
-    	//<a href="download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val() target="_blank">
-       // window.location = "download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val();
-    
-    	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_bill&keys="+$('#invoiceNo').val(), '_blank').focus();
-    }); 
-    $('#downloadAuditorReport').on('click', function(){
-        //window.location = "download?name="+$(this).data('name')+"&type=audit_report&keys="+$('#invoiceNo').val();
+    $('#downloadBill').on('click', function(event) {
+        event.preventDefault(); // <-- Prevent form submission/page refresh
+
+        window.open(
+            "${pageContext.servletContext.contextPath}/audit/download?name=" + $(this).data('name') +
+            "&type=vendor_bill&keys=" + $('#invoiceNo').val(), 
+            '_blank'
+        ).focus();
+    });
+    $('#downloadAuditorReport').on('click', function(event) {
+        event.preventDefault(); // <-- Prevent form submission/page refresh
+
         window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=audit_report&keys="+$('#invoiceNo').val(), '_blank').focus();
     });
     
-    $('#downloadRecepitBill').on('click', function(){
-        window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_bill\\payment_Recepit&keys="+$('#invoiceNo').val(), '_blank').focus();
+    
+    $('#downloadRecepitBill').on('click', function(event){
+    	 event.preventDefault(); // <-- Prevent form submission/page refresh
+        window.open("${pageContext.servletContext.contextPath}/audit/download?name="+$(this).data('name')+"&type=vendor_payment_Recepit&keys="+$('#invoiceNo').val(), '_blank').focus();
     });
     
    var today = new Date();
@@ -439,12 +445,14 @@ function getVendorInvoicePaymentDetails(val) {
 						var vendorInvoicePaymentId=item.vendorInvoicePaymentId;
 						var penaltyAmount=item.penaltyAmount;
 						var paymentDate=item.paymentDate;
+						var advancedPayment=item.advancedPayment;
 						id="captureAuditDataSubmit"
 							$('#finalPaymentDate').val(paymentDate);
 							$('#finalInvoiceAmont').val(invoiceAmount);
 							$('#paymentPenaltyAmont').val(penaltyAmount);
 							$('#tdsDeduction').val(tdsDeduction);
 							$('#finalAmount').val(amountPaid);
+							$('#advancedAmount').val(advancedPayment);
 							$('#modeOfPayment').val(modeOfPayment);
 							$('#transNo').val(transactionNumber);
 							document.getElementById("tdsDeduction").readOnly = true;
@@ -627,14 +635,14 @@ function printReport(){
 function getSupportingDownloadData(button)
 {
 	var namVal= button.getAttribute('data-name');
-	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=vendor_bill\\supporting_document&keys="+$('#invoiceNo').val(), '_blank').focus();	
+	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=vendor_supporting_document&keys="+$('#invoiceNo').val(), '_blank').focus();	
 }
 
 
 function getMaualPenaltyDownloadData(button)
 {
 	var namVal= button.getAttribute('data-name');
-	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=audit_report\\manual_penalty&keys="+$('#invoiceNo').val(), '_blank').focus();	
+	window.open("${pageContext.servletContext.contextPath}/audit/download?name="+namVal+"&type=audit_manual_penalty&keys="+$('#invoiceNo').val(), '_blank').focus();	
 }
 
 function getNoteShetDownloadData(button)
@@ -1033,7 +1041,20 @@ function getNoteShetDownloadData(button)
 											</div>
 										</div>
 									</div>
-                                   <div class="col-lg-4 col-sm-6">
+									 <div class="col-lg-4 col-sm-6">
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">Advance Payment Deduction</label>
+											</div>
+											<div class="col-md-7">
+												<input type="text" id="advancedAmount" onblur="calculateFinalAmount()" onkeypress="return isNumberKey(event)" class="form-control" readonly/>
+											</div>
+										</div>
+									</div>
+                                  
+								</div>
+								<div class="row">
+									 <div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
 												<label class="col-form-label">Penalty Amount</label>
@@ -1043,9 +1064,6 @@ function getNoteShetDownloadData(button)
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									
                                     <div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
@@ -1059,7 +1077,7 @@ function getNoteShetDownloadData(button)
 									<div class="col-lg-4 col-sm-6">
 										<div class="form-group row">
 											<div class="col-md-5">
-												<label class="col-form-label">Final Amount</label>
+												<label class="col-form-label">Paid /Cleared Amount</label>
 											</div>
 											<div class="col-md-7">
 												<input type="text" id="finalAmount" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;"  class="form-control" readonly/>

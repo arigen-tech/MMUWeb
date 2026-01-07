@@ -23,8 +23,8 @@
 			msf.financial_year,
 HD.letter_no||' /'||to_char(fund_allocation_date,'DD-MM-YYYY')letter_no,
 			(SELECT 	COUNT(*)
-			FROM 	MAS_MMU MMU,CITY_MMU_MAPPING CM
-			WHERE 	CM.MMU_ID=MMU.MMU_ID AND CM.CITY_ID=MC.city_id and CM.status ='A') MMU,
+			FROM 	MAS_MMU MMU,city_mmu_invoice_mapping CM
+			WHERE 	CM.MMU_ID=MMU.MMU_ID AND CM.CITY_ID=MC.city_id and CM.status ='A' AND CM.phase_id=CAST(SUBSTRING(HD.phase FROM 6) AS INTEGER)) MMU,
 			sum(dt.allocated_amount) allocated_amount,
 			sum(CASE WHEN dt.head_type_id=1 THEN dt.allocated_amount ELSE 0 END)O,
 			sum(CASE WHEN dt.head_type_id=2 THEN dt.allocated_amount ELSE 0 END)A,

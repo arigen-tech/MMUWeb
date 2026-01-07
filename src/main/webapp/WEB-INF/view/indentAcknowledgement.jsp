@@ -192,6 +192,7 @@ $j(document).ready(function() {
 });
 
 function addToStock(){
+	$('#addToStockId').attr('disabled', true);
 	
  	console.log("clicked");
 	var value=validateFields("indentAcknowledgement");
@@ -215,6 +216,7 @@ function addToStock(){
 	if(flageForRec==1){
 		value=false;		
 		alert("Qty received should not be greater than Qty issued.");
+		$('#addToStockId').attr('disabled', false); 
 		return false;
 	}
 	

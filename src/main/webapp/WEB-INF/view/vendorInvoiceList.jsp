@@ -86,7 +86,7 @@
 		 }
 		 else if(district != "" || fromDate != ""||toDate != "" || statusSearch != "")
 		 {
-			 nPageNo = 1;
+			 //nPageNo = 1;
 		    var data = {"PN":nPageNo,"district":district,"fromDate":fromDate,"toDate":toDate,"statusSearch":statusSearch,"type":"All","creatdBy":vendorId,"vendorId":valueVendorId};
 		 } 
 	    else
@@ -217,12 +217,13 @@
         GetAllVendorInvoice('FILTER');
      }
      function GetDistrictList(){
+    	 var vendorId="<%=vendorId%>";
     		jQuery.ajax({
     		 	crossOrigin: true,
     		    method: "POST",			    
     		    crossDomain:true,
     		    url: "${pageContext.servletContext.contextPath}/master/getAllDistrict",
-    		    data: JSON.stringify({"PN" : "0","upssFlag":"Y"}),
+    		    data: JSON.stringify({"PN" : "0","upssFlag":"Y","vendorId":vendorId}),
     		    contentType: "application/json; charset=utf-8",
     		    dataType: "json",
     		    success: function(result){

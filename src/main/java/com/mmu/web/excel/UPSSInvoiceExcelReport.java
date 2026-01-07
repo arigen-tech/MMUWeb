@@ -24,7 +24,7 @@ import org.json.JSONObject;
 import org.springframework.web.servlet.view.document.AbstractXlsxView;
 
 public class UPSSInvoiceExcelReport extends AbstractXlsxView{
-	private static String[] CLEAR_HEADERS ={ "SN","Vendor","MMU","Invoice Date","Invoice No.","Invoice Amount","Cleared Amount","Penalty Amount","Total Deductions","Upload Date","Last Approved Status" };
+	private static String[] CLEAR_HEADERS ={ "SN","Vendor","MMU","Invoice Date","Invoice No.","Invoice Amount","Cleared/ Paid Amount","Penalty Amount","TDS Deductions","Advanced Payment","Upload Date","Last Approved Status" };
 	private static String[] UNCLEAR_HEADERS ={ "SN","Vendor","MMU","Invoice Date",  "Invoice No.","Invoice Amount","UnCleared Amount","Upload Date","Last Approved Status" };
 	private static String[] TOTAL_HEADERS ={ "SN","Vendor","MMU","Invoice Date", "Upload Date", "Invoice No.","Invoice Amount","Last Approved Status" };
 
@@ -140,8 +140,9 @@ public class UPSSInvoiceExcelReport extends AbstractXlsxView{
 	    	            row.createCell(6).setCellValue(jsonObject1.optString("cleared_amount"));
 	    	            row.createCell(7).setCellValue(jsonObject1.optString("penalty_amount"));
 	    	            row.createCell(8).setCellValue(jsonObject1.optString("tds_deduction"));
-	    	            row.createCell(9).setCellValue(jsonObject1.optString("upload_date"));
-	    	            row.createCell(10).setCellValue(jsonObject1.optString("last_approval_status"));
+	    	            row.createCell(9).setCellValue(jsonObject1.optString("advanced_payment"));
+	    	            row.createCell(10).setCellValue(jsonObject1.optString("upload_date"));
+	    	            row.createCell(11).setCellValue(jsonObject1.optString("last_approval_status"));
 	    	            //row.createCell(10).setCellValue(jsonObject1.optString("approval"));
 	    	            totalInvoiceAmount+=Integer.valueOf(jsonObject1.optString("total_invoice"));
 	    	            index=5;

@@ -324,6 +324,13 @@ function doneTypingNomenclature() {
 				  			 'cityId':$('#cityIdSessionValue').val()
 				  	 	}
 			  	}
+				if(globalFlag!="" && globalFlag=="employee"){
+					params = {
+				  			
+				  			 'userName':icgName,
+				  			 'mmuId':$('#mmuIds').val()
+				  	 	}
+			  	}
 		
  			$.ajax({
  				type : "POST",
@@ -363,6 +370,22 @@ function doneTypingNomenclature() {
                         	var investigationId= globalArray1[i].investigationId;
             				var investigationName = globalArray1[i].investigationName;
             				var a=investigationName+"["+investigationId +"]"
+            				 icdArrayValuNew[i] = a;
+                        }
+                        }
+                        
+                        if(globalFlag!="" && (globalFlag=="employee")){
+                            
+                        	globalArray1=response.usersList;
+                        	investigationForUom=response.usersList;
+                        	for (var i = 0; i < globalArray1.length; i++) {
+                                
+                        	var userId= globalArray1[i].userId;
+            				var userName = globalArray1[i].userName;
+            				var mobileNo = globalArray1[i].mobileNo;
+            				var userTypeName = globalArray1[i].userTypeName;
+            				var mmuId= globalArray1[i].mmuId;
+            				var a=userName;
             				 icdArrayValuNew[i] = a;
                         }
                         }
@@ -928,6 +951,9 @@ function doneTypingNomenclature() {
 			   window[functionNameGlobal](nomenclature);
 		  }
 		 if(globalFlag=='signAndSymptoms'){
+			   window[functionNameGlobal](nomenclature);
+		  }
+		 if(globalFlag=='employee'){
 			   window[functionNameGlobal](nomenclature);
 		  }
 		 if(globalFlag=='wardCityAndDistrict'){
