@@ -121,6 +121,7 @@ function getMasHeadType(){
 	    success: function(result){
 	    	var combo = "" ;
 	    	for(var i=0;i<result.masHeadTypeData.length;i++){
+	    		if(result.masHeadTypeData[i].headTypeId !=4)
 	    		combo += '<option value='+result.masHeadTypeData[i].headTypeId+'>' +result.masHeadTypeData[i].headTypeName+ '</option>';
 	    		
 	    	}

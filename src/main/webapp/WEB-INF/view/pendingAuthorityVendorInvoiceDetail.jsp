@@ -247,7 +247,7 @@ function loadBillDetails(){
                          penaltyFileName:list[i].penaltyFileName,
                  		 auditorsRemarks:list[i].auditorsRemarks,
                         // Add other properties from list[i] if needed
-                        penaltySum: mmuPenaltySumMap[mmuId] // Default to 0 if no penalty sum is found
+                         penaltySum: mmuPenaltySumMap[mmuId] !== undefined ? mmuPenaltySumMap[mmuId] : 0// Default to 0 if no penalty sum is found
                     };
                     combinedList.push(combinedData);
                 }

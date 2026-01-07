@@ -113,6 +113,7 @@ function getMasHeadType(){
 	    	var combo = "" ;
 	    	masHeadType= result.masHeadTypeData;
 	    	for(var i=0;i<result.masHeadTypeData.length;i++){
+	    		if(result.masHeadTypeData[i].headTypeId !=4)
 	    		combo += '<option value='+result.masHeadTypeData[i].headTypeId+'>' +result.masHeadTypeData[i].headTypeName+ '</option>';
 	    		
 	    	}
@@ -602,6 +603,11 @@ function getDgFundAllcationHdDt(data) {
 	
 							var selectFre = "";
 							$.each(masHeadType, function(ijk, item1) {
+								
+								 if (item1.headTypeId == 4) {
+								        return; // Skip this iteration
+								    }
+								
 	
 								if (headTypeId == item1.headTypeId) {
 									selectFre = "selected";

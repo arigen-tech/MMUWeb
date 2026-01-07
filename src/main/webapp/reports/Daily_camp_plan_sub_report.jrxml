@@ -25,20 +25,42 @@ from 	mas_camp camp
 		left outer join mas_ward ward on  camp.ward_id=ward.ward_id
 		left outer join mas_city city on city.city_id= camp.city_id
 where 		(camp.city_id=$P{City_id} OR $P{City_id}=0) AND
-		camp.camp_date=$P{Camp_date})AKS
+		camp.camp_date=$P{Camp_date} and camp.weekly_off='Camp')AKS
 order by aks.city_id,aks.ORDER_NO,ORDER_NO1]]>
 	</queryString>
-	<field name="mmu_name" class="java.lang.String"/>
-	<field name="city_name" class="java.lang.String"/>
-	<field name="location" class="java.lang.String"/>
-	<field name="ward" class="java.lang.String"/>
-	<field name="city_id" class="java.lang.Long"/>
-	<field name="landmark" class="java.lang.String"/>
-	<field name="latitudes" class="java.lang.String"/>
-	<field name="longitudes" class="java.lang.String"/>
-	<field name="weekly_off" class="java.lang.String"/>
-	<field name="order_no" class="java.lang.Integer"/>
-	<field name="order_no1" class="java.lang.Integer"/>
+	<field name="mmu_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="city_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="location" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ward" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="city_id" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="landmark" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="latitudes" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="longitudes" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="weekly_off" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="order_no" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="order_no1" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>

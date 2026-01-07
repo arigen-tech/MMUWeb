@@ -258,13 +258,7 @@ function saveSubmitFundAllocationFunction(val) {
     	alert("Please select financial year");
  		return false;
     }
-      
-      /* var phaseVal = $('#phase').val();
-      if(phaseVal==""||phaseVal=="0")
-    {
-    	alert("Please select Phase");
- 		return false;
-    } */
+
 //////////////////////////////table validation part ////////////////	
     var  idforTable='';
     var caluculateTotalAmount=0;
@@ -308,37 +302,17 @@ function saveSubmitFundAllocationFunction(val) {
 					alert("Please enter Interest ");
 					amount.focus();
 					return false;       	
-				 }
-		   
+				 }		   
 		 });
-   // var totalAmount= $('#totalAllocatedAmount').val();
-    /* if(val=='C')
-    {
-       	if(totalAmount!=caluculateTotalAmount)
-    	{
-    		alert("Your Total Allocated Amount is not equal to UPSS Allocated Amount")
-    		return false;
-    	}	
-    }
-    if(parseInt(totalAmount) < parseInt(caluculateTotalAmount))
-	{
-		alert("Your Total Allocated Amount not Less than to UPSS Allocated Amount")
-		return false;
-	} */
-    /* if(!$('#letterUpload').val()){
-        alert('Please select Letter file!');
-        return false;
-    } 
-    if($('#letterUpload').val()
-        && $('#letterUpload').val().indexOf('.pdf') == -1
-        && $('#letterUpload').val().indexOf('.docx') == -1
-        && $('#letterUpload').val().indexOf('.xls') == -1
-        && $('#letterUpload').val().indexOf('.xlsx') == -1){
-        alert('Invalid file format Only PDF, Excel and Word file should be uploaded!');
-        return false;
-    }
     
-	 *///////////////Treatment JSON ///////////////////
+    $("#submitBtn").attr("disabled", true);
+	$("#submitBtn").prop("disabled", true);		
+	$("#saveBtn").attr("disabled", true);
+	$("#saveBtn").prop("disabled", true);
+	$("#closeBtn").attr("disabled", true);
+   
+    
+	 ///////////////Treatment JSON ///////////////////
 		var tableDataHd = [];  
 		var dataDt='';
 		var idforHead='';
@@ -364,16 +338,11 @@ function saveSubmitFundAllocationFunction(val) {
  });
     
     var dataJSON = {
-
-           // 'dateOfUpload': $('#dateOfUpload').val(),
-            //'totalAllocatedAmount': $('#totalAllocatedAmount').val(),
-            //'letterNo': $('#letterNo').val(),
             'financialYear': $('#financialYear').val(),
             'statusFlag': $('#statusFlag').val(),
             'userId':$('#userId').val(),
             'createdUserId':"",
-            'captureInterestHdId': "",
-            //'phaseVal':phaseVal,
+            'captureInterestHdId': "",          
             "listofHeader" : tableDataHd
     }
     
@@ -382,10 +351,8 @@ function saveSubmitFundAllocationFunction(val) {
 	formData.append('uploadFilePath', "uploads");
 	formData.append('uploadRealPath', 1);
    	formData.append('headMainData',JSON.stringify(dataJSON));
-  
-    $("#submitBtn").attr("disabled", true);
-    $("#saveBtn").attr("disabled", true);
-    $("#closeBtn").attr("disabled", true);
+
+    
     $.ajax({
     	type: 'POST',
 		    url : url,

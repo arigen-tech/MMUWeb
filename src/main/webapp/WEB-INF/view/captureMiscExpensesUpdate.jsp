@@ -281,8 +281,8 @@ function saveData(action){
 			    everyFieldValidate = false;
 	           return false;
 		   }
-		   if(!tds_amount || tds_amount=="0"){
-			    alert('TDS Amount should not be blank or 0!');
+		   if(!tds_amount){
+			    alert('TDS Amount should not be blank!');
 			    everyFieldValidate = false;
 	           return false;
 		   }

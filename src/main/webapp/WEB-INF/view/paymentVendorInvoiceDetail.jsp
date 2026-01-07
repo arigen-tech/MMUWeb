@@ -195,7 +195,7 @@ function calculateFinalAmount() {
     var totalDed = penaltyAmount + tdsDeduction+advancedAmount;
     
     if(invoiceAmount && invoiceAmount < totalDed) {
-        alert('Sum of penalty and deduction can not be greater than invoice amount!');
+        alert('Sum of Advanced Amt, penalty and deduction can not be greater than invoice amount!');
         $('#tdsDeduction').val('');
         $('#finalAmount').val('');
         return false;
@@ -508,7 +508,7 @@ function submitAuditorForm(){
 	   
 	var phase=$('#phase').val();
 	var phaseGetVal=$('#phaseValId').val();
-	  if(phase=="" || phase==undefined ||phase=="0")
+	  if(phase=="" || phase==undefined ||phase==="0")
 	  {
 		  alert("Please select Phase.");
 		  return false;
@@ -521,10 +521,10 @@ function submitAuditorForm(){
 		 
 	  }
 	  
-	 if($('#availableAmount').val() && parseInt($('#availableAmount').val()) < parseInt($('#finalAmount').val())){
-	       alert('Payment cannot be done as final amount is greater than Available balance!');
+	/*  if($('#availableAmount').val() && parseInt($('#availableAmount').val()) < parseInt($('#finalAmount').val())){
+	       alert('Payment cannot be done as paid amount is greater than Available balance!');
 	       return false;
-	   }
+	   } */
 	 
    if(!$('#tdsDeduction').val()){
 	      alert('Please Enter Total Deductions(TDS & Others)!');
@@ -548,6 +548,11 @@ function submitAuditorForm(){
    var invoiceAmount = parseInt($('#finalInvoiceAmont').val());
    var penaltyAmount = parseInt($('#paymentPenaltyAmont').val());
    var calculateUtilzedAmount = invoiceAmount - penaltyAmount ;
+   
+   if ($('#availableAmount').val() && parseInt($('#availableAmount').val()) < parseInt(calculateUtilzedAmount)) {
+	    alert('Payment cannot be done as Total Utilized amount (' + calculateUtilzedAmount + ')= Advance + Deduction + Paid Amount is greater than Available balance (' + $('#availableAmount').val() + ')');
+	    return false;
+	}
    
   var dataJSON = {
 

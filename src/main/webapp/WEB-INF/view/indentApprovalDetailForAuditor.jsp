@@ -253,52 +253,7 @@
 										</table>
 									</div>
 									
-									<div class="row">
-										<div class="col-md-4">
-											<div class="form-group row">
-												<div class="col-md-5">
-													<label for="service" class="col-form-label">Date</label>
-												</div>
-												<div class="col-md-7">
-													<input type="text" class="form-control" id="auditorDate" name="auditorDate" readonly="readonly"/>
-												</div>
-											</div>
-										</div>
-
-										<div class="col-md-4">
-											<div class="form-group row">
-												<div class="col-md-5">
-													<label for="service" class="col-form-label">APM Name</label>
-												</div>
-												<div class="col-md-7">
-													<input type="text" class="form-control" id="auditorName" name="auditorName" readonly="readonly" />
-												</div>
-											</div>
-										</div>
-
-										<div class="col-md-4">
-											<div class="form-group row">
-												<div class="col-md-5">
-													<label for="service" class="col-form-label">Action</label>
-												</div>
-												<div class="col-md-7">
-													<input type="text" class="form-control" id="auditorAction" name="auditorAction" readonly="readonly"/>
-												</div>
-											</div>
-										</div>
-										
-										<div class="col-md-4">
-											<div class="form-group row">
-												<div class="col-md-5">
-													<label for="service" class="col-form-label">Remarks</label>
-												</div>
-												<div class="col-md-7">
-													<textarea class="form-control" id="auditorRemarks" name="auditorRemarks" rows="2" readonly="readonly"></textarea>
-												</div>
-											</div>
-										</div>
-										
-										</div>
+									
 									
 									
 									<div class="row m-t-20 ">
@@ -418,10 +373,10 @@ $j(document).ready(
     		  	   $j('#indentDate').val(resultList[item].indentdate);
     		  	   $j('#createdBy').val(resultList[item].createdBy+" ("+resultList[item].createdByDsg+")");
     		  	   $j('#toDeptName').val(resultList[item].toDeptId);
-    		  	 $j('#auditorDate').val(resultList[item].apmDate);
+    		  	 /* $j('#auditorDate').val(resultList[item].apmDate);
     		  	 $j('#auditorName').val(resultList[item].apmName);
     		  	 $j('#auditorAction').val(resultList[item].apmAction);
-    		  	 $j('#auditorRemarks').val(resultList[item].apmRemarks);
+    		  	 $j('#auditorRemarks').val(resultList[item].apmRemarks); */
     		 }
     		 $('#nomenclature'+j).val(resultList[item].NomPvmsNo);
     		 $('#dispensingUnit'+j).val(resultList[item].accountingUnit);

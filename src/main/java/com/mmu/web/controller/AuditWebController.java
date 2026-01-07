@@ -623,6 +623,7 @@ public class AuditWebController {
 		String basePath = environment.getProperty("mmu.web.audit.basePath");
 		String inspectionDate = multipartHttpServletRequest.getParameter("inspectionDate");
 		String mmuLocation = multipartHttpServletRequest.getParameter("mmuLocation");
+		String mmuId = multipartHttpServletRequest.getParameter("mmuId");
 		String []checklistIds = multipartHttpServletRequest.getParameter("checklistIds").split(",");
 
 		String folderName = "capture_inspection";
@@ -638,7 +639,10 @@ public class AuditWebController {
 				originalFileNames.add(originFileName);
 				String auditPath = basePath + "/"+folderName+"/";
 				String fileType = originFileName.substring(originFileName.lastIndexOf(".") + 1);
-				String fileName = mmuLocation + inspectionDate + checklistIds[count];
+				/* Commented this code as facing issue when locaction nmame have invalid chars like hindi font like  ऑफिस */
+				//String fileName = mmuLocation + inspectionDate + checklistIds[count];
+				String fileName = mmuId + inspectionDate + checklistIds[count];				
+				
 				String encodedFileName = Base64.getEncoder().encodeToString(fileName.getBytes());
 
 				try {

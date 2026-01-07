@@ -38,15 +38,15 @@ var districtList = "" ;
 var sourceOfMedicines = "";
 
 function enableDiasbleButton(status){
-	if(status==true){
+	if(status===true){
 		$("#btnSave").prop("disabled", true);
 		$("#btnSubmit").prop("disabled", true);
 	
 	}
-	if(status==false)
+	if(status===false)
 	{
-		$('#btnSave').removeAttr('disabled');
-		$('#btnSubmit').removeAttr('disabled');
+		$('#btnSave').prop("disabled", false);
+		$('#btnSubmit').prop("disabled", false);
 	}
 }
 $(document).ready(function(){
@@ -250,8 +250,8 @@ function saveData(action){
 			    everyFieldValidate = false;
 	           return false;
 		   }
-		   if(!tds_amount || tds_amount=="0"){
-			    alert('TDS Amount should not be blank or 0!');
+		   if(!tds_amount){
+			    alert('TDS Amount should not be blank!');
 			    everyFieldValidate = false;
 	           return false;
 		   }

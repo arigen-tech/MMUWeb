@@ -513,6 +513,7 @@
 	
 	function issueMedicine(){
 		
+		$('#submit_btn').prop("disabled", true);
 		var paramArray = new Array();
 		var checkflag =  false;
 		var row_length = document.getElementById("prescription_table").rows.length;
@@ -711,7 +712,7 @@
 		}
 		var input = JSON.stringify(params);
  		console.log("input is "+input);
- 		$('#submit_btn').attr("disabled", true);			
+ 					
 		$.ajax({
 			type : "POST",
 			contentType : "application/json",
@@ -726,12 +727,12 @@
 					window.location = "dispensarySubmit?hdId="+headerId+"&id="+patientId+"&patientTypeFlag"+patientTypeFlag+"";
 				}else{
 					alert(res.msg);	
-					$('#submit_btn').attr("disabled", false);	
+					$('#submit_btn').prop("disabled", false);	
 				}
 			},
 			error : function(jqXHR, exception) {
 				alert("Error occured while contacting the server");
-				$('#submit_btn').attr("disabled", false);	
+				$('#submit_btn').prop("disabled", false);
 			}
 		});
 		

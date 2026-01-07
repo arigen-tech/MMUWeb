@@ -533,7 +533,14 @@
 	}
 	
 	function issueMedicine(flag){
-		//$('#submit_btn').attr("disabled", true);
+		$('#submit_btn').attr("disabled", true);
+		$('#submit_btn').prop("disabled", true);
+		
+		$('#btnSubmit').attr("disabled", true);
+		$('#btnSubmit').prop("disabled", true);
+		
+		
+		console.log("click")
 		var paramArray = new Array();
 		var checkflag =  false;
 		var row_length = document.getElementById("indent_table").rows.length;
@@ -719,14 +726,7 @@
 		}
 		var input = JSON.stringify(params);
  		console.log("input is "+input);
- 		if(flag == 'p'){
- 			$('#submit_btn').attr("disabled", true);
- 		}
- 		else if(flag == 'f'){
- 			$('#btnSubmit').attr("disabled", true);
- 		}else{
- 			$('#btnSumbit').attr("disabled", true);
- 		}
+ 		
  		
 		$.ajax({
 			type : "POST",
@@ -744,14 +744,11 @@
 					window.location = "indentSubmit?id="+headerId+"&issueMId="+issueMId;
 				}else{
 					alert(res.data.msg);	
-					if(flag == 'p'){
-			 			$('#submit_btn').attr("disabled", false);
-			 		}
-					else if(flag == 'f'){
-			 			$('#btnSubmit').attr("disabled", false);
-			 		}else{
-			 			$('#btnSumbit').attr("disabled", false);
-			 		}
+					$('#submit_btn').attr("disabled", false);
+					$('#submit_btn').prop("disabled", false);
+					
+					$('#btnSubmit').attr("disabled", false);
+					$('#btnSubmit').prop("disabled", false);
 				}
 				
 			},

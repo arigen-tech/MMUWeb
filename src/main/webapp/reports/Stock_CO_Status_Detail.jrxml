@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Stock_CO_Status_Detail" pageWidth="842" pageHeight="611" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="782" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
-	<property name="ireport.zoom" value="4.0"/>
+	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -16,6 +16,9 @@
 	</parameter>
 	<parameter name="query" class="java.lang.String">
 		<defaultValueExpression><![CDATA[new String("")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CurrentDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[select CITY_NAME HOSPITAL_NAME , MAS_DEPARTMENT.DEPARTMENT_NAME , mas_store_item.pvms_no as mas_store_item_pvms_no,mas_store_item.nomenclature as mas_store_item_nomenclature,
@@ -297,6 +300,26 @@ order by  CITY_NAME,mas_store_item.nomenclature]]>
 					</textElement>
 					<text><![CDATA[Stock Qty]]></text>
 				</staticText>
+				<staticText>
+					<reportElement key="staticText-14" x="606" y="8" width="91" height="15">
+						<property name="$V{REPORT_DATE}" value="$V{REPORT_DATE}"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Generated On]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="697" y="7" width="80" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.util.Date"><![CDATA[$P{CurrentDate}]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>

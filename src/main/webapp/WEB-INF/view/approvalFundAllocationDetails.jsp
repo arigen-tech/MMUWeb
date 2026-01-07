@@ -110,10 +110,13 @@ function getMasHeadType(){
 	    success: function(result){
 	    	var combo = "" ;
 	    	masHeadType= result.masHeadTypeData;
-	    	for(var i=0;i<result.masHeadTypeData.length;i++){
-	    		combo += '<option value='+result.masHeadTypeData[i].headTypeId+'>' +result.masHeadTypeData[i].headTypeName+ '</option>';
+	    	
+	    	for(var i=0;i<result.masHeadTypeData.length;i++){	    		
 	    		
-	    	}
+	    		combo += '<option value='+result.masHeadTypeData[i].headTypeId+'>' +result.masHeadTypeData[i].headTypeName+ '</option>';
+	    		}
+	    		
+	    	
 	    	
 	    	jQuery('#headType').append(combo);
 	    	
@@ -124,13 +127,17 @@ function getMasHeadType(){
 
 var masUpss="";
 function GetDistrictList(phaseVal,data){
+	 var districtId="";
+		if(null!=$j('#districtId').val()&&$j('#districtId').val!=""){
+			districtId=$j('#districtId').val();
+		}
 	
 	jQuery.ajax({
 	 	crossOrigin: true,
 	    method: "POST",			    
 	    crossDomain:true,
 	    url:"${pageContext.servletContext.contextPath}/master/getAllUpssPhaseMapping",
-	    data: JSON.stringify({"PN" : "0","phaseValue":phaseVal}),
+	    data: JSON.stringify({"PN" : "0","phaseValue":phaseVal,"districtId":districtId}),
 	    contentType: "application/json; charset=utf-8",
 	    dataType: "json",
 	    success: function(result){
@@ -536,7 +543,7 @@ function getDgFundAllcationHdDt(data) {
 							$.each(masUpss, function(ijk, item1) {
 	
 								if (districtId == item1.districtId) {
-									selectFre = "selected";
+									selectFre = "selected";									
 								} else {
 									selectFre = "";
 								}
@@ -562,6 +569,10 @@ function getDgFundAllcationHdDt(data) {
 	
 							var selectFre = "";
 							$.each(masHeadType, function(ijk, item1) {
+								
+								 if (item1.headTypeId == 4) {
+								        return; // Skip this iteration
+								    }
 	
 								if (headTypeId == item1.headTypeId) {
 									selectFre = "selected";
@@ -701,6 +712,7 @@ function checkFutureDate()
 				<input  name="financialYear" id="financialYear" type="hidden" value="" />
 				<input  name="financialYearStartDate" id="financialYearStartDate" type="hidden" value="" />
 				<input  name="financialYearEndDate" id="financialYearEndDate" type="hidden" value="" />
+				<input  name="districtId" id="districtId" type="hidden" value="<%=session.getAttribute("distIdUsers")%>"/>
 				
 					<div class="col-12">
 						<div class="card">

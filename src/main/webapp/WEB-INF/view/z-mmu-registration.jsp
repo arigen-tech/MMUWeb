@@ -1065,9 +1065,40 @@ canvas {
 												<label class="col-form-label">Mobile No.</label>
 											</div>
 											<div class="col-md-7">
-												<input name="mobileNo" id="mobileNo" type="text" maxlength="10"
+												<!-- <input name="mobileNo" id="mobileNo" type="text" maxlength="10"
 															class="form-control border-input" onblur="checkIfPatientIsAlreadyRegistered()"
-															placeholder="" value="" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" required>
+															placeholder="" value="" onkeypress="if ( isNaN(this.value + String.fromCharCode(event.keyCode) )) return false;" required> -->
+															
+														<input 
+															  type="text"
+															  name="mobileNo" 
+															  id="mobileNo" 
+															  maxlength="10"
+															  class="form-control border-input"
+															  placeholder="Enter mobile number"
+															  oninput="
+															    // keep only digits
+															    this.value = this.value.replace(/[^0-9]/g, '');
+															
+															    // prevent starting with 0
+															    if (this.value.startsWith('0')) {
+															      this.value = this.value.replace(/^0+/, '');
+															    }
+															
+															    // block 4 or more consecutive zeros anywhere
+															    if (/0{4,}/.test(this.value)) {
+															      this.value = this.value.replace(/0{4,}/g, '');
+															    }
+															
+															    // limit to 10 digits
+															    if (this.value.length > 10) {
+															      this.value = this.value.slice(0, 10);
+															    }
+															  "
+															  onblur="checkIfPatientIsAlreadyRegistered()"
+															  required
+															/>
+
 											</div>
 										</div>
 									</div>

@@ -75,6 +75,7 @@ function getCommandList(MODE)
 	//alert(mmuId);
 	var exceptionTypeVal = $j('#withException').val();
 	 var searchPatient = $j('#patientName').val();
+	 var uhidNo=$j('#uhidNo').val();
 	 
 	 if(mmuId !=null)
 		 {
@@ -84,11 +85,11 @@ function getCommandList(MODE)
 				}
 			 else if(exceptionTypeVal=='withException')
 				{
-				 var data = {"pageNo":nPageNo,"mobileNo":"","patientName":searchPatient,'employeeId' : userId,'opdPre' :"F",'mmuIdVal':mmuId,"exceptionChecked":"Y","exceptionType":"withException"};
+				 var data = {"pageNo":nPageNo,"mobileNo":"","patientName":searchPatient,"uhidNo":uhidNo,'employeeId' : userId,'opdPre' :"F",'mmuIdVal':mmuId,"exceptionChecked":"Y","exceptionType":"withException"};
 				} 
 			else
 				{
-					var data =  {"pageNo":nPageNo, "mobileNo":mobile_no,"patientName":searchPatient,"employeeId":userId,"opdPre":"F","mmuIdVal":mmuId,"exceptionChecked":"","exceptionType":""}; 
+					var data =  {"pageNo":nPageNo, "mobileNo":mobile_no,"patientName":searchPatient,"uhidNo":uhidNo,"employeeId":userId,"opdPre":"F","mmuIdVal":mmuId,"exceptionChecked":"","exceptionType":""}; 
 				} 
 		 }
 		 
@@ -154,7 +155,8 @@ function makeTable(jsonData)
 			htmlTable = htmlTable +"<td style='width: 100px;'>"+dataList[i].patinetname+"</td>";				
 			htmlTable = htmlTable +"<td style='width: 100px;'>"+dataList[i].ageFull+" / "+dataList[i].gender+"</td>";
 			htmlTable = htmlTable +"<td style='width: 100px;'>"+dataList[i].mobileNumber+"</td>";
-			if(dataList[i].patientType=="G"){	
+			htmlTable = htmlTable +"<td style='width: 100px;'>"+dataList[i].uhidNo+"</td>";
+			/* if(dataList[i].patientType=="G"){	
 	 	 			htmlTable = htmlTable +"<td style='width: 100px;'>"+'General Citizen'+"</td>";
 	 	 			}
 	 	 			else if(dataList[i].patientType=="L"){
@@ -163,7 +165,7 @@ function makeTable(jsonData)
 	 	 			else
 	 	 			{
 	 	 				htmlTable = htmlTable +"<td style='width: 100px;'>"+''+"</td>";
-	 	 			}
+	 	 			} */
 			htmlTable = htmlTable +"<td style='width: 100px;'>"+dataList[i].mmuName+"</td>";
 			htmlTable = htmlTable +"<td style='width: 100px;'>"+dataList[i].cityName+"</td>";
 			htmlTable = htmlTable +"<td style='width: 100px;'>"+dataList[i].doctorName+"</td>";
@@ -250,6 +252,7 @@ function ResetForm()
 {	
 	 $j('#mobile_no').val('');
 	 $j('#patientName').val('');
+	 $j('#uhidNo').val('');	
 }
 
 function showResultPage(pageNo)
@@ -271,10 +274,12 @@ function searchOpdRecallList()
 		
 
 	var mobile_no = $j('#mobile_no').val();
-	 var searchPatient = $j('#patientName').val();
+	var searchPatient = $j('#patientName').val();
+	var uhidNo = $j('#uhidNo').val();
 	 
-	 if((mobile_no == undefined || mobile_no == '') && (searchPatient == undefined || searchPatient == '')){	
-			alert("Please enter patient name");
+	 
+	 if((uhidNo == undefined || uhidNo == '') && (searchPatient == undefined || searchPatient == '')){	
+			alert("Please enter patient name or UHID no");
 			return;
 		}	
 	 getCommandList('FILTER');
@@ -410,7 +415,13 @@ function changeRadio(value){
 											<div class="form-group row">
 												<label class="col-sm-5 col-form-label">Patient Name</label>
 												<div class="col-sm-7">
-													<input type="text" class="form-control" id="patientName" name="patientName" placeholder="">
+													<input type="text" class="form-control" id="patientName" name="patientName" placeholder="Patient Name">
+												</div>
+											</div>
+											<div class="form-group row">
+												<label class="col-sm-5 col-form-label">UHID</label>
+												<div class="col-sm-7">
+													<input type="text" class="form-control" id="uhidNo" name="uhidNo" placeholder="UHID NO">
 												</div>
 											</div>
 										</div>
@@ -495,7 +506,7 @@ function changeRadio(value){
                                                  <!--  <th id="th5" class ="inner_md_htext">Name</th> -->
                                                    <th id="th5" class ="inner_md_htext">Age/Gender</th>
                                                    <th id="th5" class ="inner_md_htext">Mobile No</th>
-                                                    <th id="th5" class ="inner_md_htext">Type Of Patient</th>
+                                                    <th id="th5" class ="inner_md_htext">UHID No</th>
                                                      <th id="th5" class ="inner_md_htext">MMU</th>
                                                      <th id="th5" class ="inner_md_htext">City</th>
                                                      <th id="th5" class ="inner_md_htext">Doctor Name</th>

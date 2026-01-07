@@ -34,7 +34,7 @@
 	  $j(document).ready(function()
 				{
 		    getCampInfoAllDistrict();
-			GetHomePageData();
+			//GetHomePageData();
 			GetCityList();
 		 });
 

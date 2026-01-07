@@ -38,15 +38,15 @@ var districtList = "" ;
 var sourceOfMedicines = "";
 
 function enableDiasbleButton(status){
-	if(status==true){
+	if(status===true){
 		$("#btnSave").prop("disabled", true);
 		$("#btnSubmit").prop("disabled", true);
 	
 	}
-	if(status==false)
+	if(status===false)
 	{
-		$('#btnSave').removeAttr('disabled');
-		$('#btnSubmit').removeAttr('disabled');
+		$('#btnSave').prop("disabled", false);
+		$('#btnSubmit').prop("disabled", false);
 	}
 }
 $(document).ready(function(){

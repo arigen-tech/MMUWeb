@@ -38,15 +38,15 @@ var districtList = "" ;
 var sourceOfMedicines = "";
 
 function enableDiasbleButton(status){
-	if(status==true){
+	if(status===true){
 		$("#btnSave").prop("disabled", true);
 		$("#btnSubmit").prop("disabled", true);
 	
 	}
-	if(status==false)
+	if(status===false)
 	{
-		$('#btnSave').removeAttr('disabled');
-		$('#btnSubmit').removeAttr('disabled');
+		$('#btnSave').prop("disabled", false);
+		$('#btnSubmit').prop("disabled", false);
 	}
 }
 $(document).ready(function(){
@@ -68,39 +68,7 @@ $(document).ready(function(){
 	});
 });
 
-<%-- var phaseId='';
-var phaseValue='';
-var phaseName='';
-function getMasPhase(){
-	var upssId=$('#district').val();
-	var pathname = window.location.pathname;
-	var accessGroup ="MMUWeb";
-	var url = window.location.protocol + "//"
-	+ window.location.host + "/" + accessGroup
-	+ "/master/getAllUpssPhaseMapping";
-	$
-			.ajax({
-				url : url,
-				dataType : "json",
-				data : JSON.stringify({
-					'PN' :"0",
-					'mmuSearch':'<%=distIdUsers%>'
-					}),
-				contentType : "application/json",
-				type : "POST",
-				 success: function(result){
-				    	var combo = "<option value=\"\">Select</option>" ;
-				    	
-				    	for(var i=0;i<result.data.length;i++){
-				    		combo += '<option value='+result.data[i].phaseValue+'>' +result.data[i].phaseName+ '</option>';
-				    		
-				    	}
-				    	jQuery('#phase').append(combo);
-				    	
-				    }
-				    
-				});
-			} --%>
+
 
 function isFutureDate(idate){
 	var today = new Date().getTime(),
@@ -251,8 +219,8 @@ function saveData(action){
 			    everyFieldValidate = false;
 	           return false;
 		   }
-		   if(!tds_amount || tds_amount=="0"){
-			    alert('TDS Amount should not be blank or 0!');
+		   if(!tds_amount){
+			    alert('TDS Amount should not be blank');
 			    everyFieldValidate = false;
 	           return false;
 		   }
@@ -668,20 +636,7 @@ function isNumberKey(evt) {
 
 								<div class="row">
 								<input type="hidden"  name="cityIdVal" value=<%= session.getAttribute("cityId") %> id="cityIdVal" />
-								<!-- <div class="col-md-3">
-										<div class="row col-auto">
-											<div class="col-md-5">
-												<label class="col-form-label">Phase</label>
-											</div>
-											<div class="col-md-7">
-												<select class="form-control" id="phase"  >
-													<option value="">--SELECT--</option>
-												 	<option value="Phase1">Phase1</option>
-													<option value="Phase2">Phase2</option>
-												</select>
-											</div>
-										</div>
-									</div> -->
+								
 									<div class="col-md-3">
 										<div class="row col-auto">
 											<div class="col-md-5">
