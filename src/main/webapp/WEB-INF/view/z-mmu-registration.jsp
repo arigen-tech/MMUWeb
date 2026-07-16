@@ -1086,8 +1086,8 @@ canvas {
 															    }
 															
 															    // block 4 or more consecutive zeros anywhere
-															    if (/0{4,}/.test(this.value)) {
-															      this.value = this.value.replace(/0{4,}/g, '');
+															    if (/0{5,}/.test(this.value)) {
+															      this.value = this.value.replace(/0{5,}/g, '');
 															    }
 															
 															    // limit to 10 digits

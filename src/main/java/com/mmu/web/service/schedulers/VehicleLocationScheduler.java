@@ -18,7 +18,7 @@ public class VehicleLocationScheduler extends QuartzInitializerListener{
 	
 	 //0 12 * * ?
     //private static final String CRON_EXPRESSION_EVERY_MIDNIGHT = "0 25 23 * * ?";
-	 private static final String CRON_EXPRESSION_EVERY_MIDNIGHT = "0 07 12 * * ?";
+	 private static final String CRON_EXPRESSION_EVERY_MIDNIGHT = "0 50 13 * * ?";
     
     @Override
     public void contextInitialized(ServletContextEvent sce) {

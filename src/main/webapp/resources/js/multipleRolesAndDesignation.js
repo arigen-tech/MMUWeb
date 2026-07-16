@@ -107,6 +107,20 @@ function submitUnitAdminforNormalUser(){
 	for(var i=0;i<userTypesId.options.length;i++){
 		appendUserTypesIdValues+=userTypesId.options[i].value+",";
 	}
+	
+	var MMUIdNames = "";
+
+	for (var i = 0; i < userTypesId.options.length; i++) {
+	    MMUIdNames += userTypesId.options[i].value + "-" +
+	                  userTypesId.options[i].text + ",";
+	}
+
+	// Remove the last comma
+	MMUIdNames = MMUIdNames.slice(0, -1);
+
+	console.log(MMUIdNames);
+	
+	
 	var typUsr=$('#levelUsers').val()
 	if(typUsr=="")
 	{
@@ -146,6 +160,7 @@ function submitUnitAdminforNormalUser(){
 		}
 	 
 	 var e = document.getElementById("getAllUserType");
+	 
 	 var getAllUserTypeValue = e.value;
 	 
 	 if(getAllUserTypeValue==undefined || getAllUserTypeValue == '')
@@ -153,6 +168,8 @@ function submitUnitAdminforNormalUser(){
 		 alert("Please select type of users");
 		return; 
 	 } 
+	 
+	 var getAllUserTypeText = e.options[e.selectedIndex].text;
 	 
 	 $("#btnSubit").attr("disabled", true);
 	 var updateValForUser=$('#userTypeIdUpdate').val();
@@ -169,6 +186,10 @@ function submitUnitAdminforNormalUser(){
      	formData.append('employeeId', $('#employeeId').val());
      	formData.append('levelUsers', $('#levelUsers').val());
      	formData.append('userTypeVal', getAllUserTypeValue);
+     	formData.append('currentUserTypeName', getAllUserTypeText);
+     	formData.append('MMUIdNames', MMUIdNames);
+     	     	
+     	
 
      	$.ajax({
      		url : urlPath,
@@ -198,7 +219,8 @@ function submitUnitAdminforNormalUser(){
                 'emailId': $('#emailId').val(),
                 'employeeId': $('#employeeId').val(),
                 'levelUsers': $('#levelUsers').val(),
-                'userTypeVal':getAllUserTypeValue
+                'userTypeVal':getAllUserTypeValue,
+                'currentUserTypeName':getAllUserTypeText
             }),
             contentType : "application/json",
             type : "POST",
