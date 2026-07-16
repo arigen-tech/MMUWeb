@@ -198,7 +198,7 @@ input:checked + .slider:before {
 												<label class="col-form-label">Mobile No</label>
 											</div>
 											<div class="col-md-7">
-												<input type="text" id="mobileNo" class="form-control">
+												<input type="text" id="searchMobileNo" class="form-control">
 											</div>
 										</div>
 									</div>
@@ -542,7 +542,7 @@ function getuserDetailsList(MODE) {
  	
     var cmdId=0;
  	var user_name = $j('#userName').val();
- 	var mobile_No = $j('#mobileNo').val();
+ 	var mobile_No = $j('#searchMobileNo').val();
 	var mmuId = $j('#mmuId').val();
 	var userTypeVal=$('#userTypeName').val();
 	var mmuIdMultiple=$('#mmuIdMultiple').val();
@@ -579,7 +579,7 @@ function searchUserList()
 		
 	var nPageNo=1;	
 	var user_name = $j('#userName').val();
-	var mobile_No = $j('#mobileNo').val();
+	var mobile_No = $j('#searchMobileNo').val();
 	
 	if ((user_name === undefined || user_name === '') && (mobile_No === undefined || mobile_No === '')) {
 	    alert("Please enter name of user or Mobile No");
@@ -601,7 +601,7 @@ function searchUserListByStatus(val)
 function ResetForm()
 {	
 	$j('#userName').val('');
-	$j('#mobileNo').val('');
+	$j('#searchMobileNo').val('');
 }
 
 function showAll()

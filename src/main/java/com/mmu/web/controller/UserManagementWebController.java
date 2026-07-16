@@ -669,7 +669,9 @@ public class UserManagementWebController {
 		jsonObject.put("employeeId", multipartHttpServletRequest.getParameter("employeeId"));
 		jsonObject.put("levelUsers", multipartHttpServletRequest.getParameter("levelUsers"));
 		jsonObject.put("userTypeVal", multipartHttpServletRequest.getParameter("userTypeVal"));
+		jsonObject.put("currentUserTypeName", multipartHttpServletRequest.getParameter("currentUserTypeName"));
 		jsonObject.put("signatureFileName", this.uploadSignature(multipartHttpServletRequest));
+		jsonObject.put("MMUIdNames", multipartHttpServletRequest.getParameter("MMUIdNames"));
 
 		MultiValueMap<String,String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties", "updateUsersRegistartionType");
