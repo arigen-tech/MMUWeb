@@ -1,5 +1,8 @@
 package com.mmu.web.utils;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -7,16 +10,94 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
+import com.mmu.web.config.RequestLoggingInterceptor;
+
 public class RestUtils {
+
+	private static final Logger LOG = Logger.getLogger("com.mmu.upstream");
+
+
+	/**
+	 * Builds the RestTemplate used for the MMUWeb -> MMUServices hop, with
+	 * timeouts.
+	 *
+	 * <p>A plain {@code new RestTemplate()} has <b>no read timeout at all</b>, so a
+	 * call that never gets a reply blocks its Tomcat thread forever. That is not
+	 * hypothetical: both applications share one Tomcat, so every browser request
+	 * occupies two threads — one for MMUWeb and one for MMUServices. Once MMUWeb
+	 * holds all {@code maxThreads} (200 by default), no thread is left to serve the
+	 * MMUServices side, every waiting thread waits on a reply that can never be
+	 * produced, and the JVM deadlocks with 0% CPU and nothing in the log. A stress
+	 * run reproduced exactly that: 200 of 200 workers parked in
+	 * {@code postWithHeaders}, zero serving MMUServices, no recovery without a
+	 * restart.
+	 *
+	 * <p>A timeout does not prevent thread starvation — only removing the HTTP hop
+	 * does that (see docs/phase1-war-merge-checklist.md). What it does is make the
+	 * condition <b>survivable</b>: threads are released instead of parked forever,
+	 * so the application degrades and recovers rather than hanging.
+	 *
+	 * <p>On timeout Spring raises {@code ResourceAccessException}, which the
+	 * existing {@code catch (Exception e)} in each method below already converts to
+	 * the standard {@code EXP102} error body. Callers therefore see a response shape
+	 * they already handle — this introduces no new failure mode.
+	 *
+	 * <p>Defaults: 120s read, 10s connect. Measured against 37,184 successful
+	 * internal calls, the slowest was 50.7s (getResultUpdateWaitingList, under
+	 * stress) and none exceeded 60s, so 120s leaves better than 2x headroom over
+	 * the worst legitimate case. Override with
+	 * {@code -Dmmu.rest.readTimeoutMillis=...} / {@code -Dmmu.rest.connectTimeoutMillis=...}
+	 * if a slower environment needs it.
+	 */
+	private static RestTemplate newRestTemplate() {
+		SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+		factory.setConnectTimeout(intProp("mmu.rest.connectTimeoutMillis", 10000));
+		factory.setReadTimeout(intProp("mmu.rest.readTimeoutMillis", 120000));
+		return new RestTemplate(factory);
+	}
+
+	private static int intProp(String key, int fallback) {
+		try {
+			String value = System.getProperty(key);
+			return (value == null || value.trim().isEmpty()) ? fallback : Integer.parseInt(value.trim());
+		} catch (Exception e) {
+			return fallback;
+		}
+	}
+
+	/**
+	 * Forwards the current request id to MMUServices so one user action appears as
+	 * a single traceable request rather than two unrelated ones. Applied only to
+	 * these internal calls; MMUServices' own RestUtils talks to third parties and
+	 * deliberately does not propagate internal correlation ids outside the estate.
+	 *
+	 * <p>No-op outside a request (scheduled jobs), and never overwrites an id a
+	 * caller has already set.
+	 */
+	private static void addRequestId(MultiValueMap<String, String> headers) {
+		try {
+			if (headers == null || headers.containsKey(RequestLoggingInterceptor.HEADER_REQUEST_ID)) {
+				return;
+			}
+			String requestId = RequestLoggingInterceptor.currentRequestId();
+			if (requestId != null && !requestId.isEmpty()) {
+				headers.add(RequestLoggingInterceptor.HEADER_REQUEST_ID, requestId);
+			}
+		} catch (Exception e) {
+			// tracing must never break the call it is tracing
+		}
+	}
 
 	public static String getWithHeaders(String url, MultiValueMap<String, String> headers) {
 		try {
-			RestTemplate restTemplate = new RestTemplate();
+			addRequestId(headers);
+			RestTemplate restTemplate = newRestTemplate();
 			restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 			HttpEntity<?> request = new HttpEntity<>(headers);
 			ResponseEntity<String> responseEntity = (ResponseEntity<String>) restTemplate.exchange(url, HttpMethod.GET,
@@ -43,8 +124,9 @@ public class RestUtils {
 	public static String postWithHeaders(String url, MultiValueMap<String, String> requestHeaders,
 			String requestPayload) {
 		try {
+			addRequestId(requestHeaders);
 
-			RestTemplate restTemplate = new RestTemplate();
+			RestTemplate restTemplate = newRestTemplate();
 			restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 			requestHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 			HttpEntity<?> request = new HttpEntity<>(requestPayload.toString(), requestHeaders);
@@ -58,18 +140,47 @@ public class RestUtils {
 			int statusCode = exception.getStatusCode().value();
 			String getMssg = exception.getMessage();
 			String getStatustext = exception.getStatusText();
+			logUpstreamFailure(url, exception);
 			return ProjectUtils.getErrorMssg(0, "EXP101", getMssg);
 		} catch (Exception e) {
-			e.printStackTrace();
+			// The returned envelope says only "Error in processing request !", which
+			// tells a caller nothing -- and callers that index the expected key then
+			// report a missing-key error for what was really a read timeout. The
+			// swallow stays (every proxy endpoint depends on it) but the real cause
+			// is now on the record.
+			logUpstreamFailure(url, e);
 			return ProjectUtils.getErrorMssg(0, "EXP102", "Error in processing request !");
 		}
 		return "";
 	}
 
+	/**
+	 * One structured line naming the endpoint and the actual failure, so a timeout
+	 * is identifiable without reading a stack trace. Matches the logfmt used by
+	 * RequestLoggingInterceptor, and joins to it on req_id.
+	 */
+	private static void logUpstreamFailure(String url, Exception e) {
+		Throwable root = e;
+		while (root.getCause() != null && root.getCause() != root) {
+			root = root.getCause();
+		}
+		boolean timedOut = root instanceof java.net.SocketTimeoutException;
+		String reqId = RequestLoggingInterceptor.currentRequestId();
+		LOG.log(Level.SEVERE, "event=upstream_call_failed app=MMUWeb"
+				+ (reqId == null ? "" : " req_id=" + reqId)
+				+ " url=" + url
+				+ " timed_out=" + timedOut
+				+ (timedOut ? " read_timeout_ms=" + intProp("mmu.rest.readTimeoutMillis", 120000) : "")
+				+ " error=" + root.getClass().getSimpleName()
+				+ " error_msg=\"" + String.valueOf(root.getMessage()).replace('"', '\'') + "\"");
+		e.printStackTrace();
+	}
+
 	public static String puttWithHeaders(String url, MultiValueMap<String, String> requestHeaders,
 			String requestPayload) {
 		try {
-			RestTemplate restTemplate = new RestTemplate();
+			addRequestId(requestHeaders);
+			RestTemplate restTemplate = newRestTemplate();
 			restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 			requestHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 			HttpEntity<?> request = new HttpEntity<>(requestPayload.toString(), requestHeaders);
