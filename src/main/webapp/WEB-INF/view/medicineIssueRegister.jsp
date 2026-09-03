@@ -148,7 +148,24 @@
 			+ Level_of_user
 			+"&drugId="+drugId;
 	       
-	        openPdfModel(url);
+	        // Same treatment as the MMU OPD Register: this report can run for
+	        // minutes over a wide date range, and a plain preview shows nothing
+	        // while it does. Saves the PDF and reports progress instead, with a
+	        // Cancel that really aborts the query -- the fill happens in this JVM,
+	        // so HMSUtil holds the Statement.
+	        ReportProgress.start({
+	        	url: url,
+	        	title: 'Generating Medicine Issue Register',
+	        	prefix: 'medissue',
+	        	filename: 'Medicine_Issue_Register.pdf',
+	        	cancelable: true,
+	        	details: [
+	        		{ label: 'Date range', value: fromDate + ' \u2013 ' + toDate },
+	        		{ label: 'MMU', value: $j.trim($j('#mmuId option:selected').text()) || 'All' },
+	        		{ label: 'Drug', value: $j.trim($j('#itemId option:selected').text()) || 'All' }
+	        	],
+	        	hint: 'Reading data and building pages'
+	        });
 
 	     }
 		
@@ -341,3 +358,4 @@
 
 </html>
 <%@include file="..//view/modelWindowForReportsMultiple.jsp"%>
+<%@include file="..//view/reportProgressDialog.jsp"%>
