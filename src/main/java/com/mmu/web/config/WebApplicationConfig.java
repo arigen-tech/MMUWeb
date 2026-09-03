@@ -1,9 +1,12 @@
 package com.mmu.web.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -22,9 +25,24 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableTransactionManagement
 public class WebApplicationConfig extends WebMvcConfigurerAdapter {
 
+	@Autowired
+	private Environment environment;
+
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 		configurer.enable();
+	}
+
+	/**
+	 * One structured log line per request. /resources/** is excluded because a
+	 * single page pulls ~38 static assets — logging those would bury the ~1
+	 * meaningful line per page view under 38 that say nothing.
+	 */
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new RequestLoggingInterceptor("MMUWeb", environment))
+				.addPathPatterns("/**")
+				.excludePathPatterns("/resources/**", "/static/**", "/favicon.ico");
 	}
 
 	/**
