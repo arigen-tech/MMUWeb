@@ -5317,9 +5317,50 @@ public class ReportWebController {
 		
 		HMSUtil.generateReportInPopUp("OPD_register_report", "OPD Register Report", parameters, (Connection)connectionMap.get("conn"), response, request.getSession().getServletContext());
 		return null;
-	
+
 	}
-	
+
+	/**
+	 * Progress for the wait dialog, polled by the browser while a report runs.
+	 *
+	 * <p>The report response itself is the PDF and cannot carry a handle back, so the
+	 * browser generates the {@code runId} and puts it on both URLs.
+	 *
+	 * <p>Returns {@code {"found":false}} once the run has finished or was never
+	 * registered; the dialog treats that as "stop polling".
+	 */
+	@RequestMapping(value = "/reportRunStatus", method = RequestMethod.GET, produces = "application/json")
+	public String reportRunStatus(HttpServletRequest request, HttpServletResponse response) {
+		response.setHeader("Cache-Control", "no-store");
+		return HMSUtil.reportRunStatus(request.getParameter("runId"), sessionUserId(request));
+	}
+
+	/**
+	 * Cancels a running report by aborting its database query.
+	 *
+	 * <p>Scoped to the caller's own runs -- without the ownership check this would let
+	 * any authenticated user kill any other user's report by guessing an id.
+	 */
+	@RequestMapping(value = "/cancelReportRun", method = RequestMethod.POST, produces = "application/json")
+	public String cancelReportRun(HttpServletRequest request, HttpServletResponse response) {
+		response.setHeader("Cache-Control", "no-store");
+		boolean cancelled = HMSUtil.cancelReportRun(request.getParameter("runId"), sessionUserId(request));
+		return "{\"cancelled\":" + cancelled + "}";
+	}
+
+	/** Same resolution as RequestLoggingInterceptor, so ownership matches the logs. */
+	private static String sessionUserId(HttpServletRequest request) {
+		javax.servlet.http.HttpSession session = request.getSession(false);
+		if (session == null) {
+			return "-";
+		}
+		Object userId = session.getAttribute("userId");
+		if (userId == null) {
+			userId = session.getAttribute("user_id");
+		}
+		return userId == null ? "-" : userId.toString();
+	}
+
 	@RequestMapping(value = "/mlcSlip", method = RequestMethod.GET)
 	public ModelAndView mlcSlip(HttpServletRequest request, HttpServletResponse response) {
 		
