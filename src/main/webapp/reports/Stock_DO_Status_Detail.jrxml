@@ -38,7 +38,7 @@ where
 store_item_batch_stock.expiry_date > current_date
 AND
 
- (STORE_ITEM_BATCH_STOCK.DISTRICT_ID =$P{DISTRICT_ID}OR $P{DISTRICT_ID}=0)
+ (STORE_ITEM_BATCH_STOCK.DISTRICT_ID =$P{DISTRICT_ID} OR $P{DISTRICT_ID}=0)
 $P!{query}
 group by store_item_batch_stock.item_id,mas_store_item.pvms_no,mas_store_item.nomenclature,
 store_item_batch_stock.batch_no,store_item_batch_stock.expiry_date,store_item_batch_stock.MANUFACTURE_DATE,

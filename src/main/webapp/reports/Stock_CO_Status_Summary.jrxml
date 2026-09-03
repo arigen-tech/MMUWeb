@@ -29,7 +29,7 @@ inner join store_item_batch_stock store_item_batch_stock on mas_store_item.item_
 LEFT OUTER JOIN MAS_STORE_UNIT on MAS_STORE_ITEM.ITEM_UNIT_ID=MAS_STORE_UNIT.STORE_UNIT_ID
 LEFT OUTER JOIN MAS_DEPARTMENT on STORE_ITEM_BATCH_STOCK.DEPARTMENT_ID=MAS_DEPARTMENT.DEPARTMENT_ID
 LEFT OUTER JOIN MAS_CITY on STORE_ITEM_BATCH_STOCK.CITY_ID=MAS_CITY.CITY_ID
-where  (store_item_batch_stock.CITY_ID=$P{CITY_ID}OR $P{CITY_ID}=0)AND
+where  (store_item_batch_stock.CITY_ID=$P{CITY_ID} OR $P{CITY_ID}=0)AND
 store_item_batch_stock.expiry_date > current_date  AND store_item_batch_stock.CLOSING_STOCK<>0
 $P!{query}
 group by mas_store_item.pvms_no,mas_store_item.nomenclature , MAS_STORE_UNIT.STORE_UNIT_NAME,CITY_NAME , MAS_DEPARTMENT.DEPARTMENT_NAME

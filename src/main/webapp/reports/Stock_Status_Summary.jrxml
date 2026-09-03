@@ -69,7 +69,7 @@ AND
 		)
 
 
-and (store_item_batch_stock.MMU_ID=$P{HOSPITAL_ID}OR $P{HOSPITAL_ID}=0)
+and (store_item_batch_stock.MMU_ID=$P{HOSPITAL_ID} OR $P{HOSPITAL_ID}=0)
 $P!{query}
 group by mas_store_item.pvms_no,mas_store_item.nomenclature , MAS_STORE_UNIT.STORE_UNIT_NAME,MAS_MMU.MMU_NAME , MAS_DEPARTMENT.DEPARTMENT_NAME
 order by  MAS_MMU.MMU_NAME ,mas_store_item.nomenclature]]>

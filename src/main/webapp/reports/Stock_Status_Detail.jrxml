@@ -72,7 +72,7 @@ AND
 			(MMU.DISTRICT_ID=ALL_ID.IDS AND 'D' =$P{Level_of_user}) )
 		)
 and
- (STORE_ITEM_BATCH_STOCK.MMU_ID =$P{HOSPITAL_ID}OR $P{HOSPITAL_ID}=0)
+ (STORE_ITEM_BATCH_STOCK.MMU_ID =$P{HOSPITAL_ID} OR $P{HOSPITAL_ID}=0)
 $P!{query}
 group by store_item_batch_stock.item_id,mas_store_item.pvms_no,mas_store_item.nomenclature,
 store_item_batch_stock.batch_no,store_item_batch_stock.expiry_date,store_item_batch_stock.MANUFACTURE_DATE,

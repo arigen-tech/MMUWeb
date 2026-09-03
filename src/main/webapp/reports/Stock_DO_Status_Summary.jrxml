@@ -31,7 +31,7 @@ LEFT OUTER JOIN MAS_STORE_UNIT on MAS_STORE_ITEM.ITEM_UNIT_ID=MAS_STORE_UNIT.STO
 LEFT OUTER JOIN MAS_DEPARTMENT on STORE_ITEM_BATCH_STOCK.DEPARTMENT_ID=MAS_DEPARTMENT.DEPARTMENT_ID
 LEFT OUTER JOIN mas_store_supplier_type SST on STORE_ITEM_BATCH_STOCK.supplier_type_id=sst.supplier_type_id
 LEFT OUTER JOIN mas_store_supplier mss on STORE_ITEM_BATCH_STOCK.supplier_id=mss.supplier_id
-where  (store_item_batch_stock.DISTRICT_ID=$P{DISTRICT_ID}OR $P{DISTRICT_ID}=0)AND
+where  (store_item_batch_stock.DISTRICT_ID=$P{DISTRICT_ID} OR $P{DISTRICT_ID}=0)AND
 store_item_batch_stock.expiry_date > current_date
 $P!{query}
 group by mas_store_item.pvms_no,mas_store_item.nomenclature , MAS_STORE_UNIT.STORE_UNIT_NAME,DISTRICT_NAME , MAS_DEPARTMENT.DEPARTMENT_NAME,supplier_name,supplier_type_name
