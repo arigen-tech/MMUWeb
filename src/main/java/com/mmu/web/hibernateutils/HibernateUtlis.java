@@ -41,11 +41,33 @@ public class HibernateUtlis {
 
 	}
 
+	/**
+	 * Releases the session bound to the current thread.
+	 *
+	 * The ThreadLocal is cleared *first*: previously clear() ran before
+	 * remove(), so a session in an aborted-transaction state — precisely the
+	 * kind worth reclaiming — could throw there and leave the session bound to
+	 * a pooled Tomcat worker thread permanently. Same order of operations as
+	 * before, just made unconditional.
+	 */
 	public void CloseConnection() {
-		if (threadlocal.get() != null) {
-			threadlocal.get().clear();
-			threadlocal.get().close();
-			threadlocal.remove();
+		Session session = threadlocal.get();
+		if (session == null) {
+			return;
+		}
+		threadlocal.remove();
+		try {
+			if (session.isOpen()) {
+				session.clear();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				session.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
