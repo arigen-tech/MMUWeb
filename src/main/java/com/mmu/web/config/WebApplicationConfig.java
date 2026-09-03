@@ -27,12 +27,24 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter {
 		configurer.enable();
 	}
 
+	/**
+	 * Was corePoolSize=100 / maxPoolSize=100000. Each Java thread reserves around
+	 * 1MB of stack, so that ceiling alone represented a ~100GB reservation and
+	 * nothing bounded thread growth under load. The 100 core threads were also
+	 * kept alive permanently. Nothing in either application actually injects this
+	 * executor, so these bounds are conservative on purpose — raise them
+	 * deliberately if async work is ever added.
+	 */
 	@Bean
 	public ThreadPoolTaskExecutor taskExecutor() {
 		ThreadPoolTaskExecutor pool = new ThreadPoolTaskExecutor();
-		pool.setCorePoolSize(100);
-		pool.setMaxPoolSize(100000);
+		pool.setCorePoolSize(10);
+		pool.setMaxPoolSize(50);
+		pool.setQueueCapacity(200);
+		pool.setKeepAliveSeconds(60);
+		pool.setThreadNamePrefix("mmu-web-task-");
 		pool.setWaitForTasksToCompleteOnShutdown(true);
+		pool.setAwaitTerminationSeconds(30);
 		return pool;
 	}
 
