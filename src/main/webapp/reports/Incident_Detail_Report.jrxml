@@ -62,10 +62,10 @@ WHERE CEC.incident_date between $P{From_Date} and $P{To_Date} and
 	  (mmu.mmu_vendor_id = $P{VENDOR_ID} OR $P{VENDOR_ID}=0) AND
 	  	 MMU.MMU_ID IN (
 	  	SELECT 	MMU.MMU_ID
-		FROM 	MAS_MMU MMU,(SELECT  	to_number(foo,'99999999') IDS
-				     FROM 	regexp_split_to_table((SELECT 	(CASE WHEN 'M' = $P{Level_of_user} THEN substring(M.MMU_ID, 1 ,length(M.MMU_ID)-1) 
-										      WHEN 'C' = $P{Level_of_user} THEN substring(M.CITY_ID, 1 ,length(M.CITY_ID)-1) 
-										      WHEN 'D' = $P{Level_of_user} THEN substring(M.DISTRICT_ID, 1 ,length(M.DISTRICT_ID)-1) 
+		FROM 	MAS_MMU MMU,(SELECT  	substring(btrim(foo) from '^[0-9]+$')::numeric IDS
+				     FROM 	regexp_split_to_table((SELECT 	(CASE WHEN 'M' = $P{Level_of_user} THEN M.MMU_ID 
+										      WHEN 'C' = $P{Level_of_user} THEN M.CITY_ID 
+										      WHEN 'D' = $P{Level_of_user} THEN M.DISTRICT_ID 
 										      ELSE '1' END)
 									FROM 	USERS M 
 									WHERE 	M.USER_ID =$P{User_id}), E',') As foo)  ALL_ID 
@@ -90,10 +90,10 @@ WHERE CEC.incident_date between $P{From_Date} and $P{To_Date} and
 	  (mmu.mmu_vendor_id = $P{VENDOR_ID} OR $P{VENDOR_ID}=0) AND
 	  	 MMU.MMU_ID IN (
 	  	SELECT 	MMU.MMU_ID
-		FROM 	MAS_MMU MMU,(SELECT  	to_number(foo,'99999999') IDS
-				     FROM 	regexp_split_to_table((SELECT 	(CASE WHEN 'M' = $P{Level_of_user} THEN substring(M.MMU_ID, 1 ,length(M.MMU_ID)-1) 
-										      WHEN 'C' = $P{Level_of_user} THEN substring(M.CITY_ID, 1 ,length(M.CITY_ID)-1) 
-										      WHEN 'D' = $P{Level_of_user} THEN substring(M.DISTRICT_ID, 1 ,length(M.DISTRICT_ID)-1) 
+		FROM 	MAS_MMU MMU,(SELECT  	substring(btrim(foo) from '^[0-9]+$')::numeric IDS
+				     FROM 	regexp_split_to_table((SELECT 	(CASE WHEN 'M' = $P{Level_of_user} THEN M.MMU_ID 
+										      WHEN 'C' = $P{Level_of_user} THEN M.CITY_ID 
+										      WHEN 'D' = $P{Level_of_user} THEN M.DISTRICT_ID 
 										      ELSE '1' END)
 									FROM 	USERS M 
 									WHERE 	M.USER_ID =$P{User_id}), E',') As foo)  ALL_ID 

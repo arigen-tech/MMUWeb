@@ -33,7 +33,7 @@ UNION
 SELECT string_agg(ADV.medical_advice , ' , '  ORDER BY ADV.medical_advice) 
 FROM opd_template_medical_advice ADV
 WHERE ADV.template_madvice_id IN (
-SELECT  to_number(foo,'99999999')Q_id
+SELECT  substring(btrim(foo) from '^[0-9]+$')::numericQ_id
 FROM 	regexp_split_to_table((select 	substring(RECMMD_MED_ADVICE, 1 ,length(RECMMD_MED_ADVICE))
 from OPD_PATIENT_DETAILS 
 WHERE  Length(RECMMD_MED_ADVICE)<>0 AND VISIT_ID=$P{VISIT_ID} and OPD_PATIENT_DETAILS_ID >=23375), E',') As foo)]]></queryString>

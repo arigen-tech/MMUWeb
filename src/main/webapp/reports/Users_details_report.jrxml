@@ -35,24 +35,24 @@
 															ELSE 'STATE USER' END)LEVEL_OF_USER,
 		
 	 	(CASE LEVEL_OF_USER WHEN 'M' THEN 
-(SELECT string_agg(MMU.MMU_NAME, ', ')  FROM MAS_MMU MMU WHERE MMU_ID IN (SELECT  to_number(foo,'99999999')
+(SELECT string_agg(MMU.MMU_NAME, ', ')  FROM MAS_MMU MMU WHERE MMU_ID IN (SELECT  substring(btrim(foo) from '^[0-9]+$')::numeric
 																		  FROM 	regexp_split_to_table((SELECT 	(CASE (SELECT COUNT(*)  FROM regexp_matches(M.MMU_ID, ',')) WHEN 0 THEN 
 																										substring((M.MMU_ID||','), 1 ,length((M.MMU_ID||','))-1) ELSE
-																										substring(M.MMU_ID, 1 ,length(M.MMU_ID)-1) END)
+																										M.MMU_ID END)
 																									   FROM 	USERS M 
 																									   WHERE 	M.USER_ID =U.USER_ID), E',') As foo ))
  WHEN 'C' THEN
- (SELECT string_agg(MMU.CITY_NAME, ', ')  FROM MAS_CITY MMU WHERE CITY_ID IN (SELECT  to_number(foo,'99999999')
+ (SELECT string_agg(MMU.CITY_NAME, ', ')  FROM MAS_CITY MMU WHERE CITY_ID IN (SELECT  substring(btrim(foo) from '^[0-9]+$')::numeric
 																		  FROM 	regexp_split_to_table((SELECT 	(CASE (SELECT COUNT(*)  FROM regexp_matches(M.CITY_ID, ',')) WHEN 0 THEN 
 																										substring((M.CITY_ID||','), 1 ,length((M.CITY_ID||','))-1) ELSE
-																										substring(M.CITY_ID, 1 ,length(M.CITY_ID)-1) END)
+																										M.CITY_ID END)
 																									   FROM 	USERS M 
 																									   WHERE 	M.USER_ID =U.USER_ID), E',') As foo ))
  WHEN 'D' THEN
- (SELECT string_agg(MMU.DISTRICT_NAME, ', ')  FROM MAS_DISTRICT MMU WHERE DISTRICT_ID IN (SELECT  to_number(foo,'99999999')
+ (SELECT string_agg(MMU.DISTRICT_NAME, ', ')  FROM MAS_DISTRICT MMU WHERE DISTRICT_ID IN (SELECT  substring(btrim(foo) from '^[0-9]+$')::numeric
 																		  FROM 	regexp_split_to_table((SELECT 	(CASE (SELECT COUNT(*)  FROM regexp_matches(M.DISTRICT_ID, ',')) WHEN 0 THEN 
 																										substring((M.DISTRICT_ID||','), 1 ,length((M.DISTRICT_ID||','))-1) ELSE
-																										substring(M.DISTRICT_ID, 1 ,length(M.DISTRICT_ID)-1) END)
+																										M.DISTRICT_ID END)
 																									   FROM 	USERS M 
 																									   WHERE 	M.USER_ID =U.USER_ID), E',') As foo ))
 															ELSE 'STATE USER' END) USER_RELATED,
