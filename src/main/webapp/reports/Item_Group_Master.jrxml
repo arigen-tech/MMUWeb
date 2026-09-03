@@ -28,7 +28,7 @@
 	</parameter>
 	<queryString><![CDATA[SELECT GROUP_CODE , GROUP_NAME , case WHEN UPPER(STATUS)='Y'  
 then 'Active' else 'Inactive' end STATUS 
-FROM SHIP.MAS_STORE_GROUP
+FROM MAS_STORE_GROUP
 ORDER BY GROUP_NAME]]></queryString>
 
 	<field name="group_code" class="java.lang.String"/>
@@ -82,7 +82,7 @@ ORDER BY GROUP_NAME]]></queryString>
 					<textElement textAlignment="Center">
 						<font pdfFontName="Helvetica-Bold" size="14" isBold="true"/>
 					</textElement>
-				<text><![CDATA[Indian Coast Guard]]></text>
+<!--				<text><![CDATA[Indian Coast Guard]]></text>-->
 				</staticText>
 			</band>
 		</title>

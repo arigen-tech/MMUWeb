@@ -28,8 +28,8 @@
 	</parameter>
 	<queryString><![CDATA[SELECT MAS_ITEM_CLASS.ITEM_CLASS_CODE ,MAS_ITEM_CLASS.ITEM_CLASS_NAME ,MAS_STORE_SECTION.SECTION_NAME , case WHEN upper(MAS_ITEM_CLASS.STATUS)='Y' 
 then 'Active' else 'Inactive' end STATUS
-FROM ship.MAS_ITEM_CLASS
-LEFT OUTER JOIN ship.MAS_STORE_SECTION on MAS_STORE_SECTION.SECTION_ID=MAS_ITEM_CLASS.SECTION_ID
+FROM MAS_ITEM_CLASS
+LEFT OUTER JOIN MAS_STORE_SECTION on MAS_STORE_SECTION.SECTION_ID=MAS_ITEM_CLASS.SECTION_ID
 ORDER BY ITEM_CLASS_NAME]]></queryString>
 
 	<field name="item_class_code" class="java.lang.String"/>
@@ -69,7 +69,7 @@ ORDER BY ITEM_CLASS_NAME]]></queryString>
 					<textElement textAlignment="Center">
 						<font pdfFontName="Helvetica-Bold" size="14" isBold="true"/>
 					</textElement>
-				<text><![CDATA[Indian Coast Guard]]></text>
+<!--				<text><![CDATA[Indian Coast Guard]]></text>-->
 				</staticText>
 				<staticText>
 					<reportElement
