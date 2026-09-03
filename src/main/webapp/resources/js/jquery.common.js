@@ -1452,6 +1452,47 @@ function getFilenameAndReplcePath(fileNameValue){
 	 return filenameWithExtension;
 }
 
+/**
+ * Turns a failed jqXHR into something a user can report and a developer can act
+ * on. Alerting the jqXHR itself only ever produced "[object Object]".
+ *
+ * The 413 branch matters most: the reverse proxy enforces its own body limit and
+ * answers before the request reaches the application, so nothing is written to
+ * the application log and the browser is the only place the failure is visible.
+ */
+function describeAjaxError(jqXHR){
+	if(!jqXHR){
+		return 'Unknown error.';
+	}
+	// jQuery reports status 0 when the request never completed -- offline, DNS
+	// failure, a connection the server or proxy closed mid-upload, or a navigation
+	// away from the page.
+	if(jqXHR.status === 0){
+		return 'The request did not reach the server (connection failed or was aborted).';
+	}
+
+	var detail = 'HTTP ' + jqXHR.status + (jqXHR.statusText ? ' ' + jqXHR.statusText : '');
+
+	// The application answers errors as JSON. A proxy answers with HTML, so the
+	// parse is allowed to fail and we fall back to the status line alone.
+	var body = jqXHR.responseJSON;
+	if(!body && jqXHR.responseText){
+		try { body = JSON.parse(jqXHR.responseText); } catch(e) { body = null; }
+	}
+	var serverMessage = body ? (body.err_mssg || body.msg) : null;
+	if(serverMessage){
+		return detail + '\n' + serverMessage;
+	}
+
+	// Only when the server said nothing useful. A 413 from the proxy carries an
+	// HTML body, so this is the only explanation the user will get for it.
+	if(jqXHR.status === 413){
+		detail += '\nThe upload is too large. Save with fewer files at a time, or ask the'
+				+ ' administrator to raise the upload size limit.';
+	}
+	return detail;
+}
+
 function SendMultipartData(url,formData,successCallback,$elementObj)
 {
 	var successIcon = '<i class="fa fa-check-circle m-r-5"></i>';
@@ -1656,7 +1697,13 @@ function SendMultipartData(url,formData,successCallback,$elementObj)
 						$j('#btnAddSymtoms').prop("disabled",false);
 						$('#btnAddLabour').prop("disabled", false);
 						$('#btnDeptMapping').prop("disabled", false);
-						alert("An error has occurred while contacting the server"+ result);
+						// "+ result" used to stringify the jqXHR object, so every failure
+						// here read "[object Object]" -- no status, no server message,
+						// nothing to act on. A 413 from the reverse proxy in particular
+						// never reaches the application, so its 413 is the only evidence
+						// there is: the request was rejected at the edge and Tomcat logged
+						// nothing at all.
+						alert("An error has occurred while contacting the server\n\n" + describeAjaxError(result));
 
 
 					}
