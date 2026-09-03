@@ -40,43 +40,78 @@
 	</parameter>
 	<parameter name="referral_flag" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT Distinct MAS_MMU.MMU_NAME, PT.PATIENT_NAME ,PT.DATE_OF_BIRTH , PT_AGE(PT.Date_of_birth,VT.VISIT_DATE) AGE,
-PT.UHID_NO  PATIENT_TYPE ,
-USER_NAME AS DOCTOR_NAME,administrative_sex_name,VT.VISIT_DATE,OPD.ICD_DIAGNOSIS,
-OPD.PATIENT_SYMPTOMS,
-(CASE WHEN COALESCE(referral_flag,'N')='N' THEN 'No' ELSE 'Yes' END) referral_flag,
-(CASE WHEN COALESCE(dispensary_flag,'N')='N' THEN 'No' ELSE 'Yes' END) dispensary_flag,
-(CASE WHEN COALESCE(lab_flag,'N')='N' THEN 'No' ELSE 'Yes' END) lab_flag
-FROM VISIT VT
-	 LEFT OUTER JOIN PATIENT PT ON PT.PATIENT_ID=VT.PATIENT_ID
-	 LEFT OUTER JOIN OPD_PATIENT_DETAILS OPD ON OPD.VISIT_ID=VT.VISIT_ID
-	 LEFT OUTER JOIN MAS_ADMINISTRATIVE_SEX SEX ON SEX.ADMINISTRATIVE_SEX_ID=PT.ADMINISTRATIVE_SEX_ID
-	 LEFT OUTER JOIN USERS on USERS.USER_ID=OPD.DOCTOR_ID
-	 LEFT OUTER JOIN MAS_MMU on MAS_MMU.MMU_ID=VT.MMU_ID
-	 LEFT OUTER JOIN DISCHARGE_ICD_CODE DIC on DIC.VISIT_ID=VT.VISIT_ID
-WHERE 	 UPPER(VT.VISIT_STATUS)='C' AND
-	  VT.VISIT_DATE::date  BETWEEN $P{FROM_DATE}   AND $P{TO_DATE}       AND
-        (PT.ADMINISTRATIVE_SEX_ID = $P{Sex_id} OR $P{Sex_id} = 0) AND
-	 (VT.MMU_ID = $P{Mmu_id} OR $P{Mmu_id}= 0) AND
-	 (DIC.ICD_ID = $P{Icd_id} OR $P{Icd_id}=0)AND
-	 (OPD.referral_flag = $P{referral_flag} OR $P{referral_flag}='') AND
-PT.age between $P{fromAge} and (case when $P{toAge} = 0 then 125 else $P{toAge} end )AND
-	 MAS_MMU.MMU_ID IN (
-	  	SELECT 	MMU.MMU_ID
-		FROM 	MAS_MMU MMU,CITY_MMU_MAPPING MCM,(SELECT  	to_number(foo,'99999999') IDS
-				     FROM 	regexp_split_to_table((SELECT 	(CASE WHEN 'M' = $P{Level_of_user} THEN substring(M.MMU_ID, 1 ,length(M.MMU_ID)-1)
-										      WHEN 'C' = $P{Level_of_user} THEN substring(M.CITY_ID, 1 ,length(M.CITY_ID)-1)
-										      WHEN 'D' = $P{Level_of_user} THEN substring(M.DISTRICT_ID, 1 ,length(M.DISTRICT_ID)-1)
-										      ELSE '1' END)
-									FROM 	USERS M
-									WHERE 	M.USER_ID =$P{User_id}), E',') As foo)  ALL_ID
-		WHERE MCM.MMU_ID = MAS_MMU.MMU_ID AND
-			( (MMU.MMU_ID=ALL_ID.IDS AND 'M' =$P{Level_of_user}) OR
-	  		(MCM.CITY_ID=ALL_ID.IDS AND 'C' =$P{Level_of_user}) OR
-			(MMU.STATE_ID=ALL_ID.IDS AND 'S' =$P{Level_of_user}) OR
-			(MMU.DISTRICT_ID=ALL_ID.IDS AND 'D' =$P{Level_of_user}) )
-		)
-ORDER BY MAS_MMU.MMU_NAME,VT.VISIT_DATE]]>
+		<![CDATA[WITH p AS (
+  SELECT CAST($P{FROM_DATE}     AS date)    AS from_date,
+         CAST($P{TO_DATE}       AS date)    AS to_date,
+         CAST($P{Sex_id}        AS integer) AS sex_id,
+         CAST($P{Mmu_id}        AS integer) AS mmu_id,
+         CAST($P{Icd_id}        AS integer) AS icd_id,
+         CAST($P{referral_flag} AS text)    AS referral_flag,
+         CAST($P{fromAge}       AS integer) AS from_age,
+         CAST($P{toAge}         AS integer) AS to_age,
+         CAST($P{User_id}       AS integer) AS user_id,
+         CAST($P{Level_of_user} AS text)    AS level_of_user
+),
+user_ids AS MATERIALIZED (
+  SELECT to_number(btrim(t), '99999999')::int AS id
+  FROM   p
+  CROSS  JOIN LATERAL (
+           SELECT CASE p.level_of_user
+                    WHEN 'M' THEN u.MMU_ID
+                    WHEN 'C' THEN u.CITY_ID
+                    WHEN 'D' THEN u.DISTRICT_ID
+                    WHEN 'S' THEN '1'
+                    ELSE '1'
+                  END AS raw
+           FROM   USERS u WHERE u.USER_ID = p.user_id
+         ) s
+  CROSS  JOIN LATERAL regexp_split_to_table(s.raw, ',') AS t
+  WHERE  btrim(t) <> ''
+),
+allowed_mmu AS MATERIALIZED (
+  SELECT DISTINCT m.MMU_ID
+  FROM   MAS_MMU m CROSS JOIN p
+  WHERE  (p.level_of_user = 'M' AND m.MMU_ID      IN (SELECT id FROM user_ids))
+     OR  (p.level_of_user = 'D' AND m.DISTRICT_ID IN (SELECT id FROM user_ids))
+     OR  (p.level_of_user = 'S' AND m.STATE_ID    IN (SELECT id FROM user_ids))
+     OR  (p.level_of_user = 'C' AND EXISTS (
+              SELECT 1 FROM CITY_MMU_MAPPING mcm
+              WHERE mcm.MMU_ID = m.MMU_ID
+                AND mcm.CITY_ID IN (SELECT id FROM user_ids)))
+)
+SELECT DISTINCT MM.MMU_NAME,
+       PT.PATIENT_NAME,
+       PT.DATE_OF_BIRTH,
+       PT_AGE(PT.DATE_OF_BIRTH, VT.VISIT_DATE) AS AGE,
+       PT.UHID_NO AS PATIENT_TYPE,
+       USERS.USER_NAME AS DOCTOR_NAME,
+       SEX.ADMINISTRATIVE_SEX_NAME,
+       VT.VISIT_DATE,
+       OPD.ICD_DIAGNOSIS,
+       OPD.PATIENT_SYMPTOMS,
+       CASE WHEN COALESCE(OPD.REFERRAL_FLAG,'N')   = 'N' THEN 'No' ELSE 'Yes' END AS REFERRAL_FLAG,
+       CASE WHEN COALESCE(OPD.DISPENSARY_FLAG,'N') = 'N' THEN 'No' ELSE 'Yes' END AS DISPENSARY_FLAG,
+       CASE WHEN COALESCE(OPD.LAB_FLAG,'N')        = 'N' THEN 'No' ELSE 'Yes' END AS LAB_FLAG
+FROM   VISIT VT
+       CROSS JOIN p
+       JOIN      allowed_mmu AM              ON AM.MMU_ID = VT.MMU_ID
+       JOIN      MAS_MMU MM                  ON MM.MMU_ID = VT.MMU_ID
+       LEFT JOIN PATIENT PT                  ON PT.PATIENT_ID = VT.PATIENT_ID
+       LEFT JOIN OPD_PATIENT_DETAILS OPD     ON OPD.VISIT_ID  = VT.VISIT_ID
+       LEFT JOIN MAS_ADMINISTRATIVE_SEX SEX  ON SEX.ADMINISTRATIVE_SEX_ID = PT.ADMINISTRATIVE_SEX_ID
+       LEFT JOIN USERS                       ON USERS.USER_ID = OPD.DOCTOR_ID
+WHERE  UPPER(VT.VISIT_STATUS) = 'C'
+  AND  VT.VISIT_DATE >= p.from_date
+  AND  VT.VISIT_DATE <  p.to_date + 1
+  AND  (p.sex_id = 0 OR PT.ADMINISTRATIVE_SEX_ID = p.sex_id)
+  AND  (p.mmu_id = 0 OR VT.MMU_ID = p.mmu_id)
+  AND  (p.referral_flag = '' OR OPD.REFERRAL_FLAG = p.referral_flag)
+  AND  PT.AGE BETWEEN p.from_age
+                  AND CASE WHEN p.to_age = 0 THEN 125 ELSE p.to_age END
+  AND  (p.icd_id = 0 OR EXISTS (
+           SELECT 1 FROM DISCHARGE_ICD_CODE DIC
+           WHERE DIC.VISIT_ID = VT.VISIT_ID AND DIC.ICD_ID = p.icd_id))
+ORDER BY MM.MMU_NAME, VT.VISIT_DATE]]>
 	</queryString>
 	<field name="mmu_name" class="java.lang.String"/>
 	<field name="patient_name" class="java.lang.String"/>
