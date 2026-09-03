@@ -161,7 +161,7 @@ public class DispensaryWebController {
 	public String getPendingListForCO(@RequestBody Map<String, Object> payload, HttpServletRequest request,
 			HttpServletResponse response, HttpSession session) {
 
-		String cityId = session.getAttribute("cityIdUsers").toString();
+		String cityId = sessionValue(session, "cityIdUsers");
 		cityId = cityId.replace(",", "");
 		String indentList = "";
 		JSONObject json = new JSONObject(payload);
@@ -1049,7 +1049,7 @@ public class DispensaryWebController {
 		ModelAndView mv = new ModelAndView();
 		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String OSBURL = HMSUtil.getProperties("urlextension.properties", "displayItemListCO");
-		String cityId = session.getAttribute("cityIdUsers").toString();
+		String cityId = sessionValue(session, "cityIdUsers");
 		cityId = cityId.replace(",", "");
 		JSONObject payload = new JSONObject();
 		payload.put("cityId", cityId);
@@ -1146,7 +1146,7 @@ public class DispensaryWebController {
 		ModelAndView mv = new ModelAndView();
 		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String OSBURL = HMSUtil.getProperties("urlextension.properties", "displayItemListDO");
-		String districtId = session.getAttribute("distIdUsers").toString();
+		String districtId = sessionValue(session, "distIdUsers");
 		districtId = districtId.replace(",", "");
 		JSONObject json = new JSONObject();
 		json.put("districtId", districtId);
@@ -1216,7 +1216,7 @@ public class DispensaryWebController {
 		ModelAndView mv = new ModelAndView();
 		// String payload = "{\"itemId\":" + itemId + "}";
 		JSONObject obj = new JSONObject();
-		String districtId = session.getAttribute("distIdUsers").toString();
+		String districtId = sessionValue(session, "distIdUsers");
 		districtId = districtId.replace(",", "");
 		// obj.put("districtId", session.getAttribute("districtId"));
 		obj.put("districtId", districtId);
@@ -1394,8 +1394,8 @@ public class DispensaryWebController {
 		String indentList = "";
 		JSONObject json = new JSONObject(payload);
 		json.put("userId", session.getAttribute("user_id"));
-		String cityId = session.getAttribute("cityIdUsers").toString();
-		cityId = cityId.substring(0, cityId.length()-1);
+		String cityId = sessionValue(session, "cityIdUsers");
+		cityId = trimLastChar(cityId);
 		
 		json.put("cityId", cityId);		
 		json.put("departmentId", HMSUtil.getProperties("adt.properties", "DISPENSARY_DEPARTMENT_ID").trim());
@@ -1422,8 +1422,8 @@ public class DispensaryWebController {
 		String indentList = "";
 		JSONObject json = new JSONObject(payload);
 		json.put("userId", session.getAttribute("user_id"));
-		String distId = session.getAttribute("distIdUsers").toString();
-		distId = distId.substring(0, distId.length()-1);
+		String distId = sessionValue(session, "distIdUsers");
+		distId = trimLastChar(distId);
 		
 		json.put("districtId", distId);		
 		json.put("departmentId", HMSUtil.getProperties("adt.properties", "DISPENSARY_DEPARTMENT_ID").trim());
@@ -1469,4 +1469,28 @@ public class DispensaryWebController {
 		return new ModelAndView("directPo", "directPo", indentListForApprovals);
 	}
 
+
+	/**
+	 * Reads a session attribute that may legitimately be absent.
+	 *
+	 * cityIdUsers and distIdUsers are only placed in the session when the login
+	 * response carries them, and MMUServices only emits those keys when the user
+	 * row actually has a city or district. A state-level user has neither, so the
+	 * previous unguarded getAttribute(...).toString() threw NullPointerException
+	 * and the screen returned HTTP 500 instead of rendering.
+	 */
+	private static String sessionValue(HttpSession session, String attributeName) {
+		Object value = session.getAttribute(attributeName);
+		return value == null ? "" : value.toString();
+	}
+
+	/**
+	 * Drops the last character, as the call sites have always done to strip the
+	 * trailing separator from a comma-terminated id list. Guarded only against
+	 * the empty string, which would otherwise throw
+	 * StringIndexOutOfBoundsException now that an absent attribute yields "".
+	 */
+	private static String trimLastChar(String value) {
+		return value.isEmpty() ? value : value.substring(0, value.length() - 1);
+	}
 }
