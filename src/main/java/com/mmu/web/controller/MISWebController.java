@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mmu.web.utils.HMSUtil;
+import com.mmu.web.utils.MISExportSupport;
 import com.mmu.web.utils.RestUtils;
 
 @RequestMapping("/mis")
@@ -71,21 +72,35 @@ public class MISWebController {
 		return mav;
 	}
 	    
+	/**
+	 * Labour Beneficiary register.
+	 *
+	 * <p>The work happens in MMUServices, in {@code asp_labour_register}, which
+	 * re-aggregates every visit since 2023-03-11 on each run -- measured at 91s in
+	 * the database for a single camp date. Against the 120s default read timeout
+	 * that left under 30s of headroom, and a real export died at 120.2s with
+	 * {@code SocketTimeoutException}; the caller then indexed
+	 * {@code labourBeneficiary_data} on the error envelope and the user got a 500
+	 * naming a missing JSON key, which describes nothing that went wrong. Hence the
+	 * export timeout, and the explicit check on the response below.
+	 */
 	@RequestMapping(value = "/exportExcelLabourBeneficiary", method = RequestMethod.GET)
 	public ModelAndView exportExcelLabourBeneficiary(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {		
+			HttpServletResponse response) throws Exception {
 		JSONObject payload=new JSONObject();
 		payload.put("campDate", request.getParameter("campDate"));
 		payload.put("districtId", request.getParameter("districtId"));
-		
-		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();			
+		// Same handle on both sides: MMUServices registers the run under it, so
+		// the dialog's row count and Cancel reach the query that is actually running.
+		payload.put("runId", request.getParameter("runId"));
+
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getLabourBeneficiaryData");
-		String OSBURL = IpAndPortNo + Url;	
-		
-		String data= RestUtils.postWithHeaders(OSBURL.trim(),requestHeaders, payload.toString());
-	    return new ModelAndView(new ExportExcelLbrBeneficiary(), "data", data);
-		
-	
+		String OSBURL = IpAndPortNo + Url;
+
+		return MISExportSupport.tracked(request, "Labour Beneficiary register", "labourBeneficiary_data",
+				new ExportExcelLbrBeneficiary(),
+				() -> RestUtils.postWithHeadersForExport(OSBURL.trim(), requestHeaders, payload.toString()));
 	  }
 	
 	@RequestMapping(value="/mmssyInformationRegister", method=RequestMethod.GET)
@@ -94,22 +109,24 @@ public class MISWebController {
 		return mav;
 	}
 	
+	/** Same long-running shape as the Labour Beneficiary register above. */
 	@RequestMapping(value = "/exportExcelMMSSYInfo", method = RequestMethod.GET)
 	public ModelAndView exportExcelMMSSYInfo(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {		
+			HttpServletResponse response) throws Exception {
 		JSONObject payload=new JSONObject();
 		payload.put("campDate", request.getParameter("campDate"));
 		payload.put("districtId", request.getParameter("districtId"));
-		
-		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();			
+		// Same handle on both sides: MMUServices registers the run under it, so
+		// the dialog's row count and Cancel reach the query that is actually running.
+		payload.put("runId", request.getParameter("runId"));
+
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		String Url = HMSUtil.getProperties("urlextension.properties","getMMSSYInfoData");
-		String OSBURL = IpAndPortNo + Url;	
-		
-		String data= RestUtils.postWithHeaders(OSBURL.trim(),requestHeaders, payload.toString());
-				
-	    return new ModelAndView(new ExportExcelMMSSYInfo(), "data", data);
-		
-	
+		String OSBURL = IpAndPortNo + Url;
+
+		return MISExportSupport.tracked(request, "MMSSY Information register", "mmssyInfo_data",
+				new ExportExcelMMSSYInfo(),
+				() -> RestUtils.postWithHeadersForExport(OSBURL.trim(), requestHeaders, payload.toString()));
 	  }
 	
 	@RequestMapping(value="/attendanceRegister", method=RequestMethod.GET)

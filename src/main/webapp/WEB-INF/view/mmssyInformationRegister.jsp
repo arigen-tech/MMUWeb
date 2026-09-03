@@ -71,22 +71,30 @@
 	 
 	 
 	 function exportExcel(){
-     	
+
 		 var campDate = $j("#campDate").val();
 		 var districtId = $j("#district").val();
 		 if(campDate ==''){
 			 alert("Please select Camp Date");
 			 return false;
 		 }
-		 
-		
-	    window.location.href =  "${pageContext.request.contextPath}/mis/exportExcelMMSSYInfo?campDate="
-				+ campDate
-				+ "&districtId="
-				+ districtId;	
-      
+
+		// Same shape as the Labour Beneficiary export: asp_mmssy_register aggregates
+		// a long history on every run, so the download needs visible progress.
+		ReportProgress.start({
+			url: "${pageContext.request.contextPath}/mis/exportExcelMMSSYInfo?campDate="
+					+ campDate + "&districtId=" + districtId,
+			title: 'Generating MMSSY Information Register',
+			prefix: 'mmssy',
+			details: [
+				{ label: 'Camp date', value: campDate },
+				{ label: 'District', value: $j.trim($j('#district option:selected').text()) || 'All districts' }
+			],
+			cancelable: true,
+			hint: 'Reading data (this can take a couple of minutes)'
+		});
       }
-	 
+
 	 function exportExcel2(){
 	     	
 		 var fromDate = $j("#fromDate").val();
@@ -244,3 +252,4 @@
 
 </html>
 <%@include file="..//view/modelWindowForReportsMultiple.jsp"%>
+<%@include file="..//view/reportProgressDialog.jsp"%>

@@ -736,6 +736,51 @@ public static String calculateAge(Date birthDate) {
 		}
 	}
 
+	// ------------------------------------------------------------------
+	// The same progress registry, for exports that are not Jasper reports.
+	//
+	// The MIS registers do not fill a .jasper here -- they POST to MMUServices,
+	// which runs the query, and turn the JSON that comes back into a workbook. So
+	// there is no Statement in this JVM to hold and no row counter ticking during
+	// the query, which is why these expose stage and elapsed time but no working
+	// Cancel: nothing in this process owns the query to cancel. The row count is
+	// filled in once, after the response arrives.
+	//
+	// Registering them here rather than inventing a second mechanism means
+	// /report/reportRunStatus keeps working unchanged for both.
+	// ------------------------------------------------------------------
+
+	/**
+	 * Registers an export against the browser's runId. Returns null when no runId
+	 * was supplied, which callers pass straight back to the other two methods --
+	 * so a screen that has not been wired to the dialog simply tracks nothing.
+	 */
+	public static ReportRun beginExportRun(String runId, String label, long[] rows) {
+		if (runId == null || runId.trim().isEmpty()) {
+			return null;
+		}
+		ReportRun run = new ReportRun(label, currentUser(), rows);
+		ACTIVE_RUNS.put(runId.trim(), run);
+		return run;
+	}
+
+	/** No-op for an untracked run. Stage strings match the labels the dialog knows. */
+	public static void exportRunStage(ReportRun run, String stage) {
+		if (run != null) {
+			run.stage = stage;
+		}
+	}
+
+	/**
+	 * Removes the run. The browser reads the resulting {@code {"found":false}} as
+	 * "finished", so this must not run until the work is actually done.
+	 */
+	public static void endExportRun(String runId) {
+		if (runId != null && !runId.trim().isEmpty()) {
+			ACTIVE_RUNS.remove(runId.trim());
+		}
+	}
+
 	/** The runId the browser put on the report URL, or null when it did not send one. */
 	private static String currentRunId() {
 		try {

@@ -56,9 +56,29 @@ public class RestUtils {
 	 * if a slower environment needs it.
 	 */
 	private static RestTemplate newRestTemplate() {
+		return newRestTemplate(intProp("mmu.rest.readTimeoutMillis", 120000));
+	}
+
+	/**
+	 * Read timeout for the MIS register exports, which are the one family of calls
+	 * the 120s default is genuinely too short for. {@code asp_labour_register}
+	 * aggregates every visit since 2023-03-11 on each run and was measured at 91s
+	 * in the database alone, before JSON assembly, transfer and the Excel build --
+	 * so the default gave it under 30s of headroom and a Labour Beneficiary export
+	 * died on {@code SocketTimeoutException} at 120.2s.
+	 *
+	 * <p>Deliberately a separate knob rather than a raise of the global default:
+	 * every other endpoint is a user-facing screen where 120s already means
+	 * something is wrong, and the timeout is what keeps a stuck upstream from
+	 * parking Tomcat threads. Only the exports, which the user starts knowingly
+	 * and watches through the progress dialog, get the longer leash.
+	 */
+	private static final String EXPORT_READ_TIMEOUT_KEY = "mmu.rest.exportReadTimeoutMillis";
+
+	private static RestTemplate newRestTemplate(int readTimeoutMillis) {
 		SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
 		factory.setConnectTimeout(intProp("mmu.rest.connectTimeoutMillis", 10000));
-		factory.setReadTimeout(intProp("mmu.rest.readTimeoutMillis", 120000));
+		factory.setReadTimeout(readTimeoutMillis);
 		return new RestTemplate(factory);
 	}
 
@@ -123,10 +143,26 @@ public class RestUtils {
 
 	public static String postWithHeaders(String url, MultiValueMap<String, String> requestHeaders,
 			String requestPayload) {
+		return postWithHeaders(url, requestHeaders, requestPayload,
+				intProp("mmu.rest.readTimeoutMillis", 120000));
+	}
+
+	/**
+	 * Same call with the read timeout raised for the MIS register exports.
+	 * See {@link #EXPORT_READ_TIMEOUT_KEY}.
+	 */
+	public static String postWithHeadersForExport(String url, MultiValueMap<String, String> requestHeaders,
+			String requestPayload) {
+		return postWithHeaders(url, requestHeaders, requestPayload,
+				intProp(EXPORT_READ_TIMEOUT_KEY, 600000));
+	}
+
+	public static String postWithHeaders(String url, MultiValueMap<String, String> requestHeaders,
+			String requestPayload, int readTimeoutMillis) {
 		try {
 			addRequestId(requestHeaders);
 
-			RestTemplate restTemplate = newRestTemplate();
+			RestTemplate restTemplate = newRestTemplate(readTimeoutMillis);
 			restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 			requestHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 			HttpEntity<?> request = new HttpEntity<>(requestPayload.toString(), requestHeaders);
@@ -140,7 +176,7 @@ public class RestUtils {
 			int statusCode = exception.getStatusCode().value();
 			String getMssg = exception.getMessage();
 			String getStatustext = exception.getStatusText();
-			logUpstreamFailure(url, exception);
+			logUpstreamFailure(url, exception, readTimeoutMillis);
 			return ProjectUtils.getErrorMssg(0, "EXP101", getMssg);
 		} catch (Exception e) {
 			// The returned envelope says only "Error in processing request !", which
@@ -148,7 +184,7 @@ public class RestUtils {
 			// report a missing-key error for what was really a read timeout. The
 			// swallow stays (every proxy endpoint depends on it) but the real cause
 			// is now on the record.
-			logUpstreamFailure(url, e);
+			logUpstreamFailure(url, e, readTimeoutMillis);
 			return ProjectUtils.getErrorMssg(0, "EXP102", "Error in processing request !");
 		}
 		return "";
@@ -160,6 +196,15 @@ public class RestUtils {
 	 * RequestLoggingInterceptor, and joins to it on req_id.
 	 */
 	private static void logUpstreamFailure(String url, Exception e) {
+		logUpstreamFailure(url, e, intProp("mmu.rest.readTimeoutMillis", 120000));
+	}
+
+	/**
+	 * @param readTimeoutMillis the timeout this particular call actually ran with,
+	 *        so a call using the longer export leash does not report the default
+	 *        and send the next reader chasing the wrong number.
+	 */
+	private static void logUpstreamFailure(String url, Exception e, int readTimeoutMillis) {
 		Throwable root = e;
 		while (root.getCause() != null && root.getCause() != root) {
 			root = root.getCause();
@@ -170,7 +215,7 @@ public class RestUtils {
 				+ (reqId == null ? "" : " req_id=" + reqId)
 				+ " url=" + url
 				+ " timed_out=" + timedOut
-				+ (timedOut ? " read_timeout_ms=" + intProp("mmu.rest.readTimeoutMillis", 120000) : "")
+				+ (timedOut ? " read_timeout_ms=" + readTimeoutMillis : "")
 				+ " error=" + root.getClass().getSimpleName()
 				+ " error_msg=\"" + String.valueOf(root.getMessage()).replace('"', '\'') + "\"");
 		e.printStackTrace();

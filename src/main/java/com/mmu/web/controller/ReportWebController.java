@@ -5332,7 +5332,21 @@ public class ReportWebController {
 	@RequestMapping(value = "/reportRunStatus", method = RequestMethod.GET, produces = "application/json")
 	public String reportRunStatus(HttpServletRequest request, HttpServletResponse response) {
 		response.setHeader("Cache-Control", "no-store");
-		return HMSUtil.reportRunStatus(request.getParameter("runId"), sessionUserId(request));
+		String runId = request.getParameter("runId");
+		String local = HMSUtil.reportRunStatus(runId, sessionUserId(request));
+
+		// A MIS export runs its query in MMUServices, so the live row count only
+		// exists there. Ask for it, but only once the ownership check above has
+		// passed -- otherwise this would report on anyone's run. When MMUServices
+		// has finished and this process is still building the workbook, the remote
+		// answer is {"found":false} and the local one is kept.
+		if (local != null && local.contains("\"found\":true")) {
+			String remote = com.mmu.web.utils.MISExportSupport.remoteStatus(runId);
+			if (remote != null && remote.contains("\"found\":true")) {
+				return remote;
+			}
+		}
+		return local;
 	}
 
 	/**
@@ -5344,7 +5358,15 @@ public class ReportWebController {
 	@RequestMapping(value = "/cancelReportRun", method = RequestMethod.POST, produces = "application/json")
 	public String cancelReportRun(HttpServletRequest request, HttpServletResponse response) {
 		response.setHeader("Cache-Control", "no-store");
-		boolean cancelled = HMSUtil.cancelReportRun(request.getParameter("runId"), sessionUserId(request));
+		String runId = request.getParameter("runId");
+
+		// Returns true only for a run this user owns, so it doubles as the
+		// authorisation check for forwarding. For a MIS export it sets the local
+		// flag and nothing else -- the statement to abort belongs to MMUServices.
+		boolean cancelled = HMSUtil.cancelReportRun(runId, sessionUserId(request));
+		if (cancelled) {
+			cancelled = com.mmu.web.utils.MISExportSupport.remoteCancel(runId) || cancelled;
+		}
 		return "{\"cancelled\":" + cancelled + "}";
 	}
 
