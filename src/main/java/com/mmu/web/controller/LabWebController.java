@@ -282,7 +282,10 @@ public class LabWebController {
 		ModelAndView mv = new ModelAndView();
 		JSONObject objw = new JSONObject(responsedata);
 		String msg = "";
-		if(!String.valueOf(objw.get("status")).equals('0')) {
+		// Was .equals('0') — a char literal. String.equals(Character) is always
+		// false, so the negation was always true and this screen reported
+		// "Result Submited Successfully." even when the save had failed.
+		if(!String.valueOf(objw.get("status")).equals("0")) {
 			msg = "Result Submited Successfully.";
 		}else {
 			msg = "Error occured, Result not submitted";
