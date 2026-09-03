@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -43,18 +42,10 @@ public class HibernateConfiguration {
 	
 	
 
-	@Bean
+	@Bean(destroyMethod = "close")
 	public DataSource dataSource() {
-		System.out.println("Main DataSource Called");
-
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
-		dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
-		dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
-		dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
-
-		return dataSource;
-
+		return DataSourceFactory.build(environment, "MMUWeb-main",
+				"jdbc.url", "jdbc.username", "jdbc.password", 20);
 	}
 	
 	private Properties hibernateProperties() {
