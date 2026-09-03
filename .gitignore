@@ -2,7 +2,7 @@
 .idea/
 
 # Build output (Maven or Gradle)
-target/
+target
 
 # OS-specific files
 .DS_Store

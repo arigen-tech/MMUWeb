@@ -11,7 +11,6 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 
 /**
  * The persistent class for the VU_MAS_UNIT database table.
@@ -19,7 +18,6 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
  */
 @SuppressWarnings("restriction")
 @Entity
-@Immutable
 @Table(name="VU_MAS_UNIT")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class MasUnit implements Serializable {
