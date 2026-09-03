@@ -57,9 +57,24 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter {
 		return viewResolver;
 	}
 
+	/**
+	 * Static assets under /resources/ previously went out with no Cache-Control
+	 * and no ETag — only Last-Modified — so browsers revalidated them
+	 * heuristically. A single page references 38 of these files, and there are
+	 * 677 of them totalling 71MB, which is why request volume runs roughly 38x
+	 * the number of actual page views.
+	 *
+	 * One hour is deliberately conservative. Asset URLs in the JSPs are
+	 * unversioned (${pageContext.request.contextPath}/resources/js/foo.js), so
+	 * the cache period is also the worst-case window during which a user can
+	 * keep running pre-deploy JavaScript. Raise it once asset URLs carry a
+	 * build version.
+	 */
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+		registry.addResourceHandler("/resources/**")
+				.addResourceLocations("/resources/")
+				.setCachePeriod(3600);
 	}
 
 	@Bean(name = "messageSource")
