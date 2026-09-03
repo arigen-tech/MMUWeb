@@ -80,8 +80,11 @@ public class DispensaryWebController {
 		JSONObject responsedata = new JSONObject(responseData);
 		ModelAndView mv = new ModelAndView();
 		String jsp = "saveIndent";
-		model.addAttribute("message", responsedata.get("msg"));
-		model.addAttribute("indentMId", responsedata.get("indentMId"));
+		// opt() rather than get(): the service omits indentMId whenever the save
+		// fails, so get() threw JSONException and replaced the real "msg" with a
+		// parse error - hiding why the operation actually failed.
+		model.addAttribute("message", responsedata.opt("msg"));
+		model.addAttribute("indentMId", responsedata.opt("indentMId"));
 		model.addAttribute("indentFlag",""); 
 		model.addAttribute("flag", "save");
 		mv.setViewName(jsp);
@@ -362,8 +365,11 @@ public class DispensaryWebController {
 		JSONObject responsedata = new JSONObject(responseData);
 		ModelAndView mv = new ModelAndView();
 		String jsp = "saveIndent";
-		model.addAttribute("message", responsedata.get("msg"));
-		model.addAttribute("indentMId", responsedata.get("indentMId"));
+		// opt() rather than get(): the service omits indentMId whenever the save
+		// fails, so get() threw JSONException and replaced the real "msg" with a
+		// parse error - hiding why the operation actually failed.
+		model.addAttribute("message", responsedata.opt("msg"));
+		model.addAttribute("indentMId", responsedata.opt("indentMId"));
 		model.addAttribute("flag", "update");
 		model.addAttribute("indentFlag",""); 
 		mv.setViewName(jsp);
@@ -466,8 +472,11 @@ public class DispensaryWebController {
 		JSONObject responsedata = new JSONObject(responseData);
 		ModelAndView mv = new ModelAndView();
 		String jsp = "saveIndent";
-		model.addAttribute("message", responsedata.get("msg"));
-		model.addAttribute("indentMId", responsedata.get("indentMId"));
+		// opt() rather than get(): the service omits indentMId whenever the save
+		// fails, so get() threw JSONException and replaced the real "msg" with a
+		// parse error - hiding why the operation actually failed.
+		model.addAttribute("message", responsedata.opt("msg"));
+		model.addAttribute("indentMId", responsedata.opt("indentMId"));
 		model.addAttribute("flag", "approve");
 		model.addAttribute("indentFlag",""); 
 		mv.setViewName(jsp);
@@ -500,8 +509,11 @@ public class DispensaryWebController {
 		JSONObject responsedata = new JSONObject(responseData);
 		ModelAndView mv = new ModelAndView();
 		String jsp = "saveIndent";
-		model.addAttribute("message", responsedata.get("msg"));
-		model.addAttribute("indentMId", responsedata.get("indentMId"));
+		// opt() rather than get(): the service omits indentMId whenever the save
+		// fails, so get() threw JSONException and replaced the real "msg" with a
+		// parse error - hiding why the operation actually failed.
+		model.addAttribute("message", responsedata.opt("msg"));
+		model.addAttribute("indentMId", responsedata.opt("indentMId"));
 		model.addAttribute("flag", "approve");
 		model.addAttribute("indentFlag","");
 		if(docorFlag.equals("doctorValue"))
@@ -536,8 +548,11 @@ public class DispensaryWebController {
 		JSONObject responsedata = new JSONObject(responseData);
 		ModelAndView mv = new ModelAndView();
 		String jsp = "saveIndentCo";
-		model.addAttribute("message", responsedata.get("msg"));
-		model.addAttribute("indentMId", responsedata.get("indentMId"));
+		// opt() rather than get(): the service omits indentMId whenever the save
+		// fails, so get() threw JSONException and replaced the real "msg" with a
+		// parse error - hiding why the operation actually failed.
+		model.addAttribute("message", responsedata.opt("msg"));
+		model.addAttribute("indentMId", responsedata.opt("indentMId"));
 		model.addAttribute("flag", "approve");
 		mv.setViewName(jsp);
 		return mv;
