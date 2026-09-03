@@ -201,6 +201,18 @@ input:checked + .slider:before {
 												<input type="text" id="searchMobileNo" class="form-control">
 											</div>
 										</div>
+										<!-- Populated from /master/getAllDistrict, the same source the
+										     other screens use. Filters on users.district_id. -->
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">District</label>
+											</div>
+											<div class="col-md-7">
+												<select id="districtDropDown" name="districtDropDown" class="form-control" onChange="searchUserListByDistrict(this.value)">
+													<option value="">All Districts</option>
+												</select>
+											</div>
+										</div>
 									</div>
 									<div class="col-md-4">
 										<div class="form-group row">
@@ -212,42 +224,42 @@ input:checked + .slider:before {
 														<option value="3">All</option>
 														<option value="1">Active</option>
 														<option value="2">Inactive</option>
-														
+
 														</select>
 												</div>
 										</div>
+										<!-- Filters on users.level_of_user. Values are the stored codes;
+										     labels are spelled out because S/D/C/M is not self-explanatory
+										     on screen. Re-runs the search on change, matching Status. -->
+										<div class="form-group row">
+											<div class="col-md-5">
+												<label class="col-form-label">User Level</label>
+											</div>
+											<div class="col-md-7">
+												<select id="levelOfUserDropDown" name="levelOfUserDropDown" class="form-control" onChange="searchUserListByLevel(this.value)" >
+													<option value="">All Levels</option>
+													<option value="S">State Level</option>
+													<option value="D">District Level</option>
+													<option value="C">City Level</option>
+													<option value="M">MMU Level</option>
+												</select>
+											</div>
+										</div>
 									</div>
 
-									<div class="col-md-1">
-											<div class="form-group row">
-												
-												<div class="col-sm-4">
-													<button type="button" class="btn btn-primary" onclick="searchUserList()">Search</button>
-												
-												</div>
-												
+									<!-- All three actions in one right-aligned group: Report, Show All,
+									     Search. Previously three separate columns (col-1/col-2/col-1)
+									     in the reverse order, which left them adrift mid-row. -->
+									<div class="col-md-4">
+										<div class="form-group row">
+											<div class="col-md-12 text-right">
+												<button type="button" class="btn btn-primary" id="reportBtn" onclick="generateReport();">Report</button>
+												<button type="button" class="btn btn-primary" onclick="showAll('ALL');">Show All</button>
+												<button type="button" class="btn btn-primary" onclick="searchUserList()">Search</button>
 											</div>
 										</div>
-										
-									<div class="col-md-2">
-										<div class="btn-right-all">
-												<button type="button" class="btn  btn-primary "
-													onclick="showAll('ALL');">Show All</button>
-												</div>
-											 
-										</div>
-										
-									<div class="col-md-1">
-											<div class="form-group row">
-												
-												<div class="col-sm-4">
-													<button type="button" class="btn btn-primary" id="reportBtn" onclick="generateReport();">Report</button>
-												
-												</div>
-												
-											</div>
-										</div>	
-								
+									</div>
+
 								</div>
 
 								<div class="m-t-10">
@@ -550,6 +562,10 @@ function getuserDetailsList(MODE) {
 	var actulaMmuId="";
 	var statusVal="";
 	statusVal=$('#statusUserDropDown').val();
+	var levelVal=$('#levelOfUserDropDown').val();
+	if(levelVal == null){ levelVal = ""; }
+	var districtVal=$('#districtDropDown').val();
+	if(districtVal == null){ districtVal = ""; }
 	if(mmuIdMultiple=="No")
 	{
 		actulaMmuId=mmuId;
@@ -560,12 +576,12 @@ function getuserDetailsList(MODE) {
 	}	
        var cmdId=0;
 		if(MODE == 'ALL'){
-		      var data = {"mmuId": actulaMmuId,"employeeId": 1,"pageNo":nPageNo,"userTypeName":userTypeVal,'statusVal':statusVal};
+		      var data = {"mmuId": actulaMmuId,"employeeId": 1,"pageNo":nPageNo,"userTypeName":userTypeVal,'statusVal':statusVal,'levelOfUser':levelVal,'districtId':districtVal};
 			}
 		  else
 			{
 				
-				var data = {"mmuId": actulaMmuId,"employeeId":'1',"pageNo":nPageNo,"userName":user_name,"mobileNo":mobile_No,"userTypeName":userTypeVal,'statusVal':statusVal};
+				var data = {"mmuId": actulaMmuId,"employeeId":'1',"pageNo":nPageNo,"userName":user_name,"mobileNo":mobile_No,"userTypeName":userTypeVal,'statusVal':statusVal,'levelOfUser':levelVal,'districtId':districtVal};
 			} 
 		 
 
@@ -598,10 +614,54 @@ function searchUserListByStatus(val)
 	//ResetForm();
 } 
 
+// Same shape as searchUserListByStatus: selecting a level re-runs the search on
+// its own, so it does not go through searchUserList()'s "enter name or mobile"
+// check and can be used as a standalone filter.
+function searchUserListByLevel(val)
+{
+	nPageNo = 1;
+	getuserDetailsList('FILTER');
+} 
+
+function searchUserListByDistrict(val)
+{
+	nPageNo = 1;
+	getuserDetailsList('FILTER');
+}
+
+// Same endpoint and response shape the other screens use for their district
+// dropdowns (see approvalCaptureInterest.jsp). The "All Districts" option is in
+// the markup, so options are appended rather than replacing the list.
+function GetDistrictList()
+{
+	jQuery.ajax({
+		crossOrigin: true,
+		method: "POST",
+		crossDomain: true,
+		url: "${pageContext.servletContext.contextPath}/master/getAllDistrict",
+		data: JSON.stringify({"PN" : "0"}),
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: function(result){
+			var combo = "";
+			for (var i = 0; i < result.data.length; i++) {
+				combo += '<option value="' + result.data[i].districtId + '">'
+					   + result.data[i].districtName + '</option>';
+			}
+			jQuery('#districtDropDown').append(combo);
+		},
+		error: function(){
+			// Leaves the dropdown at "All Districts" -- the list still works.
+		}
+	});
+} 
+
 function ResetForm()
 {	
 	$j('#userName').val('');
 	$j('#searchMobileNo').val('');
+	$j('#levelOfUserDropDown').val('');
+	$j('#districtDropDown').val('');
 }
 
 function showAll()
@@ -710,6 +770,8 @@ function makeTable(jsonData)
 }
 
  $j(document).ready(function() {
+
+	   GetDistrictList();
 
 	   var userTypeName='<%=userTypeName%>';
 
