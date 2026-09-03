@@ -27,7 +27,7 @@
 		<defaultValueExpression ><![CDATA[new String("")]]></defaultValueExpression>
 	</parameter>
 	<queryString><![CDATA[select ADMINISTRATIVE_SEX_CODE,ADMINISTRATIVE_SEX_NAME,(case when Upper(MAS_ADMINISTRATIVE_SEX.status)='Y' then 'Active' else 'Inactive' end) status
-from ship.MAS_ADMINISTRATIVE_SEX
+from MAS_ADMINISTRATIVE_SEX
 ORDER BY ADMINISTRATIVE_SEX_NAME]]></queryString>
 
 	<field name="administrative_sex_code" class="java.lang.String"/>
